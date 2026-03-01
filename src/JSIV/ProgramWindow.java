@@ -29,6 +29,11 @@ public class ProgramWindow {
         initMenu();
         initViewport();
         initStatusBar();
+        
+        // start with Open Next and Open Previous disabled.
+        // User needs to open their own file before these are active
+        openNextAction.setEnabled(false);
+        openPreviousAction.setEnabled(false);
 
         frame.setVisible(true);
     }
