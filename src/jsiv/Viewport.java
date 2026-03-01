@@ -29,7 +29,7 @@ public class Viewport extends JPanel {
     }
     
     public void openPrevious() {
-        System.out.println("viewport.openPRevious() invoked");
+        System.out.println("viewport.openPrevious() invoked");
     }
     
     public void zoomIn() {
