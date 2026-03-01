@@ -1,4 +1,4 @@
-package JSIV;
+package jsiv;
 
 import java.awt.Color;
 import javax.swing.*;

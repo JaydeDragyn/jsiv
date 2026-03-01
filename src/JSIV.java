@@ -4,9 +4,9 @@
 */
 
 import javax.swing.SwingUtilities;
-import JSIV.ProgramWindow;
+import jsiv.ProgramWindow;
 
-public class JSIV {
+public class jsiv {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ProgramWindow::new);
