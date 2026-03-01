@@ -1,6 +1,7 @@
 package jsiv;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
@@ -11,10 +12,29 @@ public class Viewport extends JPanel {
         WINDOW_CENTER, POINTER
     };
 
+    private Dimension viewportSize;
+    private Point viewportCenter;
     private Point mouseLocation;
 
     public Viewport() {
         setBackground(Color.BLACK);
+        updateViewportSize();
+        
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                updateViewportSize();
+            }
+        });
+        
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mouseLocation = e.getPoint();
+                System.out.print("\b\b\b\b\b\b\b\b" + mouseLocation.x +
+                                    "," + mouseLocation.y);
+            }
+        });
         
         addMouseWheelListener(new MouseAdapter() {
             @Override
@@ -27,14 +47,6 @@ public class Viewport extends JPanel {
             }
         });
         
-        addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                mouseLocation = e.getPoint();
-                System.out.print("\b\b\b\b\b\b\b\b" + mouseLocation.x +
-                                    "," + mouseLocation.y);
-            }
-        });
         
     }
         
@@ -64,6 +76,17 @@ public class Viewport extends JPanel {
     
     public void centerImage(FocusMode focusMode) {
         System.out.println("viewport.centerImage() invoked with Focus Mode: " + focusMode);
+    }
+    
+    private void updateViewportSize() {
+        viewportSize = getSize();
+        viewportCenter = new Point(viewportSize.width / 2,
+                                   viewportSize.height / 2);
+                                   
+        System.out.print("viewport size changed to " + viewportSize.width +
+                "," + viewportSize.height);
+        System.out.println(" - viewport center point is " + viewportCenter.x +
+                "," + viewportCenter.y);
     }
     
 }
