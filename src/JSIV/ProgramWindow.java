@@ -21,7 +21,6 @@ public class ProgramWindow {
 
     // Window components
     private JFrame frame;
-    private JMenuBar menuBar;
     
     public ProgramWindow() {
         initActionItems();
@@ -30,12 +29,49 @@ public class ProgramWindow {
         initViewport();
         initStatusBar();
 
-        frame.setJMenuBar(menuBar);
-        
         frame.setVisible(true);
     }
 
     private void initActionItems() {
+        openAction = new AbstractAction("Open File") {
+            {
+                putValue(ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_O);
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Open File option invoked.");
+            }
+        };
+        
+        openNextAction = new AbstractAction("Open Next") {
+            {
+                putValue(ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_N);
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Open Next option invoked.");
+            }
+        };
+        
+        openPreviousAction = new AbstractAction("Open Previous") {
+            {
+                putValue(ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_P);
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Open Previous option invoked.");
+            }
+        };
+        
         quitAction = new AbstractAction("Quit") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -48,6 +84,83 @@ public class ProgramWindow {
                 System.exit(0);
             }
         };
+        
+        panAction = new AbstractAction("Pan") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Pan action invoked");
+            }
+        };
+        
+        moveImageAction = new AbstractAction("Move Image") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Move Image action invoked");
+            }
+        };
+        
+        zoomInAction = new AbstractAction("Zoom In") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Zoom In action invoked");
+            }
+        };
+        
+        zoomOutAction = new AbstractAction("Zoom Out") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Zoom Out action invoked.");
+            }
+        }; 
+        
+        resetZoomAction = new AbstractAction("Reset Zoom") {
+            {
+                putValue(ACCELERATOR_KEY,
+                        KeyStroke.getKeyStroke(KeyEvent.VK_0, InputEvent.CTRL_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_R);
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Reset Zoom action invoked");
+            }
+        };
+        
+        centerImageAction = new AbstractAction("Center Image") {
+            {
+                putValue(ACCELERATOR_KEY,
+                        KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_C);
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Center Image action invoked");
+            }
+        };
+        
+        userManualAction = new AbstractAction("User Manual") {
+            {
+                putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_U);
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("User Manual action invoked");
+            }
+        };
+        
+        aboutAction = new AbstractAction("About") {
+            {
+                putValue(MNEMONIC_KEY, KeyEvent.VK_A);
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("About action invoked");
+            }
+        };
     }
     
     private void initFrame() {
@@ -57,13 +170,51 @@ public class ProgramWindow {
     }
     
     private void initMenu() {
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
+        fileMenu.add(new JMenuItem(openAction));
+        fileMenu.add(new JMenuItem(openNextAction));
+        fileMenu.add(new JMenuItem(openPreviousAction));
         fileMenu.add(new JMenuItem(quitAction));
         
         menuBar.add(fileMenu);
+        
+        JMenu imageMenu = new JMenu("Image");
+        imageMenu.setMnemonic(KeyEvent.VK_I);
+        
+        JMenuItem zoomInItem = new JMenuItem("Zoom In");
+        zoomInItem.setMnemonic(KeyEvent.VK_I);
+        zoomInItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 
+                                    InputEvent.CTRL_DOWN_MASK));
+        zoomInItem.addActionListener(e -> {
+            System.out.println("Menu/Keyboard invocation of Zoom In");
+            zoomInAction.actionPerformed(null);
+        });
+        imageMenu.add(zoomInItem);
+
+        JMenuItem zoomOutItem = new JMenuItem("Zoom Out");
+        zoomOutItem.setMnemonic(KeyEvent.VK_O);
+        zoomOutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 
+                                    InputEvent.CTRL_DOWN_MASK));
+        zoomOutItem.addActionListener(e -> {
+            System.out.println("Menu/Keyboard invocation of Zoom Out");
+            zoomOutAction.actionPerformed(null);
+        });
+        imageMenu.add(zoomOutItem);
+
+        imageMenu.add(new JMenuItem(resetZoomAction));
+        imageMenu.add(new JMenuItem(centerImageAction));
+        menuBar.add(imageMenu);
+        
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.setMnemonic(KeyEvent.VK_H);
+        helpMenu.add(new JMenuItem(userManualAction));
+        helpMenu.add(new JMenuItem(aboutAction));
+        menuBar.add(helpMenu);
+        
+        frame.setJMenuBar(menuBar);
     }
     
     private void initViewport() {
