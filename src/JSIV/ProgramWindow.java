@@ -21,6 +21,7 @@ public class ProgramWindow {
 
     // Window components
     private JFrame frame;
+    private Viewport viewport;
     
     public ProgramWindow() {
         initActionItems();
@@ -166,7 +167,7 @@ public class ProgramWindow {
     private void initFrame() {
         frame = new JFrame("JSIV");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
+        frame.setSize(800, 600);
     }
     
     private void initMenu() {
@@ -218,7 +219,8 @@ public class ProgramWindow {
     }
     
     private void initViewport() {
-        
+        viewport = new Viewport();
+        frame.add(viewport);
     }
     
     private void initStatusBar() {
