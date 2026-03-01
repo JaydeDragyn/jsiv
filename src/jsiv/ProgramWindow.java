@@ -119,7 +119,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Zoom In action invoked -> ");
+                System.out.print("Zoom In action invoked -> ");
                 viewport.zoomIn();
             }
         };
@@ -134,7 +134,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Zoom Out action invoked -> ");
+                System.out.print("Zoom Out action invoked -> ");
                 viewport.zoomOut();
             }
         }; 
@@ -217,7 +217,6 @@ public class ProgramWindow {
         zoomInItem.addActionListener(e -> {
             System.out.print("Menu/Keyboard invocation of Zoom In - ");
             viewport.setZoomFocusMode(Viewport.ZoomFocusMode.WINDOW_CENTER);
-            // zoomInAction.actionPerformed(null);
         });
         imageMenu.add(zoomInItem);
 
@@ -226,7 +225,6 @@ public class ProgramWindow {
         zoomOutItem.addActionListener(e -> {
             System.out.print("Menu/Keyboard invocation of Zoom Out - ");
             viewport.setZoomFocusMode(Viewport.ZoomFocusMode.WINDOW_CENTER);
-            // zoomOutAction.actionPerformed(null);
         });
         imageMenu.add(zoomOutItem);
 
