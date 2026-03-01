@@ -1,6 +1,7 @@
 package jsiv;
 
 import java.awt.Color;
+import java.awt.event.*;
 import javax.swing.*;
 
 public class Viewport extends JPanel {
@@ -13,6 +14,18 @@ public class Viewport extends JPanel {
 
     public Viewport() {
         setBackground(Color.BLACK);
+        
+        addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                setZoomFocusMode(ZoomFocusMode.POINTER);
+                if (e.getWheelRotation() < 0) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+            }
+        });
     }
     
     public void setZoomFocusMode(ZoomFocusMode newMode) {
