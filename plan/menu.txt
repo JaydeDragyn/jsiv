@@ -1,0 +1,59 @@
+JSIV Menubar
+
+File        Image           Help
+  Open        Zoom In         User Manual
+  Next        Zoom Out        About
+  Previous    Reset Zoom    
+  Quit        Center Image  
+  
+-------------------------------------------------
+
+File->
+    Open
+        Show File Dialog to allow user to choose a file to open and view
+    
+    Next
+        Open the "Next" file in the directory that the current file is in.
+        If no open file, this option will be disabled.
+        If the "last" file in the directory is currently open, the "first"
+        file in the directory will be eopened.
+        
+    Previous
+        Open the "Previous" file in the directory that the current file is in.
+        If no open file, this option will be disabled.
+        If the "first" file in the directory is currently open, the "last"
+        file in the directory will be opened.
+        
+    Quit
+        Exits the viewer.
+        
+Image->
+    Zoom In
+        Using window center as focus, increase zoom level
+        If zoom level is at maximum, do not zoom.
+        
+    Zoom Out
+        Using window center as focus, decrease zoom level
+        If zoom level is at minimum, do not zoom.
+        
+    Reset Zoom
+        Change Zoom Level to largest (or smallest) zoom that keeps entire
+        image visible in the window (up to maximum or down to minimum zoom 
+        level)
+        Center Image in window
+        
+    Center Image
+        Center the image in the window regardless of whether full image
+        fits in the window (center pixel of image to line up with center
+        pixel of window)
+        
+Help->
+    User Manual
+        Simple Write-up with this document's info along with special
+        behaviors
+        
+    About
+        Modal dialog to show author and dev info.
+        
+
+    

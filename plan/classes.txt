@@ -1,0 +1,43 @@
+JSIV Classes and class heirarchy
+
+JSIV 
+ +- ProgramWindow
+     +- Menu
+     +- Viewport
+     +- InfoBar
+
+-----------------------------------------------------------------------
+
+class JSIV
+
+Entry point with main() method.
+Creates a ProgramWindow and initializes it.
+
+-----------------------------------------------------------------------
+
+class ProgramWindow
+
+The JFrame that holds all other components.  
+Will act as the MVC Controller to dispatch input to the other components.
+
+-----------------------------------------------------------------------
+
+class Menu
+
+The JMenuBar
+
+This will be part of the Program Window since the MenuBar will not need
+to specifically act separately from the Action items.
+
+-----------------------------------------------------------------------
+
+class Viewport
+
+A JPanel that displays the image at the current offset and zoom level.
+
+-----------------------------------------------------------------------
+
+class InfoBar
+
+A JLabel that displays image info about the current image displayed 
+in the Viewport, including image size, zoom level and window size
