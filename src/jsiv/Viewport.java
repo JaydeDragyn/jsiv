@@ -1,6 +1,7 @@
 package jsiv;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -9,6 +10,8 @@ public class Viewport extends JPanel {
     public enum FocusMode {
         WINDOW_CENTER, POINTER
     };
+
+    private Point mouseLocation;
 
     public Viewport() {
         setBackground(Color.BLACK);
@@ -23,6 +26,16 @@ public class Viewport extends JPanel {
                 }
             }
         });
+        
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mouseLocation = e.getPoint();
+                System.out.print("\b\b\b\b\b\b\b\b" + mouseLocation.x +
+                                    "," + mouseLocation.y);
+            }
+        });
+        
     }
         
     public void open() {
