@@ -6,11 +6,9 @@ import javax.swing.*;
 
 public class Viewport extends JPanel {
 
-    public enum ZoomFocusMode {
+    public enum FocusMode {
         WINDOW_CENTER, POINTER
     };
-
-    private ZoomFocusMode zoomFocusMode;
 
     public Viewport() {
         setBackground(Color.BLACK);
@@ -18,21 +16,15 @@ public class Viewport extends JPanel {
         addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                setZoomFocusMode(ZoomFocusMode.POINTER);
                 if (e.getWheelRotation() < 0) {
-                    zoomIn();
+                    zoomIn(FocusMode.POINTER);
                 } else {
-                    zoomOut();
+                    zoomOut(FocusMode.POINTER);
                 }
             }
         });
     }
-    
-    public void setZoomFocusMode(ZoomFocusMode newMode) {
-        System.out.print("viewport set ZoomFocusMode to " + newMode + " - ");
-        zoomFocusMode = newMode;
-    }
-    
+        
     public void open() {
         System.out.println("viewport.open() invoked");
     }
@@ -45,20 +37,20 @@ public class Viewport extends JPanel {
         System.out.println("viewport.openPrevious() invoked");
     }
     
-    public void zoomIn() {
-        System.out.println("viewport.zoomIn() invoked");
+    public void zoomIn(FocusMode focusMode) {
+        System.out.println("viewport.zoomIn() invoked with Focus Mode: " + focusMode);
     }
     
-    public void zoomOut() {
-        System.out.println("viewport.zoomOut() invoked");
+    public void zoomOut(FocusMode focusMode) {
+        System.out.println("viewport.zoomOut() invoked with Focus Mode: " + focusMode);
     }
     
     public void resetZoom() {
         System.out.println("viewport.resetZoom() invoked");
     }
     
-    public void centerImage() {
-        System.out.println("viewport.centerImage() invoked");
+    public void centerImage(FocusMode focusMode) {
+        System.out.println("viewport.centerImage() invoked with Focus Mode: " + focusMode);
     }
     
 }

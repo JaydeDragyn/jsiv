@@ -120,7 +120,7 @@ public class ProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Zoom In action invoked -> ");
-                viewport.zoomIn();
+                viewport.zoomIn(Viewport.FocusMode.WINDOW_CENTER);
             }
         };
         
@@ -135,7 +135,7 @@ public class ProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Zoom Out action invoked -> ");
-                viewport.zoomOut();
+                viewport.zoomOut(Viewport.FocusMode.WINDOW_CENTER);
             }
         }; 
         
@@ -163,7 +163,7 @@ public class ProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Center Image action invoked -> ");
-                viewport.centerImage();
+                viewport.centerImage(Viewport.FocusMode.WINDOW_CENTER);
             }
         };
         
@@ -212,22 +212,8 @@ public class ProgramWindow {
         JMenu imageMenu = new JMenu("Image");
         imageMenu.setMnemonic(KeyEvent.VK_I);
         
-        JMenuItem zoomInItem = new JMenuItem("Zoom In");
-        zoomInItem.setAction(zoomInAction);
-        zoomInItem.addActionListener(e -> {
-            System.out.print("Menu/Keyboard invocation of Zoom In - ");
-            viewport.setZoomFocusMode(Viewport.ZoomFocusMode.WINDOW_CENTER);
-        });
-        imageMenu.add(zoomInItem);
-
-        JMenuItem zoomOutItem = new JMenuItem("Zoom Out");
-        zoomOutItem.setAction(zoomOutAction);
-        zoomOutItem.addActionListener(e -> {
-            System.out.print("Menu/Keyboard invocation of Zoom Out - ");
-            viewport.setZoomFocusMode(Viewport.ZoomFocusMode.WINDOW_CENTER);
-        });
-        imageMenu.add(zoomOutItem);
-
+        imageMenu.add(new JMenuItem(zoomInAction));
+        imageMenu.add(new JMenuItem(zoomOutAction));
         imageMenu.add(new JMenuItem(resetZoomAction));
         imageMenu.add(new JMenuItem(centerImageAction));
         menuBar.add(imageMenu);
