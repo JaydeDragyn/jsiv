@@ -33,17 +33,18 @@ public class ProgramWindow {
     private Viewport viewport;
     
     public ProgramWindow() {
-        initActionItems();
+        imageNavigator = new ImageNavigator();
         initFrame();
-        initMenu();
         initViewport();
+        initActionItems();
+        initMenu();
         initInputActionMaps();
         initStatusBar();
-        imageNavigator = new ImageNavigator();
         
         openNextAction.setEnabled(imageNavigator.canNavigate());
         openPreviousAction.setEnabled(imageNavigator.canNavigate());
 
+        frame.pack();
         frame.setVisible(true);
     }
 
@@ -199,14 +200,14 @@ public class ProgramWindow {
         inputMap.put(panKey(KeyEvent.VK_RIGHT, false), "panRightFine");
         inputMap.put(panKey(KeyEvent.VK_RIGHT, true), "panRightCoarse");
 
-        actionMap.put("panUpFine", panAction(0,-viewport.PAN_FINE));
-        actionMap.put("panUpCoarse", panAction(0,-viewport.PAN_COARSE));
-        actionMap.put("panDownFine", panAction(0, viewport.PAN_FINE));
-        actionMap.put("panDownCoarse", panAction(0, viewport.PAN_COARSE));
-        actionMap.put("panLeftFine", panAction(-viewport.PAN_FINE,0));
-        actionMap.put("panLeftCoarse", panAction(-viewport.PAN_COARSE,0));
-        actionMap.put("panRightFine", panAction(viewport.PAN_FINE,0));
-        actionMap.put("panRightCoarse", panAction(viewport.PAN_COARSE,0));
+        actionMap.put("panUpFine", panAction(0,-Viewport.PAN_FINE));
+        actionMap.put("panUpCoarse", panAction(0,-Viewport.PAN_COARSE));
+        actionMap.put("panDownFine", panAction(0, Viewport.PAN_FINE));
+        actionMap.put("panDownCoarse", panAction(0, Viewport.PAN_COARSE));
+        actionMap.put("panLeftFine", panAction(-Viewport.PAN_FINE,0));
+        actionMap.put("panLeftCoarse", panAction(-Viewport.PAN_COARSE,0));
+        actionMap.put("panRightFine", panAction(Viewport.PAN_FINE,0));
+        actionMap.put("panRightCoarse", panAction(Viewport.PAN_COARSE,0));
     }
 
     private KeyStroke panKey(int key, boolean ctrl) {
@@ -225,7 +226,6 @@ public class ProgramWindow {
     private void initFrame() {
         frame = new JFrame("JSIV");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
     }
         
     private void initMenu() {
@@ -260,6 +260,7 @@ public class ProgramWindow {
         
     private void initViewport() {
         viewport = new Viewport();
+        viewport.setPreferredSize(new Dimension(800, 600));
         frame.add(viewport);
     }
         

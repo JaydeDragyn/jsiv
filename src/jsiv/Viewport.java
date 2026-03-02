@@ -110,7 +110,7 @@ public class Viewport extends JPanel {
                 if (leftButtonPressed || rightButtonPressed) { return; }
                 
                 // record the position the user pressed the button
-                pressPoint = mouseLocation;
+                pressPoint = new Point(mouseLocation);
                 
                 // Left button?
                 if (e.getButton() == MouseEvent.BUTTON1) {
@@ -174,9 +174,9 @@ public class Viewport extends JPanel {
                 if (!rightButtonPressed) { return; }
                 
                 if (!rightButtonDragged) {
-                    int originDelta = Math.max(mouseLocation.x - pressPoint.x,
-                                               mouseLocation.y - pressPoint.y);
-                    if (originDelta > MOUSE_DRAG_THRESHOLD) { 
+                    int dx = Math.abs(mouseLocation.x - pressPoint.x);
+                    int dy = Math.abs(mouseLocation.y - pressPoint.y);
+                    if (dx > MOUSE_DRAG_THRESHOLD || dy > MOUSE_DRAG_THRESHOLD) { 
                         rightButtonDragged = true; 
                     }
                 } else {
