@@ -12,17 +12,17 @@ public class ImageNavigator {
     }
 
     public Optional<BufferedImage> openFile() {
-        System.out.println("imageNavigator.openFile() invoked");
+        System.out.println("ImageNavigator.openFile()");
         return Optional.empty();
     }
     
     public Optional<BufferedImage> openNext() {
-        System.out.println("imageNavigator.openNext() invoked");
+        System.out.println("ImageNavigator.openNext()");
         return Optional.empty();
     }
 
     public Optional<BufferedImage> openPrevious() {
-        System.out.println("imageNavigator.openPrevious() invoked");        
+        System.out.println("ImageNavigator.openPrevious()");        
         return Optional.empty();
     }
 

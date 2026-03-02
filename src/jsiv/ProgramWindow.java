@@ -1,5 +1,7 @@
 package jsiv;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -10,8 +12,10 @@ public class ProgramWindow {
     private Action openNextAction;
     private Action openPreviousAction;
     private Action quitAction;
-    private Action panAction;
-    private Action moveImageAction;
+    private Action panUpAction;
+    private Action panDownAction;
+    private Action panLeftAction;
+    private Action panRightAction;
     private Action zoomInAction;
     private Action zoomOutAction;
     private Action resetZoomAction;
@@ -19,6 +23,10 @@ public class ProgramWindow {
     private Action userManualAction;
     private Action aboutAction;
 
+    // Input and Action maps
+    private InputMap inputMap;
+    private ActionMap actionMap;
+    
     // Window components
     private JFrame frame;
     private ImageNavigator imageNavigator;
@@ -29,6 +37,7 @@ public class ProgramWindow {
         initFrame();
         initMenu();
         initViewport();
+        initInputActionMaps();
         initStatusBar();
         imageNavigator = new ImageNavigator();
         
@@ -48,7 +57,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Open File option invoked -> ");
+                System.out.print("Open File action -> ");
                 imageNavigator.openFile().ifPresent(viewport::setImage);
             }
         };
@@ -63,7 +72,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Open Next option invoked -> ");
+                System.out.print("Open Next action -> ");
                 imageNavigator.openNext().ifPresent(viewport::setImage);
             }
         };
@@ -78,7 +87,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Open Previous option invoked -> ");
+                System.out.print("Open Previous action -> ");
                 imageNavigator.openPrevious().ifPresent(viewport::setImage);
             }
         };
@@ -95,21 +104,7 @@ public class ProgramWindow {
                 System.exit(0);
             }
         };
-        
-        panAction = new AbstractAction("Pan") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Pan action invoked");
-            }
-        };
-        
-        moveImageAction = new AbstractAction("Move Image") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Move Image action invoked");
-            }
-        };
-        
+              
         zoomInAction = new AbstractAction("Zoom In") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -119,7 +114,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Zoom In action invoked -> ");
+                System.out.print("Zoom In action -> ");
                 viewport.zoomIn(Viewport.FocusMode.WINDOW_CENTER);
             }
         };
@@ -134,7 +129,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Zoom Out action invoked -> ");
+                System.out.print("Zoom Out action -> ");
                 viewport.zoomOut(Viewport.FocusMode.WINDOW_CENTER);
             }
         }; 
@@ -148,7 +143,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Reset Zoom action invoked -> ");
+                System.out.print("Reset Zoom action -> ");
                 viewport.resetZoom();
             }
         };
@@ -162,7 +157,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Center Image action invoked -> ");
+                System.out.print("Center Image action -> ");
                 viewport.centerImage(Viewport.FocusMode.WINDOW_CENTER);
             }
         };
@@ -175,7 +170,7 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("User Manual action invoked");
+                System.out.println("User Manual action -> ");
             }
         };
         
@@ -186,11 +181,47 @@ public class ProgramWindow {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("About action invoked");
+                System.out.println("About action -> ");
             }
         };
     }
-    
+
+    private void initInputActionMaps() {
+        inputMap = viewport.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        actionMap = viewport.getActionMap();
+
+        inputMap.put(panKey(KeyEvent.VK_UP, false), "panUpFine");
+        inputMap.put(panKey(KeyEvent.VK_UP, true),  "panUpCoarse");
+        inputMap.put(panKey(KeyEvent.VK_DOWN, false), "panDownFine");
+        inputMap.put(panKey(KeyEvent.VK_DOWN, true), "panDownCoarse");
+        inputMap.put(panKey(KeyEvent.VK_LEFT, false), "panLeftFine");
+        inputMap.put(panKey(KeyEvent.VK_LEFT, true), "panLeftCoarse");
+        inputMap.put(panKey(KeyEvent.VK_RIGHT, false), "panRightFine");
+        inputMap.put(panKey(KeyEvent.VK_RIGHT, true), "panRightCoarse");
+
+        actionMap.put("panUpFine", panAction(0,-viewport.PAN_FINE));
+        actionMap.put("panUpCoarse", panAction(0,-viewport.PAN_COARSE));
+        actionMap.put("panDownFine", panAction(0, viewport.PAN_FINE));
+        actionMap.put("panDownCoarse", panAction(0, viewport.PAN_COARSE));
+        actionMap.put("panLeftFine", panAction(-viewport.PAN_FINE,0));
+        actionMap.put("panLeftCoarse", panAction(-viewport.PAN_COARSE,0));
+        actionMap.put("panRightFine", panAction(viewport.PAN_FINE,0));
+        actionMap.put("panRightCoarse", panAction(viewport.PAN_COARSE,0));
+    }
+
+    private KeyStroke panKey(int key, boolean ctrl) {
+        return KeyStroke.getKeyStroke(key, (ctrl)?InputEvent.CTRL_DOWN_MASK:0);
+    }
+
+    private Action panAction(int dx, int dy) {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewport.panImage(dx, dy);
+            }
+        };
+    }
+
     private void initFrame() {
         frame = new JFrame("JSIV");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
