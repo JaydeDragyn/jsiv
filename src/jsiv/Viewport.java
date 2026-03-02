@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import javax.swing.*;
 
 public class Viewport extends JPanel {
@@ -15,6 +16,11 @@ public class Viewport extends JPanel {
     private Dimension viewportSize;
     private Point viewportCenter;
     private Point mouseLocation;
+    
+    private Point pressPoint;
+    private boolean leftButtonPressed;
+    private boolean rightButtonPressed;
+    private boolean rightButtonDragged;
 
     public Viewport() {
         setBackground(Color.BLACK);
@@ -36,6 +42,59 @@ public class Viewport extends JPanel {
             }
         });
         
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // ignore if a button is already pressed
+                // only one should be pressed at a time,
+                // so this will cause us to ignore the other one
+                if (leftButtonPressed || rightButtonPressed) { return; }
+                
+                // record the position the user pressed the button
+                pressPoint = mouseLocation;
+                
+                // Left button?
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    leftButtonPressed = true;
+                    System.out.println("LMB pressed at " + pressPoint.x +
+                                        "," + pressPoint.y);
+                }
+                
+                // Right button?
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    rightButtonPressed = true;
+                    rightButtonDragged = false;
+                    System.out.println("RMB pressed at " + pressPoint.x +
+                                        "," + pressPoint.y);
+                }
+            }
+            
+            public void mouseReleased(MouseEvent e) {
+                mouseLocation = e.getPoint();
+
+                // LMB
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    // verify the correct button was released or don't act
+                    if (!leftButtonPressed) { return; }
+                    handleLeftClick();
+                    leftButtonPressed = false;
+                }
+                
+                // RMB
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    // verify the correct button was released or don't act
+                    if (!rightButtonPressed) { return; }
+                    
+                    // if this wasn't a drag, it's a click.
+                    if (!rightButtonDragged) {
+                        centerImage(FocusMode.POINTER);
+                    }
+                    rightButtonPressed = false;
+                    rightButtonDragged = false;
+                }
+            }
+        });
+        
         addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -49,17 +108,9 @@ public class Viewport extends JPanel {
         
         
     }
-        
-    public void open() {
-        System.out.println("viewport.open() invoked");
-    }
-    
-    public void openNext() {
-        System.out.println("viewport.openNext() invoked");
-    }
-    
-    public void openPrevious() {
-        System.out.println("viewport.openPrevious() invoked");
+
+    public void setImage(BufferedImage newImage) {
+        System.out.println("viewport.setImage() invoked");
     }
     
     public void zoomIn(FocusMode focusMode) {
@@ -87,6 +138,15 @@ public class Viewport extends JPanel {
                 "," + viewportSize.height);
         System.out.println(" - viewport center point is " + viewportCenter.x +
                 "," + viewportCenter.y);
+    }
+    
+    private void handleLeftClick() {
+        System.out.println("Left Click at " + mouseLocation.x +
+                "," + mouseLocation.y +
+                " - " + (mouseLocation.x - pressPoint.x) +
+                "," + (mouseLocation.y - pressPoint.y) +
+                " pixels from starting location of " + pressPoint.x +
+                "," + pressPoint.y);
     }
     
 }

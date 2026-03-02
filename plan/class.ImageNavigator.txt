@@ -1,0 +1,43 @@
+jsiv ImageNavigator
+
+The ImageNavigator will be responsible for providing the images that the 
+Viewport displays.  The ProgramWindow will own this component, and when the
+user requests to Open File, Open Next or Open Previous, ProgramWindow will
+make the call and then pass the result to Viewport if ImageNavigator returns
+a result:
+
+    // Ctrl-O (Open File)
+    // In ProgramWindow
+    // openFileAction
+    navigator.openFile().ifPresent(viewport::setImage);
+    
+Let's unpack that:
+
+navigator will be the ImageNavigator reference held by ProgramWindow
+
+.openFile() will return an Optional<BufferedImage>
+    This Optional<> will either contain a BufferedImage or will be empty.
+    Normally the requestor needs to check if the Optional<> it received
+    is empty, but the Optional<> method .ifPresent() handles that.
+    
+.ifPresent() does nothing if the Optional<> received .isEmpty().  
+
+.ifPresent() expects a Consumer<T> object that takes one argument of type T
+    and returns nothing, so that viewport::setImage part translates to
+    
+    public void setImage(BufferedImage i) { ... }
+    
+    and is a method of the Viewport class.  Since BufferedImage is the type
+    that the Optional might contain, and setImage does not return a value,
+    this line essentially says, 
+    
+    "Navigator, open a file.  If a BufferedImage is present in the output, 
+    call the setImage() method of the viewport class and pass that output
+    to the method."
+
+Since it will silently fail if ImageNavigator returns an empty, the
+ImageNavigator can display the error (invalid file format, unable to read
+the file, whatever), and when the user hits "Ok" on the dialog, the 
+interaction is essentially over.
+
+

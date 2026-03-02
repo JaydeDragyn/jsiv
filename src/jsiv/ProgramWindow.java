@@ -6,7 +6,7 @@ import javax.swing.*;
 public class ProgramWindow {
 
     // Actions
-    private Action openAction;
+    private Action openFileAction;
     private Action openNextAction;
     private Action openPreviousAction;
     private Action quitAction;
@@ -21,6 +21,7 @@ public class ProgramWindow {
 
     // Window components
     private JFrame frame;
+    private ImageNavigator imageNavigator;
     private Viewport viewport;
     
     public ProgramWindow() {
@@ -29,17 +30,16 @@ public class ProgramWindow {
         initMenu();
         initViewport();
         initStatusBar();
+        imageNavigator = new ImageNavigator();
         
-        // start with Open Next and Open Previous disabled.
-        // User needs to open their own file before these are active
-        openNextAction.setEnabled(false);
-        openPreviousAction.setEnabled(false);
+        openNextAction.setEnabled(imageNavigator.canNavigate());
+        openPreviousAction.setEnabled(imageNavigator.canNavigate());
 
         frame.setVisible(true);
     }
 
     private void initActionItems() {
-        openAction = new AbstractAction("Open File") {
+        openFileAction = new AbstractAction("Open File") {
             {
                 putValue(ACCELERATOR_KEY,
                     KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
@@ -49,7 +49,7 @@ public class ProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Open File option invoked -> ");
-                viewport.open();
+                imageNavigator.openFile().ifPresent(viewport::setImage);
             }
         };
         
@@ -64,7 +64,7 @@ public class ProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Open Next option invoked -> ");
-                viewport.openNext();
+                imageNavigator.openNext().ifPresent(viewport::setImage);
             }
         };
         
@@ -79,7 +79,7 @@ public class ProgramWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Open Previous option invoked -> ");
-                viewport.openPrevious();
+                imageNavigator.openPrevious().ifPresent(viewport::setImage);
             }
         };
         
@@ -196,13 +196,13 @@ public class ProgramWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
     }
-    
+        
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
-        fileMenu.add(new JMenuItem(openAction));
+        fileMenu.add(new JMenuItem(openFileAction));
         fileMenu.add(new JMenuItem(openNextAction));
         fileMenu.add(new JMenuItem(openPreviousAction));
         fileMenu.add(new JMenuItem(quitAction));
@@ -226,12 +226,12 @@ public class ProgramWindow {
         
         frame.setJMenuBar(menuBar);
     }
-    
+        
     private void initViewport() {
         viewport = new Viewport();
         frame.add(viewport);
     }
-    
+        
     private void initStatusBar() {
         
     }
