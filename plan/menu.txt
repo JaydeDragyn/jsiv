@@ -1,4 +1,4 @@
-JSIV Menubar
+jsiv Menubar
 
 File        Image           Help
   Open        Zoom In         User Manual

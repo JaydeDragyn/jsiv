@@ -1,4 +1,4 @@
-JSIV control scheme
+jsiv control scheme
 
 Open "Previous"         LMB on left half of Viewport  
 image in folder         Left Arrow

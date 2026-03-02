@@ -1,4 +1,4 @@
-JSIV - Jayde's Simple Image/Icon Viewer
+jsiv - Jayde's Simple Image/Icon Viewer
 
 Going to learn to use the 
 

@@ -1,4 +1,4 @@
-JSIV Actions
+jsiv Actions
 
 These are the Action events that the program will respond to.
 

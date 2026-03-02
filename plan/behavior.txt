@@ -1,4 +1,4 @@
-JSIV Behaviors
+jsiv Behaviors
 
 On startup:
 Load "Splash Image" at 1x Zoom, Centered in 400x400 Viewport

@@ -1,4 +1,4 @@
-JSIV Viewport
+jsiv Viewport
 
 The Viewport will be responsible for displaying the image at the appropriate
 offset and zoom level.  It will be a JPanel and will take care of the

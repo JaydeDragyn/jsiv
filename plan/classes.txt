@@ -1,14 +1,15 @@
-JSIV Classes and class heirarchy
+jsiv Classes and class heirarchy
 
-JSIV 
+jsiv 
  +- ProgramWindow
      +- Menu
      +- Viewport
      +- InfoBar
+     +- ImageNavigator
 
 -----------------------------------------------------------------------
 
-class JSIV
+class jsiv
 
 Entry point with main() method.
 Creates a ProgramWindow and initializes it.
@@ -41,3 +42,9 @@ class InfoBar
 
 A JLabel that displays image info about the current image displayed 
 in the Viewport, including image size, zoom level and window size
+
+-----------------------------------------------------------------------
+
+class ImageNavigator
+
+A class to handle navigating images for the other components.  
