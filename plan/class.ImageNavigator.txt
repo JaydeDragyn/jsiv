@@ -40,4 +40,19 @@ ImageNavigator can display the error (invalid file format, unable to read
 the file, whatever), and when the user hits "Ok" on the dialog, the 
 interaction is essentially over.
 
+---
+
+User Interface for ImageNavigator now:
+
+ImageNavigator
+-> openSplashFile() open and return the program splash file
+-> openFile()       open file chooser so user can choose file to open and return
+-> openNext()       open and return next file in the folder
+-> openPrevious()   open and return previous file in the folder
+-> canNavigate()    true if there is a next/previous to open
+
+When this object is constructed, and whenever openSplashFile() is called 
+successfully, canNavigate will be set to return false.  When openFile() 
+is called successfully, canNavigate will be set to return true.
+
 

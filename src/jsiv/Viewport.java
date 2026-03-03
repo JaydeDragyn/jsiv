@@ -13,8 +13,13 @@ public class Viewport extends JPanel {
         WINDOW_CENTER, POINTER
     };
 
+    private final ViewportListener viewportListener;
+    private boolean navigationAllowed;
+
     private Dimension viewportSize;
     private Point viewportCenter;
+    private int openPreviousBorder;
+    private int openNextBorder;
     private Point mouseLocation = new Point(0,0);
     private Point mouseLastLocation = new Point(0,0);
 
@@ -23,12 +28,16 @@ public class Viewport extends JPanel {
     private boolean rightButtonPressed;
     private boolean rightButtonDragged;
     private static final int MOUSE_DRAG_THRESHOLD = 1;
+    private static final int POINTER_DRIFT_THRESHOLD = 4;
 
     public static final int PAN_FINE = 1;
     public static final int PAN_COARSE = 10;
     private int panStepSize;
 
-    public Viewport() {
+    public Viewport(ViewportListener viewportListener) {
+        this.viewportListener = viewportListener;
+        navigationAllowed = false;
+        
         initResizeListener();
         initMouseListeners();
 
@@ -38,6 +47,10 @@ public class Viewport extends JPanel {
 
     public void setImage(BufferedImage newImage) {
         System.out.println("Viewport.setImage()");
+    }
+    
+    public void setFallbackSplash() {
+        System.out.println("Viewport.setFallbackSplash()");
     }
     
     public void zoomIn(FocusMode focusMode) {
@@ -75,7 +88,8 @@ public class Viewport extends JPanel {
         viewportSize = getSize();
         viewportCenter = new Point(viewportSize.width / 2,
                                    viewportSize.height / 2);
-                                   
+        openPreviousBorder = viewportCenter.x / 2;
+        openNextBorder = viewportCenter.x + openPreviousBorder;
         System.out.print("Viewport size changed to " + viewportSize.width +
                 "," + viewportSize.height);
         System.out.println(" - Viewport center point is " + viewportCenter.x +
@@ -83,12 +97,45 @@ public class Viewport extends JPanel {
     }
     
     private void handleLeftClick() {
+        Dimension distanceFromPress = new Dimension(
+                    Math.abs(mouseLocation.x - pressPoint.x),
+                    Math.abs(mouseLocation.y - pressPoint.y));
         System.out.println("Left Click at " + mouseLocation.x +
                 "," + mouseLocation.y +
-                " - " + (mouseLocation.x - pressPoint.x) +
-                "," + (mouseLocation.y - pressPoint.y) +
+                " - " + distanceFromPress.width +
+                "," + distanceFromPress.height +
                 " pixels from starting location of " + pressPoint.x +
                 "," + pressPoint.y);
+        if (distanceFromPress.width > POINTER_DRIFT_THRESHOLD ||
+            distanceFromPress.height > POINTER_DRIFT_THRESHOLD) {
+                System.out.println("Pointer drifted too far, aborting click.");
+                return;
+        }
+        if (pressPoint.x < openPreviousBorder) {
+            openPreviousRequested();
+        }
+        if (pressPoint.x > openNextBorder) {
+            openNextRequested();
+        }
+    }
+
+    public void setNavigationAllowed(boolean allowed) {
+        System.out.println("Viewport.setNavigationAllowed(" + allowed + ")");
+        navigationAllowed = allowed;
+    }
+
+    private void openNextRequested() {
+        System.out.println("Viewport.openNextRequested()");
+        if (!navigationAllowed) { return; }
+        viewportListener.requestOpenNext();
+        repaint();
+    }
+    
+    private void openPreviousRequested() {
+        System.out.println("Viewport.openPreviousRequested()");
+        if (!navigationAllowed) { return; }
+        viewportListener.requestOpenPrevious();
+        repaint();
     }
 
     private void initResizeListener() {

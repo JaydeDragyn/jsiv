@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class ProgramWindow {
+public class ProgramWindow implements ViewportListener {
 
     // Actions
     private Action openFileAction;
@@ -41,13 +41,35 @@ public class ProgramWindow {
         initInputActionMaps();
         initStatusBar();
         
-        openNextAction.setEnabled(imageNavigator.canNavigate());
-        openPreviousAction.setEnabled(imageNavigator.canNavigate());
+        imageNavigator.openSplashFile()
+            .ifPresentOrElse(
+                viewport::setImage,
+                viewport::setFallbackSplash
+            );
+        setNavigationAllowed(imageNavigator.canNavigate());
 
         frame.pack();
         frame.setVisible(true);
     }
 
+    @Override
+    public void requestOpenNext() {
+        imageNavigator.openNext().ifPresent(viewport::setImage);
+        setNavigationAllowed(imageNavigator.canNavigate());
+    }
+    
+    @Override
+    public void requestOpenPrevious() {
+        imageNavigator.openPrevious().ifPresent(viewport::setImage);
+        setNavigationAllowed(imageNavigator.canNavigate());
+    }
+    
+    private void setNavigationAllowed(boolean navigationAllowed) {
+        openNextAction.setEnabled(navigationAllowed);
+        openPreviousAction.setEnabled(navigationAllowed);
+        viewport.setNavigationAllowed(navigationAllowed);
+    }
+    
     private void initActionItems() {
         openFileAction = new AbstractAction("Open File") {
             {
@@ -228,6 +250,12 @@ public class ProgramWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
         
+    private void initViewport() {
+        viewport = new Viewport(this);
+        viewport.setPreferredSize(new Dimension(800, 600));
+        frame.add(viewport);
+    }
+
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
 
@@ -257,13 +285,7 @@ public class ProgramWindow {
         
         frame.setJMenuBar(menuBar);
     }
-        
-    private void initViewport() {
-        viewport = new Viewport();
-        viewport.setPreferredSize(new Dimension(800, 600));
-        frame.add(viewport);
-    }
-        
+
     private void initStatusBar() {
         
     }

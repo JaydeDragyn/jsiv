@@ -11,6 +11,11 @@ public class ImageNavigator {
 
     }
 
+    public Optional<BufferedImage> openSplashFile() {
+        System.out.println("ImageNavigator.openSplashFile()");
+        return Optional.empty();
+    }
+
     public Optional<BufferedImage> openFile() {
         System.out.println("ImageNavigator.openFile()");
         return Optional.empty();
