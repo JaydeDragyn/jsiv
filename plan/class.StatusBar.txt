@@ -1,0 +1,20 @@
+jsiv StatusBar
+
+The StatusBar will live at the bottom of the program window and will be
+responsible for displaying certain information about the currently loaded
+image at all times.  Whenever the information it displays is updated,
+it will update what it is displaying to match.
+
+Useful information:
+
+Zoom level
+Image Size
+Viewport Size
+
+additional things suggested by ChatGPT that I like:
+
+file index (eg. 3 / 42) where current dir has 42 viewable images and we are
+looking at image# 3
+
+pixel under pointer (provide RGB values)
+

@@ -55,13 +55,11 @@ public class ProgramWindow implements ViewportListener {
     @Override
     public void requestOpenNext() {
         imageNavigator.openNext().ifPresent(viewport::setImage);
-        setNavigationAllowed(imageNavigator.canNavigate());
     }
     
     @Override
     public void requestOpenPrevious() {
         imageNavigator.openPrevious().ifPresent(viewport::setImage);
-        setNavigationAllowed(imageNavigator.canNavigate());
     }
     
     private void setNavigationAllowed(boolean navigationAllowed) {
@@ -82,6 +80,7 @@ public class ProgramWindow implements ViewportListener {
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Open File action -> ");
                 imageNavigator.openFile().ifPresent(viewport::setImage);
+                setNavigationAllowed(imageNavigator.canNavigate());
             }
         };
         

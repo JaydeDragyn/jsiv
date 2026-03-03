@@ -32,7 +32,7 @@ public class ImageNavigator {
     }
 
     public boolean canNavigate() {
-        return false;
+        return true;
     }
 }
 

@@ -63,6 +63,7 @@ public class Viewport extends JPanel {
     
     public void resetZoom() {
         System.out.println("Viewport.resetZoom() ");
+        centerImage(FocusMode.WINDOW_CENTER);
     }
     
     public void centerImage(FocusMode focusMode) {
