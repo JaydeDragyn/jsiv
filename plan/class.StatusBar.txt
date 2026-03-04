@@ -18,3 +18,11 @@ looking at image# 3
 
 pixel under pointer (provide RGB values)
 
+    private int index;
+    private int imageCount;
+    private Dimension imageSize;
+    private Dimension viewportSize;
+    private int zoomLevel;
+    private int red;
+    private int green;
+    private int blue;

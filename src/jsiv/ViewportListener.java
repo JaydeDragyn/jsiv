@@ -1,6 +1,11 @@
 package jsiv;
 
+import java.awt.*;
+
 public interface ViewportListener {
     void requestOpenNext();
     void requestOpenPrevious();
+    void viewportSizeChanged(Dimension newViewportSize);
+    void zoomChanged(double newZoomLevel);
+    void newColorUnderPointer(int red, int green, int blue);
 }

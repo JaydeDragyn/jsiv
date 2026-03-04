@@ -55,15 +55,18 @@ public class Viewport extends JPanel {
     
     public void zoomIn(FocusMode focusMode) {
         System.out.println("Viewport.zoomIn() with Focus Mode: " + focusMode);
+        viewportListener.zoomChanged(1.0f);
     }
     
     public void zoomOut(FocusMode focusMode) {
         System.out.println("Viewport.zoomOut() with Focus Mode: " + focusMode);
+        viewportListener.zoomChanged(1.0f);
     }
     
     public void resetZoom() {
         System.out.println("Viewport.resetZoom() ");
         centerImage(FocusMode.WINDOW_CENTER);
+        viewportListener.zoomChanged(1.0f);
     }
     
     public void centerImage(FocusMode focusMode) {
@@ -91,6 +94,7 @@ public class Viewport extends JPanel {
                                    viewportSize.height / 2);
         openPreviousBorder = viewportCenter.x / 2;
         openNextBorder = viewportCenter.x + openPreviousBorder;
+        viewportListener.viewportSizeChanged(viewportSize);
         System.out.print("Viewport size changed to " + viewportSize.width +
                 "," + viewportSize.height);
         System.out.println(" - Viewport center point is " + viewportCenter.x +
@@ -209,6 +213,7 @@ public class Viewport extends JPanel {
                 mouseLocation = e.getPoint();
                 System.out.print(mouseLocation.x + "," + mouseLocation.y +
                                     "\b\b\b\b\b\b\b\b");
+                viewportListener.newColorUnderPointer(0, 0, 0);
             }
             
             @Override

@@ -1,7 +1,6 @@
 package jsiv;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -31,15 +30,22 @@ public class ProgramWindow implements ViewportListener {
     private JFrame frame;
     private ImageNavigator imageNavigator;
     private Viewport viewport;
+    private StatusBar statusBar;
     
     public ProgramWindow() {
         imageNavigator = new ImageNavigator();
-        initFrame();
-        initViewport();
+        frame = new JFrame("JSIV");
+        statusBar = new StatusBar();
+        viewport = new Viewport(this);
         initActionItems();
         initMenu();
         initInputActionMaps();
-        initStatusBar();
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        viewport.setPreferredSize(new Dimension(800, 600));
+
+        frame.add(viewport);
+        frame.add(statusBar);
         
         imageNavigator.openSplashFile()
             .ifPresentOrElse(
@@ -60,6 +66,21 @@ public class ProgramWindow implements ViewportListener {
     @Override
     public void requestOpenPrevious() {
         imageNavigator.openPrevious().ifPresent(viewport::setImage);
+    }
+    
+    @Override
+    public void viewportSizeChanged(Dimension newViewportSize) {
+        statusBar.updateViewportSize(newViewportSize);
+    }
+    
+    @Override
+    public void zoomChanged(double newZoomLevel) {
+        statusBar.updateZoomLevel(newZoomLevel);
+    }
+    
+    @Override
+    public void newColorUnderPointer(int red, int green, int blue) {
+        statusBar.updateRGB(red, green, blue);
     }
     
     private void setNavigationAllowed(boolean navigationAllowed) {
@@ -243,18 +264,7 @@ public class ProgramWindow implements ViewportListener {
             }
         };
     }
-
-    private void initFrame() {
-        frame = new JFrame("JSIV");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
         
-    private void initViewport() {
-        viewport = new Viewport(this);
-        viewport.setPreferredSize(new Dimension(800, 600));
-        frame.add(viewport);
-    }
-
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
 
@@ -284,10 +294,5 @@ public class ProgramWindow implements ViewportListener {
         
         frame.setJMenuBar(menuBar);
     }
-
-    private void initStatusBar() {
-        
-    }
-    
     
 }
