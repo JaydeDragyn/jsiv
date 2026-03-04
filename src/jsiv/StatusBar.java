@@ -15,6 +15,14 @@ public class StatusBar extends JPanel {
     public StatusBar() {
         super(new FlowLayout(FlowLayout.LEFT, 10, 0));
         
+        setFocusable(false);
+        setRequestFocusEnabled(false);
+        setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(2, 0, 0, 0,
+                UIManager.getColor("Separator.foreground")),
+            BorderFactory.createEmptyBorder(2, 6, 2, 6)
+        ));
+
         indexCountLabel = new JLabel();
         imageSizeLabel = new JLabel();
         viewportSizeLabel = new JLabel();
@@ -47,9 +55,6 @@ public class StatusBar extends JPanel {
         zoomLevelLabel.setToolTipText("Image magnification level.");
         rgbLabel.setToolTipText(
             "Red, Green and Blue values of pixel under the pointer.");
-            
-        setFocusable(false);
-        setRequestFocusEnabled(false);
     }
 
     public void updateIndexCount(int index, int imageCount) {
