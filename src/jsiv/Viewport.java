@@ -95,10 +95,6 @@ public class Viewport extends JPanel {
         openPreviousBorder = viewportCenter.x / 2;
         openNextBorder = viewportCenter.x + openPreviousBorder;
         viewportListener.viewportSizeChanged(viewportSize);
-        System.out.print("Viewport size changed to " + viewportSize.width +
-                "," + viewportSize.height);
-        System.out.println(" - Viewport center point is " + viewportCenter.x +
-                "," + viewportCenter.y);
     }
     
     private void handleLeftClick() {

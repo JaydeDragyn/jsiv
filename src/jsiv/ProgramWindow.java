@@ -42,10 +42,11 @@ public class ProgramWindow implements ViewportListener {
         initInputActionMaps();
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(new BorderLayout());
         viewport.setPreferredSize(new Dimension(800, 600));
 
-        frame.add(viewport);
-        frame.add(statusBar);
+        frame.add(viewport, BorderLayout.CENTER);
+        frame.add(statusBar, BorderLayout.SOUTH);
         
         imageNavigator.openSplashFile()
             .ifPresentOrElse(

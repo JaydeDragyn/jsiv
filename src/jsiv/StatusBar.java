@@ -47,6 +47,9 @@ public class StatusBar extends JPanel {
         zoomLevelLabel.setToolTipText("Image magnification level.");
         rgbLabel.setToolTipText(
             "Red, Green and Blue values of pixel under the pointer.");
+            
+        setFocusable(false);
+        setRequestFocusEnabled(false);
     }
 
     public void updateIndexCount(int index, int imageCount) {
