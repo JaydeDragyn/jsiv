@@ -1,10 +1,12 @@
 package jsiv;
 
+import java.util.Optional;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import javax.swing.*;
 
-public class ProgramWindow implements ViewportListener {
+public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
     // Actions
     private Action openFileAction;
@@ -33,7 +35,7 @@ public class ProgramWindow implements ViewportListener {
     private StatusBar statusBar;
     
     public ProgramWindow() {
-        imageNavigator = new ImageNavigator();
+        imageNavigator = new ImageNavigator(this);
         frame = new JFrame("JSIV");
         statusBar = new StatusBar();
         viewport = new Viewport(this);
@@ -47,26 +49,33 @@ public class ProgramWindow implements ViewportListener {
 
         frame.add(viewport, BorderLayout.CENTER);
         frame.add(statusBar, BorderLayout.SOUTH);
-        
-        imageNavigator.openSplashFile()
-            .ifPresentOrElse(
-                viewport::setImage,
-                viewport::setFallbackSplash
-            );
-        setNavigationAllowed(imageNavigator.canNavigate());
+
+        setNavigationAllowed(false);
+        imageNavigator.openSplashFile();
 
         frame.pack();
         frame.setVisible(true);
     }
 
     @Override
+    public void allowNavigationChanged(boolean allowNavigation) {
+        setNavigationAllowed(allowNavigation);
+    }
+    
+    @Override
+    public void newImageAvailable(Optional<BufferedImage> image) {
+        image.ifPresent(viewport::setImage);
+    }
+
+
+    @Override
     public void requestOpenNext() {
-        imageNavigator.openNext().ifPresent(viewport::setImage);
+        imageNavigator.openNext();
     }
     
     @Override
     public void requestOpenPrevious() {
-        imageNavigator.openPrevious().ifPresent(viewport::setImage);
+        imageNavigator.openPrevious();
     }
     
     @Override
@@ -101,8 +110,7 @@ public class ProgramWindow implements ViewportListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Open File action -> ");
-                imageNavigator.openFile().ifPresent(viewport::setImage);
-                setNavigationAllowed(imageNavigator.canNavigate());
+                imageNavigator.openFile();
             }
         };
         
@@ -117,7 +125,7 @@ public class ProgramWindow implements ViewportListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Open Next action -> ");
-                imageNavigator.openNext().ifPresent(viewport::setImage);
+                imageNavigator.openNext();
             }
         };
         
@@ -132,7 +140,7 @@ public class ProgramWindow implements ViewportListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("Open Previous action -> ");
-                imageNavigator.openPrevious().ifPresent(viewport::setImage);
+                imageNavigator.openPrevious();
             }
         };
         

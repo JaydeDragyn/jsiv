@@ -5,34 +5,33 @@ import java.awt.image.BufferedImage;
 
 public class ImageNavigator {
 
+    private ImageNavigatorListener imageNavigatorListener;
     private BufferedImage currentImage;
 
-    public ImageNavigator() {
-
+    public ImageNavigator(ImageNavigatorListener listener) {
+        this.imageNavigatorListener = listener;
     }
 
-    public Optional<BufferedImage> openSplashFile() {
+    public void openSplashFile() {
         System.out.println("ImageNavigator.openSplashFile()");
-        return Optional.empty();
+        imageNavigatorListener.newImageAvailable(Optional.empty());
+        imageNavigatorListener.allowNavigationChanged(false);
     }
 
-    public Optional<BufferedImage> openFile() {
+    public void openFile() {
         System.out.println("ImageNavigator.openFile()");
-        return Optional.empty();
+        imageNavigatorListener.newImageAvailable(Optional.empty());
+        imageNavigatorListener.allowNavigationChanged(true);
     }
     
-    public Optional<BufferedImage> openNext() {
+    public void openNext() {
         System.out.println("ImageNavigator.openNext()");
-        return Optional.empty();
+        imageNavigatorListener.newImageAvailable(Optional.empty());
     }
 
-    public Optional<BufferedImage> openPrevious() {
+    public void openPrevious() {
         System.out.println("ImageNavigator.openPrevious()");        
-        return Optional.empty();
-    }
-
-    public boolean canNavigate() {
-        return true;
+        imageNavigatorListener.newImageAvailable(Optional.empty());
     }
 }
 
