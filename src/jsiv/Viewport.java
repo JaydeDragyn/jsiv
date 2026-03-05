@@ -1,8 +1,6 @@
 package jsiv;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
@@ -16,6 +14,8 @@ public class Viewport extends JPanel {
     private final ViewportListener viewportListener;
     private boolean navigationAvailable;
 
+    private BufferedImage image;
+    private Dimension imageSize;
     private Dimension viewportSize;
     private Point viewportCenter;
     private int openPreviousBorder;
@@ -42,12 +42,16 @@ public class Viewport extends JPanel {
         initMouseListeners();
 
         setBackground(Color.BLACK);
-        setFallbackSplash();
+        setSplashImage();
         updateViewportSize();
     }
 
     public void setImage(BufferedImage newImage) {
         System.out.println("Viewport.setImage()");
+        image = newImage;
+        imageSize = new Dimension(image.getWidth(), image.getHeight());
+        viewportListener.imageSizeChanged(imageSize);
+        
     }
     
     public void zoomIn(FocusMode focusMode) {
@@ -90,8 +94,42 @@ public class Viewport extends JPanel {
         navigationAvailable = available;
     }
 
-    private void setFallbackSplash() {
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 100,100, null);
+    }
+
+    private void setSplashImage() {
         System.out.println("Viewport.setFallbackSplash()");
+        
+        BufferedImage splash = new BufferedImage(600, 400, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D pen = splash.createGraphics();
+        
+        pen.setColor(new Color(255, 0, 0, 255));
+        pen.fillRect(150,70, 200,200);
+        
+        pen.setColor(new Color(0, 255, 0, 250));
+        pen.fillRect(300,100, 150,200);
+        
+        pen.setColor(new Color(0, 0, 255, 245));
+        pen.fillRect(225,175, 200,150);
+        
+        pen.setColor(Color.WHITE);
+        pen.setFont(new Font("SanSerif", Font.BOLD, 48));
+        pen.drawString("JSIV", 175,150);
+        
+        pen.setColor(new Color(168, 255, 192, 255));
+        pen.setFont(new Font("SanSerif", Font.BOLD, 24));
+        pen.drawString("Jayde's", 330,150);
+        
+        pen.setColor(new Color(168, 192, 255, 255));
+        pen.setFont(new Font("SanSerif", Font.PLAIN, 24));
+        pen.drawString("Simple", 265,230);
+        pen.drawString("Image",  280,255);
+        pen.drawString("Viewer", 295,280);
+        
+        setImage(splash);
     }
     
     private void updateViewportSize() {

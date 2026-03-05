@@ -78,6 +78,11 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
     
     @Override
+    public void imageSizeChanged(Dimension newImageSize) {
+        statusBar.updateImageSize(newImageSize);
+    }
+    
+    @Override
     public void viewportSizeChanged(Dimension newViewportSize) {
         statusBar.updateViewportSize(newViewportSize);
     }

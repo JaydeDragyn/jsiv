@@ -5,6 +5,7 @@ import java.awt.*;
 public interface ViewportListener {
     void requestOpenNext();
     void requestOpenPrevious();
+    void imageSizeChanged(Dimension newImageSize);
     void viewportSizeChanged(Dimension newViewportSize);
     void zoomChanged(double newZoomLevel);
     void newColorUnderPointer(int red, int green, int blue);
