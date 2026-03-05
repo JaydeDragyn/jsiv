@@ -14,7 +14,7 @@ public class Viewport extends JPanel {
     };
 
     private final ViewportListener viewportListener;
-    private boolean navigationAllowed;
+    private boolean navigationAvailable;
 
     private Dimension viewportSize;
     private Point viewportCenter;
@@ -36,21 +36,18 @@ public class Viewport extends JPanel {
 
     public Viewport(ViewportListener viewportListener) {
         this.viewportListener = viewportListener;
-        navigationAllowed = false;
+        navigationAvailable = false;
         
         initResizeListener();
         initMouseListeners();
 
         setBackground(Color.BLACK);
+        setFallbackSplash();
         updateViewportSize();
     }
 
     public void setImage(BufferedImage newImage) {
         System.out.println("Viewport.setImage()");
-    }
-    
-    public void setFallbackSplash() {
-        System.out.println("Viewport.setFallbackSplash()");
     }
     
     public void zoomIn(FocusMode focusMode) {
@@ -87,6 +84,15 @@ public class Viewport extends JPanel {
                         dx + " horizontally, " +
                         dy + " vertically");
     }
+
+    public void setNavigationAvailability(boolean available) {
+        System.out.println("Viewport.setNavigationAvailable(" + available + ")");
+        navigationAvailable = available;
+    }
+
+    private void setFallbackSplash() {
+        System.out.println("Viewport.setFallbackSplash()");
+    }
     
     private void updateViewportSize() {
         viewportSize = getSize();
@@ -120,21 +126,16 @@ public class Viewport extends JPanel {
         }
     }
 
-    public void setNavigationAllowed(boolean allowed) {
-        System.out.println("Viewport.setNavigationAllowed(" + allowed + ")");
-        navigationAllowed = allowed;
-    }
-
     private void openNextRequested() {
         System.out.println("Viewport.openNextRequested()");
-        if (!navigationAllowed) { return; }
+        if (!navigationAvailable) { return; }
         viewportListener.requestOpenNext();
         repaint();
     }
     
     private void openPreviousRequested() {
         System.out.println("Viewport.openPreviousRequested()");
-        if (!navigationAllowed) { return; }
+        if (!navigationAvailable) { return; }
         viewportListener.requestOpenPrevious();
         repaint();
     }

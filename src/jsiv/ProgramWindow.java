@@ -50,7 +50,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         frame.add(viewport, BorderLayout.CENTER);
         frame.add(statusBar, BorderLayout.SOUTH);
 
-        setNavigationAllowed(false);
+        setNavigationAvailability(false);
         imageNavigator.openSplashFile();
 
         frame.pack();
@@ -58,8 +58,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
 
     @Override
-    public void allowNavigationChanged(boolean allowNavigation) {
-        setNavigationAllowed(allowNavigation);
+    public void navigationAvailabilityChanged(boolean available) {
+        setNavigationAvailability(available);
     }
     
     @Override
@@ -92,10 +92,10 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         statusBar.updateRGB(red, green, blue);
     }
     
-    private void setNavigationAllowed(boolean navigationAllowed) {
-        openNextAction.setEnabled(navigationAllowed);
-        openPreviousAction.setEnabled(navigationAllowed);
-        viewport.setNavigationAllowed(navigationAllowed);
+    private void setNavigationAvailability(boolean available) {
+        openNextAction.setEnabled(available);
+        openPreviousAction.setEnabled(available);
+        viewport.setNavigationAvailability(available);
     }
     
     private void initActionItems() {

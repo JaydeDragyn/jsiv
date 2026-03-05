@@ -15,13 +15,13 @@ public class ImageNavigator {
     public void openSplashFile() {
         System.out.println("ImageNavigator.openSplashFile()");
         imageNavigatorListener.newImageAvailable(Optional.empty());
-        imageNavigatorListener.allowNavigationChanged(false);
+        imageNavigatorListener.navigationAvailabilityChanged(false);
     }
 
     public void openFile() {
         System.out.println("ImageNavigator.openFile()");
         imageNavigatorListener.newImageAvailable(Optional.empty());
-        imageNavigatorListener.allowNavigationChanged(true);
+        imageNavigatorListener.navigationAvailabilityChanged(true);
     }
     
     public void openNext() {
