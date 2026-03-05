@@ -96,9 +96,9 @@ todo Help->About
 ---------------------------
 Gestures
 
-todo LMB press -> RMB press -> release LMB
+good LMB press -> RMB press -> release LMB
         RMB should be "stuck" as disabled until user releases RMB
-todo LMB press -> RMB press -> release both
+good LMB press -> RMB press -> release both
         Should return to "idle state" where pressing either is valid again
 todo RMB drag -> release outside of window
         Drag should clamp to Viewport so image does not disappear
@@ -128,7 +128,7 @@ todo verify keyboard inputs intercepted by menu when menu is opened
 StatusBar
 todo Ensure file index changes (both current and total) when opening files
 todo Ensure Image Size updates when new file is opened
-todo Ensure Viewport Size is updated when the Viewport size changes
+good Ensure Viewport Size is updated when the Viewport size changes
 todo Ensure Zoom level updates when user zooms in or out, or resets the zoom
 todo Ensure pixel color is correctly displayed when pointer hovers a new pixel
 
