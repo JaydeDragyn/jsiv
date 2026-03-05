@@ -67,7 +67,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         image.ifPresent(viewport::setImage);
     }
 
-
     @Override
     public void requestOpenNext() {
         imageNavigator.openNext();
