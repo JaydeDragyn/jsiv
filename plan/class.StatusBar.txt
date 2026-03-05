@@ -26,3 +26,4 @@ pixel under pointer (provide RGB values)
     private int red;
     private int green;
     private int blue;
+    

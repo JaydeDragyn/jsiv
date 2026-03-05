@@ -20,20 +20,18 @@ todo Open a directory with a single image
         LMB left/right disabled
 todo Attempt to open bad file
         ImageNavigator should provide error dialog to user
-        Should return Optional.empty()
 todo Attempt to open same file as is already open
         Should return already loaded file so no file I/O, but
             ProgramWindow and Viewport will treat it as a new file
             (so reset pan/zoom)
         
-
 --- Navigate to next file
 good File->Open Next
 good Ctrl-N
 good LMB click on right 1/4 of Viewport
 todo Make sure Arrow indicator shows when mouse hovers over target area
 todo When last image in a directory is opened
-        Attempt to Open Next (wrap-around behavior works?)
+        Attempt to Open Next (should wrap-around to first image)
 todo Attempt to navigate to bad file
         Should attempt to skip and open the next file in the list (or wrap)
 todo Attempt to navigate when all files in directory have been removed
@@ -45,12 +43,15 @@ good Ctrl-P
 good LMB click on left 1/4 of Viewport
 todo Make sure Arrow indicator shows when mouse hovers over target area
 todo When first image in a directory is opened
-        Attempt to Open Previous (wrap-around behavior works?)
+        Attempt to Open Previous (should wrap-around to last image)
 todo Attempt to navigate to bad file
         Should attempt to skip and open the next file in the list (or wrap)
 todo Attempt to navigate when all files in directory have been removed
         Should give an error message and set navigationAvailable to false
-     Previous 2 should act the same as counterparts in Navigate to next file
+     
+--- Navigation
+todo Ensure openNext and openPrevious do the same thing, but opposite
+        directions (since openNext goes forward and openPrevious goes back)
         
 --- pan image
 good Arrow keys
@@ -125,10 +126,10 @@ todo verify keyboard inputs intercepted by menu when menu is opened
 
 -----------------------------
 StatusBar
+todo Ensure file index changes (both current and total) when opening files
 todo Ensure Image Size updates when new file is opened
 todo Ensure Viewport Size is updated when the Viewport size changes
 todo Ensure Zoom level updates when user zooms in or out, or resets the zoom
-todo Ensure file index changes (both current and total) when opening files
 todo Ensure pixel color is correctly displayed when pointer hovers a new pixel
 
 ------------------------------
