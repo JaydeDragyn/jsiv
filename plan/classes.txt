@@ -2,7 +2,6 @@ jsiv Classes and class heirarchy
 
 jsiv 
  +- ProgramWindow
-     +- Menu
      +- Viewport
      +- InfoBar
      +- ImageNavigator
@@ -14,6 +13,9 @@ class jsiv
 Entry point with main() method.
 Creates a ProgramWindow and initializes it.
 
+  public
+    new ProgramWindow() on EDT
+
 -----------------------------------------------------------------------
 
 class ProgramWindow
@@ -21,20 +23,46 @@ class ProgramWindow
 The JFrame that holds all other components.  
 Will act as the MVC Controller to dispatch input to the other components.
 
------------------------------------------------------------------------
-
-class Menu
-
-The JMenuBar
-
-This will be part of the Program Window since the MenuBar will not need
-to specifically act separately from the Action items.
+  public
+    ProgramWindow()
+    navigationAvailabilityChanged(boolean)
+    newImageAvailable(Optional<BufferedImage>)
+    requestOpenNext()
+    requestOpenPrevious()
+    viewportSizeChanged(Dimension)
+    zoomChanged(double)
+    newColorUnderPointer(int, int, int)
+  private
+    setNavigationAvailability(boolean)
+    initActionItems()
+    initInputActionMaps()
+    panKey(int, boolean)
+    panAction(int, int)
+    initMenu()
 
 -----------------------------------------------------------------------
 
 class Viewport
 
 A JPanel that displays the image at the current offset and zoom level.
+
+  public
+    Viewport(ViewportListener)
+    setImage(BufferedImage)
+    zoomIn(FocusMode)
+    zoomOut(FocusMode)
+    resetZoom()
+    centerImage(FocusMode)
+    panImage(int, int)
+    setNavigationAvailability(boolean)
+  private
+    setFallbackSplash()
+    updateViewportSize()
+    handleLeftClick()
+    openNextRequested()
+    openPreviousRequested()
+    initResizeListener()
+    initMouseListeners()
 
 -----------------------------------------------------------------------
 
@@ -43,8 +71,23 @@ class InfoBar
 A JLabel that displays image info about the current image displayed 
 in the Viewport, including image size, zoom level and window size
 
+  public
+    StatusBar()
+    updateIndexCount(int, int)
+    updateImageSize(Dimension)
+    updateViewportSize(Dimension)
+    updateZoomLevel(double)
+    updateRGB(int, int, int)
+
 -----------------------------------------------------------------------
 
 class ImageNavigator
 
 A class to handle navigating images for the other components.  
+
+  public
+    ImageNavigator(ImageNavigatorListener)
+    openSplashFile()
+    openFile()
+    openNext()
+    openPrevious()
