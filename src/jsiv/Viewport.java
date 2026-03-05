@@ -2,7 +2,7 @@ package jsiv;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import javax.swing.*;
 
 public class Viewport extends JPanel {
@@ -15,6 +15,7 @@ public class Viewport extends JPanel {
     private boolean navigationAvailable;
 
     private BufferedImage image;
+    private ColorModel colorModel;
     private Dimension imageSize = new Dimension(0,0);
     private Dimension imageOffset = new Dimension(0,0);
     private Dimension viewportSize = new Dimension(0,0);
@@ -50,6 +51,7 @@ public class Viewport extends JPanel {
 
     public void setImage(BufferedImage newImage) {
         image = newImage;
+        colorModel = image.getColorModel();
         imageSize = new Dimension(image.getWidth(), image.getHeight());
         viewportListener.imageSizeChanged(imageSize);
         
@@ -110,6 +112,7 @@ public class Viewport extends JPanel {
 
     private void setSplashImage() {
         image = new BufferedImage(600, 400, BufferedImage.TYPE_INT_ARGB);
+        colorModel = image.getColorModel();
         Graphics2D pen = image.createGraphics();
         
         pen.setColor(new Color(255, 0, 0, 255));
@@ -258,16 +261,32 @@ public class Viewport extends JPanel {
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                mouseLastLocation = mouseLocation;
+                mouseLastLocation = new Point(mouseLocation);
                 mouseLocation = e.getPoint();
                 System.out.print(mouseLocation.x + "," + mouseLocation.y +
                                     "\b\b\b\b\b\b\b\b");
-                viewportListener.newColorUnderPointer(0, 0, 0);
+
+                
+                int x = mouseLocation.x - imageOffset.width;
+                int y = mouseLocation.y - imageOffset.height;
+                
+                // if pointer is not over the image, report Black pixel
+                if ((x < 0) || (y < 0) ||
+                    (x >= imageSize.width) || (y >= imageSize.height)) {
+                    viewportListener.newColorUnderPointer(0, 0, 0);
+                    return;
+                } 
+                // otherwise report color of pixel under pointer
+                int inq = image.getRGB(x,y);
+                viewportListener.newColorUnderPointer(
+                    colorModel.getRed(inq),
+                    colorModel.getGreen(inq),
+                    colorModel.getBlue(inq));
             }
             
             @Override
             public void mouseDragged(MouseEvent e) {
-                mouseLastLocation = mouseLocation;
+                mouseLastLocation = new Point(mouseLocation);
                 mouseLocation = e.getPoint();
                 System.out.print(mouseLocation.x + "," + mouseLocation.y +
                                     "\b\b\b\b\b\b\b\b");
