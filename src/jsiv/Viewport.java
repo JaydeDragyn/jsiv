@@ -15,8 +15,9 @@ public class Viewport extends JPanel {
     private boolean navigationAvailable;
 
     private BufferedImage image;
-    private Dimension imageSize;
-    private Dimension viewportSize;
+    private Dimension imageSize = new Dimension(0,0);
+    private Dimension imageOffset = new Dimension(0,0);
+    private Dimension viewportSize = new Dimension(0,0);
     private Point viewportCenter;
     private int openPreviousBorder;
     private int openNextBorder;
@@ -42,16 +43,21 @@ public class Viewport extends JPanel {
         initMouseListeners();
 
         setBackground(Color.BLACK);
-        setSplashImage();
+        setPreferredSize(new Dimension(800, 600));
         updateViewportSize();
+        setSplashImage();
     }
 
     public void setImage(BufferedImage newImage) {
-        System.out.println("Viewport.setImage()");
         image = newImage;
         imageSize = new Dimension(image.getWidth(), image.getHeight());
         viewportListener.imageSizeChanged(imageSize);
         
+        imageOffset = new Dimension(
+                (viewportSize.width - imageSize.width) / 2,
+                (viewportSize.height - imageSize.height) / 2);
+        
+        repaint();
     }
     
     public void zoomIn(FocusMode focusMode) {
@@ -97,14 +103,14 @@ public class Viewport extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(image, 100,100, null);
+        if (image != null) {
+            g.drawImage(image, imageOffset.width,imageOffset.height, null);
+        }
     }
 
     private void setSplashImage() {
-        System.out.println("Viewport.setFallbackSplash()");
-        
-        BufferedImage splash = new BufferedImage(600, 400, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D pen = splash.createGraphics();
+        image = new BufferedImage(600, 400, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D pen = image.createGraphics();
         
         pen.setColor(new Color(255, 0, 0, 255));
         pen.fillRect(150,70, 200,200);
@@ -115,21 +121,29 @@ public class Viewport extends JPanel {
         pen.setColor(new Color(0, 0, 255, 245));
         pen.fillRect(225,175, 200,150);
         
+        pen.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                     RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        
         pen.setColor(Color.WHITE);
-        pen.setFont(new Font("SanSerif", Font.BOLD, 48));
+        pen.setFont(new Font("SansSerif", Font.BOLD, 48));
         pen.drawString("JSIV", 175,150);
         
         pen.setColor(new Color(168, 255, 192, 255));
-        pen.setFont(new Font("SanSerif", Font.BOLD, 24));
+        pen.setFont(new Font("SansSerif", Font.BOLD, 24));
         pen.drawString("Jayde's", 330,150);
         
         pen.setColor(new Color(168, 192, 255, 255));
-        pen.setFont(new Font("SanSerif", Font.PLAIN, 24));
+        pen.setFont(new Font("SansSerif", Font.PLAIN, 24));
         pen.drawString("Simple", 265,230);
         pen.drawString("Image",  280,255);
         pen.drawString("Viewer", 295,280);
         
-        setImage(splash);
+        pen.dispose();
+        
+        imageSize = new Dimension(600, 400);
+        viewportListener.imageSizeChanged(imageSize);
+        imageOffset = new Dimension(100, 100);
+        repaint();
     }
     
     private void updateViewportSize() {

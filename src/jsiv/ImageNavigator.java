@@ -12,12 +12,6 @@ public class ImageNavigator {
         this.imageNavigatorListener = listener;
     }
 
-    public void openSplashFile() {
-        System.out.println("ImageNavigator.openSplashFile()");
-        imageNavigatorListener.newImageAvailable(Optional.empty());
-        imageNavigatorListener.navigationAvailabilityChanged(false);
-    }
-
     public void openFile() {
         System.out.println("ImageNavigator.openFile()");
         imageNavigatorListener.newImageAvailable(Optional.empty());
