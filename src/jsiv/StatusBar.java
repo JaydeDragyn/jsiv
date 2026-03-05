@@ -58,38 +58,26 @@ public class StatusBar extends JPanel {
     }
 
     public void updateIndexCount(int index, int imageCount) {
-        indexCountLabel.setText(
-            "<html><b>File</b>: " + 
-            index + " / " + imageCount + 
-            "</html>");
+        indexCountLabel.setText("File: " + index + " / " + imageCount);
         indexCountLabel.setToolTipText("Showing file " +
             index + " of " + imageCount + " from current image folder.");
     }
     
     public void updateImageSize(Dimension imageSize) {
-        imageSizeLabel.setText(
-            "<html><b>Image Size</b>: " + 
-            imageSize.width + "x" + imageSize.height + 
-            "</html>");
+        imageSizeLabel.setText("Image Size: " + 
+                        imageSize.width + "x" + imageSize.height);
     }
     
     public void updateViewportSize(Dimension viewportSize) {
-        viewportSizeLabel.setText(
-            "<html><b>Viewport</b>: " +
-            viewportSize.width + "x" + viewportSize.height +
-            "</html>");
+        viewportSizeLabel.setText("Viewport: " +
+                        viewportSize.width + "x" + viewportSize.height);
     }
     
     public void updateZoomLevel(double zoomLevel) {
-        zoomLevelLabel.setText(
-            "<html><b>Zoom</b>: " + zoomLevel + "</html>");
+        zoomLevelLabel.setText("Zoom: " + zoomLevel);
     }
     
     public void updateRGB(int red, int green, int blue) {
-        rgbLabel.setText(
-            "<html><b>R</b>:" + red +
-            " <b>G</b>:" + green +
-            " <b>B</b>:" + blue +
-            "</html>");
+        rgbLabel.setText("R:" + red + " G:" + green + " B:" + blue);
     }
 }
