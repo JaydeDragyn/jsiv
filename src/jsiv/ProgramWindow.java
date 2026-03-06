@@ -66,6 +66,11 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
 
     @Override
+    public void navigationIndexChanged(int index, int total) {
+        statusBar.updateIndexCount(index, total);
+    }
+
+    @Override
     public void requestOpenNext() {
         imageNavigator.openNext();
     }

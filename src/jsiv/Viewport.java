@@ -283,14 +283,14 @@ public class Viewport extends JPanel {
                     colorModel.getGreen(inq),
                     colorModel.getBlue(inq));
             }
-            
+
             @Override
             public void mouseDragged(MouseEvent e) {
                 mouseLastLocation = new Point(mouseLocation);
                 mouseLocation = e.getPoint();
                 System.out.print(mouseLocation.x + "," + mouseLocation.y +
                                     "\b\b\b\b\b\b\b\b");
-                                    
+
                 // This application only drags with RMB
                 if (!rightButtonPressed) { return; }
                 

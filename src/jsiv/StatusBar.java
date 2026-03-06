@@ -58,7 +58,7 @@ public class StatusBar extends JPanel {
     }
 
     public void updateIndexCount(int index, int imageCount) {
-        indexCountLabel.setText("File: " + index + " / " + imageCount);
+        indexCountLabel.setText("File: " + index + " of " + imageCount);
         indexCountLabel.setToolTipText("Showing file " +
             index + " of " + imageCount + " from current image folder.");
     }
