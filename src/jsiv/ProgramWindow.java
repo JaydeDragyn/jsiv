@@ -261,24 +261,22 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         inputMap = viewport.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         actionMap = viewport.getActionMap();
 
-        inputMap.put(panKey(KeyEvent.VK_UP, false), "panUpFine");
-        inputMap.put(panKey(KeyEvent.VK_UP, true),  "panUpCoarse");
-        inputMap.put(panKey(KeyEvent.VK_DOWN, false), "panDownFine");
-        inputMap.put(panKey(KeyEvent.VK_DOWN, true), "panDownCoarse");
-        inputMap.put(panKey(KeyEvent.VK_LEFT, false), "panLeftFine");
-        inputMap.put(panKey(KeyEvent.VK_LEFT, true), "panLeftCoarse");
-        inputMap.put(panKey(KeyEvent.VK_RIGHT, false), "panRightFine");
-        inputMap.put(panKey(KeyEvent.VK_RIGHT, true), "panRightCoarse");
+        inputMap.put(panKey(KeyEvent.VK_UP, true), "panUpFine");
+        inputMap.put(panKey(KeyEvent.VK_DOWN, true), "panDownFine");
+        inputMap.put(panKey(KeyEvent.VK_LEFT, true), "panLeftFine");
+        inputMap.put(panKey(KeyEvent.VK_RIGHT, true), "panRightFine");
 
         actionMap.put("panUpFine", panAction(0,-Viewport.PAN_FINE));
-        actionMap.put("panUpCoarse", panAction(0,-Viewport.PAN_COARSE));
         actionMap.put("panDownFine", panAction(0, Viewport.PAN_FINE));
-        actionMap.put("panDownCoarse", panAction(0, Viewport.PAN_COARSE));
         actionMap.put("panLeftFine", panAction(-Viewport.PAN_FINE,0));
-        actionMap.put("panLeftCoarse", panAction(-Viewport.PAN_COARSE,0));
         actionMap.put("panRightFine", panAction(Viewport.PAN_FINE,0));
-        actionMap.put("panRightCoarse", panAction(Viewport.PAN_COARSE,0));
-    }
+
+        inputMap.put(panKey(KeyEvent.VK_LEFT, false), "navigatePrevious");
+        inputMap.put(panKey(KeyEvent.VK_RIGHT, false), "navigateNext");
+
+        actionMap.put("navigatePrevious", openPreviousAction);
+        actionMap.put("navigateNext", openNextAction);
+        }
 
     private KeyStroke panKey(int key, boolean ctrl) {
         return KeyStroke.getKeyStroke(key, (ctrl)?InputEvent.CTRL_DOWN_MASK:0);
