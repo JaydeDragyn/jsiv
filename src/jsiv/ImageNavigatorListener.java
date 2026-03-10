@@ -6,7 +6,8 @@ import java.awt.image.BufferedImage;
 public interface ImageNavigatorListener {
 
     public void navigationAvailabilityChanged(boolean available);
-    public void newImageAvailable(Optional<BufferedImage> image);
-    public void navigationIndexChanged(int index, int total);
+    public void newImageLoaded(String imageName,
+                                BufferedImage image,
+                                int index, int total);
     
 }

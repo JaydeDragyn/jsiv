@@ -4,55 +4,123 @@ The ImageNavigator will be responsible for providing the images that the
 Viewport displays.  The ProgramWindow will own this component, and when the
 user requests to Open File, Open Next or Open Previous, ProgramWindow will
 make the call and then pass the result to Viewport if ImageNavigator returns
-a result:
+a result.
 
-    // Ctrl-O (Open File)
-    // In ProgramWindow
-    // openFileAction
-    navigator.openFile().ifPresent(viewport::setImage);
-    
-Let's unpack that:
+ImageNavigator will take 3 public interface commands:
+    openFile() -        Show FileDialog to let user pick a file
+    openNext() -        Open next image file in current directory
+    openPrevious() -    Open previous image file in current directory
 
-navigator will be the ImageNavigator reference held by ProgramWindow
+ImageNavigator will communicate through the ImageNavigatorListener.  The
+ProgramWindow will be that listener, but as far as ImageNavigator is concerned,
+it will simply emit messages to advise:
+    navigationAvailabilityChanged(boolean)
+    newImageAvailable(Optional<BufferedImage> image, int index, int total)
 
-.openFile() will return an Optional<BufferedImage>
-    This Optional<> will either contain a BufferedImage or will be empty.
-    Normally the requestor needs to check if the Optional<> it received
-    is empty, but the Optional<> method .ifPresent() handles that.
-    
-.ifPresent() does nothing if the Optional<> received .isEmpty().  
+navigationAvailabilityChanged() passes a boolean value.  If true, a file was
+opened in a directory that can be navigated with openNext() and openPrevious()
+without the user having to go through the file dialog again.  If false, either
+no valid file has been opened yet with openFile(), or there is a problem with
+the directory we are in and there is no navigation available.
 
-.ifPresent() expects a Consumer<T> object that takes one argument of type T
-    and returns nothing, so that viewport::setImage part translates to
-    
-    public void setImage(BufferedImage i) { ... }
-    
-    and is a method of the Viewport class.  Since BufferedImage is the type
-    that the Optional might contain, and setImage does not return a value,
-    this line essentially says, 
-    
-    "Navigator, open a file.  If a BufferedImage is present in the output, 
-    call the setImage() method of the viewport class and pass that output
-    to the method."
-
-Since it will silently fail if ImageNavigator returns an empty, the
-ImageNavigator can display the error (invalid file format, unable to read
-the file, whatever), and when the user hits "Ok" on the dialog, the 
-interaction is essentially over.
+newImageAvailable() passes an Optional<BufferedImage>, an index and a total.
+The Optional<BufferedImage> is the image that we just loaded.
+The total is an int representing the total number of image files in the
+directory that the loaded image is in (including the loaded image).
+The index is the index of the loaded image among those images (sorted
+alphabetically by filename).
 
 ---
 
-User Interface for ImageNavigator now:
+openFile()
 
-ImageNavigator
--> openSplashFile() open and return the program splash file
--> openFile()       open file chooser so user can choose file to open and return
--> openNext()       open and return next file in the folder
--> openPrevious()   open and return previous file in the folder
--> canNavigate()    true if there is a next/previous to open
+When openFile() is called, the ImageNavigator will present a FileDialog to
+the user (using the JFrame passed in to the Constructor as dialogParent as
+the FileDialog's parent).
 
-When this object is constructed, and whenever openSplashFile() is called 
-successfully, canNavigate will be set to return false.  When openFile() 
-is called successfully, canNavigate will be set to return true.
+If the user cancels, the operation ends.
+
+If the user selects a file, ImageNavigator will attempt to open the file.
+
+If the file does not successfully open, ImageNavigator will present an
+Alert dialog (JOptionPane.showMessageDialog) that explains the problem.
+If we can determine an actual error, we'll provide that.  Otherwise, we
+will give a generic "Unable to load image" message.  Once the user presses
+the OK button on that MessageDialog, we hide the dialog and stop processing.
+No "navigationAvailabilityChanged()" or "newImageAvailable()" messages will
+be emitted.
+
+If the file successfully loads, then we will cache it, count the total number
+of image filenames in the directory (using a naieve match to file extension)
+and determine which index the loaded file is in this count.  Then we emit
+the newImageAvailable() and provide those 3 pieces of information.
+If there are at least 2 images in the directory, then also emit the message
+listener.navigationAvailabilityChanged(true);
+else
+listener.navigationAvailabilityChanged(false);
+
+---
+
+openNext()
+
+When openNext() is called, first we make sure that navigation is available.
+If it is not available, then this should not have been called, so we will
+simply return without doing anything.
+
+If navigation is available, that means we currently have an image, a list of
+files (even if that list is only the image we have loaded) and an index.
+
+Find the index of the currently loaded image (we should know it), figure out
+the next image in the list (index +1, or if index is the last item in the
+list then select the first item in the list) and attempt to load it as a
+temp image.
+
+If the file does not successfully open, remove this item from the list and
+go on to the next index (repeating the wrap behavior if necessary) and check
+to see if we have returned to the original index.
+
+If we return to the original index, that means all of the other images are
+no good, so emit the message listener.newImageAvailable(image, 1, 1); to say:
+    same file we previously provided to indicate no other files available
+    only 1 file now available in the current directory
+    showing that 1 file
+and then also emit the message listener.navigationAvailabilityChanged(false);
+to tell the other components that there is no further navigation available.
+This should remove the navigation arrows from the viewport.
+and then openNext() is done.  When the Viewport resets the file already
+showing, it will indicate to the user that their Open Next command was
+processed, and if they look at the file index on the status bar they will
+see that this is now the only image file available.  We will not pop up
+an alert box that will interrupt the user's flow; the lack of navigation
+arrows should indicate that there is an issue.
+This should only ever really happen if files disappear from the directory
+after we open one.  If the user is deleting files (a potential use case for
+this program) then they will know what happened.  If they have a system
+problem, this will help them diagnose it as a side-effect, but this program
+is not meant for anything except displaying images.
+
+If we have not returned to the original index then we will change the cached
+image to the temp image we just loaded, update the index and the total, and
+then emit listener.newImageAvailable(image, index, total);
+If there are at least 2 image files remaining in the list, then also emit
+the message listener.navigationAvailabilityChanged(true);
+
+---
+
+openPrevious()
+
+This will act exactly the same as openNext(), except instead of moving to the
+next index it will move to the previous index (wrapping around to the last
+index).
+
+---
+
+refresh()
+
+This will rebuild the file list as if the user called for openFile() on the
+same file that was already being displayed.  It will not perform any file
+operations, and will keep the same File object.  When finished, it will
+emit both signals since a refresh might reveal there is no further navigation
+available where before the refresh it looked like there was.
 
 

@@ -12,6 +12,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private Action openFileAction;
     private Action openNextAction;
     private Action openPreviousAction;
+    private Action refreshAction;
     private Action quitAction;
     private Action panUpAction;
     private Action panDownAction;
@@ -35,8 +36,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private StatusBar statusBar;
     
     public ProgramWindow() {
-        imageNavigator = new ImageNavigator(this);
         frame = new JFrame("JSIV");
+        imageNavigator = new ImageNavigator(this, frame);
         statusBar = new StatusBar();
         viewport = new Viewport(this);
         initActionItems();
@@ -61,12 +62,11 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
     
     @Override
-    public void newImageAvailable(Optional<BufferedImage> image) {
-        image.ifPresent(viewport::setImage);
-    }
-
-    @Override
-    public void navigationIndexChanged(int index, int total) {
+    public void newImageLoaded(String imageName,
+                                BufferedImage image,
+                                int index, int total) {
+        frame.setTitle(imageName);
+        viewport.setImage(image);
         statusBar.updateIndexCount(index, total);
     }
 
@@ -116,7 +116,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Open File action -> ");
                 imageNavigator.openFile();
             }
         };
@@ -131,7 +130,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Open Next action -> ");
                 imageNavigator.openNext();
             }
         };
@@ -146,8 +144,22 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Open Previous action -> ");
                 imageNavigator.openPrevious();
+            }
+        };
+
+        refreshAction = new AbstractAction("Refresh") {
+            {
+                putValue(ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK |
+                                                          InputEvent.SHIFT_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_R);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.print("Refresh Action ->");
+                imageNavigator.refresh();
             }
         };
         
@@ -289,6 +301,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         fileMenu.add(new JMenuItem(openFileAction));
         fileMenu.add(new JMenuItem(openNextAction));
         fileMenu.add(new JMenuItem(openPreviousAction));
+        fileMenu.add(new JMenuItem(refreshAction));
         fileMenu.add(new JMenuItem(quitAction));
         
         menuBar.add(fileMenu);
