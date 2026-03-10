@@ -64,7 +64,7 @@ public class ImageNavigator {
             // directory and we successfully opened it, why are
             // there now no image files?  We'll report at least the
             // one file we were able to open and disable navigation.
-            imageNavigatorListener.navigationAvailabilityChanged(false);
+            changeNavigationAvailability(false);
             imageNavigatorListener.newImageLoaded(currentImageFile.getName(),
                                                   currentImage, 1, 1);
             return;
@@ -111,7 +111,7 @@ public class ImageNavigator {
             // and report 1 of 1 with no navigation available.
             // This will keep something in the display and allow the
             // user to open a new file in another directory if they want.
-            imageNavigatorListener.navigationAvailabilityChanged(false);
+            changeNavigationAvailability(false);
             imageNavigatorListener.newImageLoaded(currentImageFile.getName(),
                                                     currentImage, 1, 1);
             return;
@@ -170,7 +170,7 @@ public class ImageNavigator {
         // a message to reinforce that navigation is not available, and then
         // abort since we should not have reached this method call.
         if (!navigationAvailable || imageFileList.size() < 2) {
-            imageNavigatorListener.navigationAvailabilityChanged(false);
+            changeNavigationAvailability(false);
             return;
         }
 
@@ -191,7 +191,7 @@ public class ImageNavigator {
             // Either way, emit messages to reset the current image, update
             // the file index and disable navigation, then we're done
             if (imageFileList.size() < 2) {
-                imageNavigatorListener.navigationAvailabilityChanged(false);
+                changeNavigationAvailability(false);
                 imageNavigatorListener.newImageLoaded(currentImageFile.getName(),
                                                         currentImage, 1, 1);
                 return;
