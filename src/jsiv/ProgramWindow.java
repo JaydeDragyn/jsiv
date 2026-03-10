@@ -261,24 +261,24 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         inputMap = viewport.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         actionMap = viewport.getActionMap();
 
-        inputMap.put(panKey(KeyEvent.VK_UP, true), "panUpFine");
-        inputMap.put(panKey(KeyEvent.VK_DOWN, true), "panDownFine");
-        inputMap.put(panKey(KeyEvent.VK_LEFT, true), "panLeftFine");
-        inputMap.put(panKey(KeyEvent.VK_RIGHT, true), "panRightFine");
+        inputMap.put(panNavKey(KeyEvent.VK_UP, true), "panUpFine");
+        inputMap.put(panNavKey(KeyEvent.VK_DOWN, true), "panDownFine");
+        inputMap.put(panNavKey(KeyEvent.VK_LEFT, true), "panLeftFine");
+        inputMap.put(panNavKey(KeyEvent.VK_RIGHT, true), "panRightFine");
 
         actionMap.put("panUpFine", panAction(0,-Viewport.PAN_FINE));
         actionMap.put("panDownFine", panAction(0, Viewport.PAN_FINE));
         actionMap.put("panLeftFine", panAction(-Viewport.PAN_FINE,0));
         actionMap.put("panRightFine", panAction(Viewport.PAN_FINE,0));
 
-        inputMap.put(panKey(KeyEvent.VK_LEFT, false), "navigatePrevious");
-        inputMap.put(panKey(KeyEvent.VK_RIGHT, false), "navigateNext");
+        inputMap.put(panNavKey(KeyEvent.VK_LEFT, false), "navigatePrevious");
+        inputMap.put(panNavKey(KeyEvent.VK_RIGHT, false), "navigateNext");
 
         actionMap.put("navigatePrevious", openPreviousAction);
         actionMap.put("navigateNext", openNextAction);
         }
 
-    private KeyStroke panKey(int key, boolean ctrl) {
+    private KeyStroke panNavKey(int key, boolean ctrl) {
         return KeyStroke.getKeyStroke(key, (ctrl)?InputEvent.CTRL_DOWN_MASK:0);
     }
 
