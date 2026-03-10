@@ -27,7 +27,7 @@ public class ImageNavigator {
         fileDialog = new FileDialog(dialogParent, "Load an image", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setDirectory(System.getProperty("user.home"));
-        imageFileList = new ArrayList<File>();
+        imageFileList = new ArrayList<>();
         navigationAvailable = false;
     }
 
@@ -153,85 +153,38 @@ public class ImageNavigator {
         changeNavigationAvailability(imageFileList.size() > 1);
     }
 
+    // openNext() and openPrevious() call navigate() with a direction:
+    // +1 to go forward/next
+    // -1 to go backward/previous
     public void openNext() {
-        // make sure navigation is available and we have a list of image files
-        // If not, we got here incorrectly, so emit a message to disable
-        // navigation and abort
-        if (!navigationAvailable || imageFileList.size() < 2) {
-            changeNavigationAvailability(false);
-            return;
-        }
-
-        // set aside a temp buffer to try and load the next image(s)
-        Optional<BufferedImage> temp;
-
-        // increment the index before the loop begins.  Since we are going
-        // forward in the list, if we remove the new current item, the item
-        // following it will become the new current item, so we don't want
-        // to increment in the loop.
-        imageFileIndex++;
-
-        // now loop until we either load another image (moving forward in the
-        // imageFileList, wrapping at the end back to the beginning), or until
-        // we remove all but the original image we started with from the list
-        do {
-            // first, check to see if there is more than one image in the list
-            // if not, then either we removed all of the other images and are
-            // back at the starting image, or we got here incorrectly.
-            // Either way, emit messages to reset the current image, update
-            // the file index and disable navigation, then we're done
-            if (imageFileList.size() < 2) {
-                imageNavigatorListener.navigationAvailabilityChanged(false);
-                imageNavigatorListener.newImageLoaded(currentImageFile.getName(),
-                                                        currentImage, 1, 1);
-                return;
-            }
-
-            // before we access the new position in the list, make sure the
-            // index is not out of bounds.  If it is, wrap it back around to
-            // the beginning.
-            if (imageFileIndex >= imageFileList.size()) {
-                imageFileIndex = 0;
-            }
-
-            // now attempt to load the image
-            temp = loadFile(imageFileList.get(imageFileIndex));
-
-            if (temp.isEmpty()) {
-                // if we did not then remove the image from the list
-                imageFileList.remove(imageFileIndex);
-            }
-
-        } while (temp.isEmpty());
-
-        // Now that we're out of the loop, temp holds the new image we just
-        // loaded.  cache that image and emit the new Image and file index
-        // No need to change navigation availability - if that was needed,
-        // the first check in the loop would have done that.
-        currentImageFile = imageFileList.get(imageFileIndex);
-        currentImage = temp.get();
-        imageNavigatorListener.newImageLoaded(currentImageFile.getName(),
-                                                currentImage,
-                                                imageFileIndex +1,
-                                                imageFileList.size());
+        navigate(+1);
     }
 
     public void openPrevious() {
-        // make sure navigation is available and we have a list of image files
-        // If not, we got here incorrectly, so emit a message to disable
-        // navigation and abort
+        navigate(-1);
+    }
+
+    private void navigate(int direction) {
+        // first, make sure navigation is available and that we have a list of
+        // more than 1 file to navigate through.  If either is false, emit
+        // a message to reinforce that navigation is not available, and then
+        // abort since we should not have reached this method call.
         if (!navigationAvailable || imageFileList.size() < 2) {
-            changeNavigationAvailability(false);
+            imageNavigatorListener.navigationAvailabilityChanged(false);
             return;
         }
 
         // set aside a temp buffer to try and load the next image(s)
         Optional<BufferedImage> temp;
 
-        // now loop until we either load another image (moving backward in the
-        // imageFileList, wrapping at the beginning back to the end), or until
-        // we remove all but the original image we started with from the list
+        // now we loop, attempting to load the image in the list that is
+        // adjacent to the current index, in direction (+1 for next, -1 for
+        // previous).  If we are unable to laod an image, we will remove it
+        // from the list.  If the loop ends, we successfully loaded a new
+        // image.  Otherwise, the loop will abort with a return after
+        // emitting new state information to the other components.
         do {
+
             // first, check to see if there is more than one image in the list
             // if not, then either we removed all of the other images and are
             // back at the starting image, or we got here incorrectly.
@@ -244,26 +197,27 @@ public class ImageNavigator {
                 return;
             }
 
-            // move the index backward to navigate to the Previous image in
-            // the list.  If we move it back before the first element, then
-            // set it to the last element in the list.
-            imageFileIndex--;
-            if (imageFileIndex < 0) {
-                imageFileIndex = imageFileList.size() -1;
-            }
+            // now move the index in direction.  Using modulo so direction
+            // is irrelevant to bounds checking.  Adding the list size
+            // ensures the index never goes negative for the modulo.
+            imageFileIndex = (imageFileIndex + direction + imageFileList.size())
+                             % imageFileList.size();
 
             // now attempt to load the image
             temp = loadFile(imageFileList.get(imageFileIndex));
 
             if (temp.isEmpty()) {
-                // if we did not then remove the image from the list
+                // we did not load anything, so remove the image from the list
                 imageFileList.remove(imageFileIndex);
+
+                // and if direction is -1 (previous) then fix the index
+                if (direction < 0) { imageFileIndex--; }
             }
 
         } while (temp.isEmpty());
 
         // Now that we're out of the loop, temp holds the new image we just
-        // loaded.  cache that image and emit the new Image and file index
+        // loaded.  Cache that image and emit the new Image and file index
         // No need to change navigation availability - if that was needed,
         // the first check in the loop would have done that.
         currentImageFile = imageFileList.get(imageFileIndex);
@@ -299,15 +253,14 @@ public class ImageNavigator {
 
         String name = file.getName().toLowerCase();
 
-        if (name.endsWith(".png")) { return true; }
-        if (name.endsWith(".gif")) { return true; }
-        if (name.endsWith(".jpg")) { return true; }
-        if (name.endsWith(".jpeg")) { return true; }
-        if (name.endsWith(".bmp")) { return true; }
-        if (name.endsWith(".tif")) { return true; }
-        if (name.endsWith(".tiff")) { return true; }
-        if (name.endsWith(".wbmp")) { return true; }
-        return false;
+        return name.endsWith(".png")
+            || name.endsWith(".gif")
+            || name.endsWith(".jpg")
+            || name.endsWith(".jpeg")
+            || name.endsWith(".bmp")
+            || name.endsWith(".tif")
+            || name.endsWith(".tiff")
+            || name.endsWith(".wbmp");
     }
 
     private void createImageFileList(String path) {
