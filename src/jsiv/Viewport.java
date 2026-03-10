@@ -33,8 +33,6 @@ public class Viewport extends JPanel {
     private static final int POINTER_DRIFT_THRESHOLD = 4;
 
     public static final int PAN_FINE = 1;
-    public static final int PAN_COARSE = 10;
-    private int panStepSize;
 
     public Viewport(ViewportListener viewportListener) {
         this.viewportListener = viewportListener;
