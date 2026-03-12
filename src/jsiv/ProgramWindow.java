@@ -261,25 +261,35 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         inputMap = viewport.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         actionMap = viewport.getActionMap();
 
-        inputMap.put(panNavKey(KeyEvent.VK_UP, true), "panUpFine");
-        inputMap.put(panNavKey(KeyEvent.VK_DOWN, true), "panDownFine");
-        inputMap.put(panNavKey(KeyEvent.VK_LEFT, true), "panLeftFine");
-        inputMap.put(panNavKey(KeyEvent.VK_RIGHT, true), "panRightFine");
+        inputMap.put(panNavKey(KeyEvent.VK_UP, true, false), "panUpFine");
+        inputMap.put(panNavKey(KeyEvent.VK_UP, true, true), "panUpCoarse");
+        inputMap.put(panNavKey(KeyEvent.VK_DOWN, true, false), "panDownFine");
+        inputMap.put(panNavKey(KeyEvent.VK_DOWN, true, true), "panDownCoarse");
+        inputMap.put(panNavKey(KeyEvent.VK_LEFT, true, false), "panLeftFine");
+        inputMap.put(panNavKey(KeyEvent.VK_LEFT, true, true), "panLeftCoarse");
+        inputMap.put(panNavKey(KeyEvent.VK_RIGHT, true, false), "panRightFine");
+        inputMap.put(panNavKey(KeyEvent.VK_RIGHT, true, true), "panRightCoarse");
 
         actionMap.put("panUpFine", panAction(0,-Viewport.PAN_FINE));
+        actionMap.put("panUpCoarse", panAction(0,-Viewport.PAN_COARSE));
         actionMap.put("panDownFine", panAction(0, Viewport.PAN_FINE));
+        actionMap.put("panDownCoarse", panAction(0, Viewport.PAN_COARSE));
         actionMap.put("panLeftFine", panAction(-Viewport.PAN_FINE,0));
+        actionMap.put("panLeftCoarse", panAction(-Viewport.PAN_COARSE,0));
         actionMap.put("panRightFine", panAction(Viewport.PAN_FINE,0));
+        actionMap.put("panRightCoarse", panAction(Viewport.PAN_COARSE,0));
 
-        inputMap.put(panNavKey(KeyEvent.VK_LEFT, false), "navigatePrevious");
-        inputMap.put(panNavKey(KeyEvent.VK_RIGHT, false), "navigateNext");
+        inputMap.put(panNavKey(KeyEvent.VK_LEFT, false, false), "navigatePrevious");
+        inputMap.put(panNavKey(KeyEvent.VK_RIGHT, false, false), "navigateNext");
 
         actionMap.put("navigatePrevious", openPreviousAction);
         actionMap.put("navigateNext", openNextAction);
         }
 
-    private KeyStroke panNavKey(int key, boolean ctrl) {
-        return KeyStroke.getKeyStroke(key, (ctrl)?InputEvent.CTRL_DOWN_MASK:0);
+    private KeyStroke panNavKey(int key, boolean ctrl, boolean shift) {
+        return KeyStroke.getKeyStroke(key,
+                            ((ctrl)?InputEvent.CTRL_DOWN_MASK:0) |
+                            ((shift)?InputEvent.SHIFT_DOWN_MASK:0));
     }
 
     private Action panAction(int dx, int dy) {
