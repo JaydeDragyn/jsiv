@@ -17,10 +17,14 @@ public class Viewport extends JPanel {
     private BufferedImage image;
     private ColorModel colorModel;
     private Dimension imageSize = new Dimension(0,0);
+    private Dimension imageScaledSize = new Dimension(0,0);
     private int imageOffsetX;
     private int imageOffsetY;
+    private Point maxSmallOffset;
+    private Point minLargeOffset;
     private Dimension viewportSize = new Dimension(0,0);
     private Point viewportCenter;
+    private double zoomLevel = 1.0;
     private int openPreviousBorder;
     private int openNextBorder;
     private Point mouseLocation = new Point(0,0);
@@ -55,11 +59,11 @@ public class Viewport extends JPanel {
         colorModel = image.getColorModel();
         imageSize = new Dimension(image.getWidth(), image.getHeight());
         viewportListener.imageSizeChanged(imageSize);
-        
-        imageOffsetX = (viewportSize.width - imageSize.width) / 2;
-        imageOffsetY = (viewportSize.height - imageSize.height) / 2;
-        
-        repaint();
+        imageScaledSize = new Dimension(imageSize);
+        imageOffsetX = (viewportSize.width - imageScaledSize.width) / 2;
+        imageOffsetY = (viewportSize.height - imageScaledSize.height) / 2;
+        updateClampLimits();
+        resetZoom();
     }
     
     public void zoomIn(FocusMode focusMode) {
@@ -83,8 +87,8 @@ public class Viewport extends JPanel {
             case WINDOW_CENTER :
                 // pan the image by the different between the center of the
                 // viewport and the image offset (less half image size)
-                panImage(viewportCenter.x - imageOffsetX - (imageSize.width / 2),
-                         viewportCenter.y - imageOffsetY - (imageSize.height / 2));
+                panImage(viewportCenter.x - imageOffsetX - (imageScaledSize.width / 2),
+                         viewportCenter.y - imageOffsetY - (imageScaledSize.height / 2));
                 break;
             case POINTER :
                 // pan the image by the difference between the
@@ -110,10 +114,13 @@ public class Viewport extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (image != null) {
-            g.translate(imageOffsetX, imageOffsetY);
-            g.drawImage(image, 0,0, null);
-        }
+        if (image == null) { return; }
+
+        Graphics2D pen = (Graphics2D) g;
+        pen.translate(imageOffsetX, imageOffsetY);
+        pen.drawImage(image, 0,0, null);
+        pen.dispose();
+
     }
 
     private void setSplashImage() {
@@ -154,39 +161,45 @@ public class Viewport extends JPanel {
         
         imageSize = new Dimension(600, 400);
         viewportListener.imageSizeChanged(imageSize);
+        imageScaledSize = new Dimension(imageSize);
+        updateClampLimits();
         imageOffsetX = 100;
         imageOffsetY = 100;
+
         repaint();
     }
     
     private void updateViewportSize() {
-        viewportSize = getSize();
+        viewportSize = new Dimension(getSize());
         viewportCenter = new Point(viewportSize.width / 2,
                                    viewportSize.height / 2);
         openPreviousBorder = viewportCenter.x / 2;
         openNextBorder = viewportCenter.x + openPreviousBorder;
         viewportListener.viewportSizeChanged(viewportSize);
     }
-    
+
+    private void updateClampLimits() {
+        // minSmallOffset is always going to be 0,0
+        maxSmallOffset = new Point(viewportSize.width - imageScaledSize.width,
+                                       viewportSize.height - imageScaledSize.height);
+        minLargeOffset = new Point(-(imageScaledSize.width - viewportSize.width),
+                                     -(imageScaledSize.height - viewportSize.height));
+        // maxLargeOffset is always going to be 0,0
+    }
+
+    private boolean viewportContainsImage() {
+        return viewportSize.width >= imageScaledSize.width
+                && viewportSize.height >= imageScaledSize.height;
+    }
+
     private void clampImageToViewport() {
-        imageOffsetX = Math.max(minOffset(viewportSize.width, imageSize.width),
-                            Math.min(maxOffset(viewportSize.width,
-                                         imageSize.width), imageOffsetX));
-        imageOffsetY = Math.max(minOffset(viewportSize.height, imageSize.height),
-                            Math.min(maxOffset(viewportSize.height,
-                                        imageSize.height), imageOffsetY));
-    }
+        imageOffsetX = viewportContainsImage()?
+                        Math.max(0, Math.min(maxSmallOffset.x, imageOffsetX)) :
+                        Math.max(minLargeOffset.x, Math.min(0, imageOffsetX));
 
-    private int minOffset(int viewportSize, int imageSize) {
-        return (viewportSize > imageSize)?
-                0 :
-                (-(imageSize - viewportSize));
-    }
-
-    private int maxOffset(int viewportSize, int imageSize) {
-        return (viewportSize > imageSize)?
-                (viewportSize - imageSize) :
-                0 ;
+        imageOffsetY = viewportContainsImage()?
+                        Math.max(0, Math.min(maxSmallOffset.y, imageOffsetY)) :
+                        Math.max(minLargeOffset.y, Math.min(0, imageOffsetY));
     }
 
     private void handleLeftClick() {
@@ -231,6 +244,7 @@ public class Viewport extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 updateViewportSize();
+                updateClampLimits();
                 clampImageToViewport();
                 repaint();
             }
@@ -305,12 +319,12 @@ public class Viewport extends JPanel {
                 
                 // if pointer is not over the image, report Black pixel
                 if ((x < 0) || (y < 0) ||
-                    (x >= imageSize.width) || (y >= imageSize.height)) {
+                    (x >= imageScaledSize.width) || (y >= imageScaledSize.height)) {
                     viewportListener.newColorUnderPointer(0, 0, 0);
                     return;
                 } 
                 // otherwise report color of pixel under pointer
-                int inq = image.getRGB(x,y);
+                // int inq = image.getRGB(x,y);
                 // viewportListener.newColorUnderPointer(
                 //     colorModel.getRed(inq),
                 //     colorModel.getGreen(inq),
