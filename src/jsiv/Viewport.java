@@ -17,7 +17,8 @@ public class Viewport extends JPanel {
     private BufferedImage image;
     private ColorModel colorModel;
     private Dimension imageSize = new Dimension(0,0);
-    private Dimension imageOffset = new Dimension(0,0);
+    private int imageOffsetX;
+    private int imageOffsetY;
     private Dimension viewportSize = new Dimension(0,0);
     private Point viewportCenter;
     private int openPreviousBorder;
@@ -34,6 +35,7 @@ public class Viewport extends JPanel {
 
     public static final int PAN_FINE = 1;
     public static final int PAN_COARSE = 10;
+
 
     public Viewport(ViewportListener viewportListener) {
         this.viewportListener = viewportListener;
@@ -54,9 +56,8 @@ public class Viewport extends JPanel {
         imageSize = new Dimension(image.getWidth(), image.getHeight());
         viewportListener.imageSizeChanged(imageSize);
         
-        imageOffset = new Dimension(
-                (viewportSize.width - imageSize.width) / 2,
-                (viewportSize.height - imageSize.height) / 2);
+        imageOffsetX = (viewportSize.width - imageSize.width) / 2;
+        imageOffsetY = (viewportSize.height - imageSize.height) / 2;
         
         repaint();
     }
@@ -78,25 +79,27 @@ public class Viewport extends JPanel {
     }
     
     public void centerImage(FocusMode focusMode) {
-        System.out.print("Viewport.centerImage() with Focus Mode: " + 
-                    focusMode + " at point ");
         switch (focusMode) {
-            case WINDOW_CENTER : System.out.println(viewportCenter.x + 
-                                              "," + viewportCenter.y);
-                                 break;
-            case POINTER : System.out.println(pressPoint.x + 
-                                        "," + pressPoint.y);
-                           break;
+            case WINDOW_CENTER :
+                // pan the image by the different between the center of the
+                // viewport and the image offset (less half image size)
+                panImage(viewportCenter.x - imageOffsetX - (imageSize.width / 2),
+                         viewportCenter.y - imageOffsetY - (imageSize.height / 2));
+                break;
+            case POINTER :
+                // pan the image by the difference between the
+                // center of the viewport and the mouse pointer
+                panImage(viewportCenter.x - pressPoint.x,
+                        viewportCenter.y - pressPoint.y);
+                break;
         };
-
-
-
     }
 
     public void panImage(int dx, int dy) {
-        System.out.println("Viewport.panImage() " +
-                        dx + " horizontally, " +
-                        dy + " vertically");
+        imageOffsetX += dx;
+        imageOffsetY += dy;
+        clampImageToViewport();
+        repaint();
     }
 
     public void setNavigationAvailability(boolean available) {
@@ -108,7 +111,8 @@ public class Viewport extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (image != null) {
-            g.drawImage(image, imageOffset.width,imageOffset.height, null);
+            g.translate(imageOffsetX, imageOffsetY);
+            g.drawImage(image, 0,0, null);
         }
     }
 
@@ -117,6 +121,9 @@ public class Viewport extends JPanel {
         colorModel = image.getColorModel();
         Graphics2D pen = image.createGraphics();
         
+        pen.setColor(Color.DARK_GRAY);
+        pen.fillRect(0,0, 600,400);
+
         pen.setColor(new Color(255, 0, 0, 255));
         pen.fillRect(150,70, 200,200);
         
@@ -147,7 +154,8 @@ public class Viewport extends JPanel {
         
         imageSize = new Dimension(600, 400);
         viewportListener.imageSizeChanged(imageSize);
-        imageOffset = new Dimension(100, 100);
+        imageOffsetX = 100;
+        imageOffsetY = 100;
         repaint();
     }
     
@@ -160,6 +168,27 @@ public class Viewport extends JPanel {
         viewportListener.viewportSizeChanged(viewportSize);
     }
     
+    private void clampImageToViewport() {
+        imageOffsetX = Math.max(minOffset(viewportSize.width, imageSize.width),
+                            Math.min(maxOffset(viewportSize.width,
+                                         imageSize.width), imageOffsetX));
+        imageOffsetY = Math.max(minOffset(viewportSize.height, imageSize.height),
+                            Math.min(maxOffset(viewportSize.height,
+                                        imageSize.height), imageOffsetY));
+    }
+
+    private int minOffset(int viewportSize, int imageSize) {
+        return (viewportSize > imageSize)?
+                0 :
+                (-(imageSize - viewportSize));
+    }
+
+    private int maxOffset(int viewportSize, int imageSize) {
+        return (viewportSize > imageSize)?
+                (viewportSize - imageSize) :
+                0 ;
+    }
+
     private void handleLeftClick() {
         Dimension distanceFromPress = new Dimension(
                     Math.abs(mouseLocation.x - pressPoint.x),
@@ -202,6 +231,8 @@ public class Viewport extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 updateViewportSize();
+                clampImageToViewport();
+                repaint();
             }
         });
     }
@@ -269,8 +300,8 @@ public class Viewport extends JPanel {
                                     "\b\b\b\b\b\b\b\b");
 
                 
-                int x = mouseLocation.x - imageOffset.width;
-                int y = mouseLocation.y - imageOffset.height;
+                int x = mouseLocation.x - imageOffsetX;
+                int y = mouseLocation.y - imageOffsetY;
                 
                 // if pointer is not over the image, report Black pixel
                 if ((x < 0) || (y < 0) ||
@@ -280,10 +311,10 @@ public class Viewport extends JPanel {
                 } 
                 // otherwise report color of pixel under pointer
                 int inq = image.getRGB(x,y);
-                viewportListener.newColorUnderPointer(
-                    colorModel.getRed(inq),
-                    colorModel.getGreen(inq),
-                    colorModel.getBlue(inq));
+                // viewportListener.newColorUnderPointer(
+                //     colorModel.getRed(inq),
+                //     colorModel.getGreen(inq),
+                //     colorModel.getBlue(inq));
             }
 
             @Override
