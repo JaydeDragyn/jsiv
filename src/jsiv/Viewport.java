@@ -15,6 +15,8 @@ public class Viewport extends JPanel {
     private boolean navigationAvailable;
 
     private BufferedImage image;
+    private BufferedImage nextButton;
+    private BufferedImage previousButton;
     private Dimension imageSize = new Dimension(0,0);
     private Dimension imageScaledSize = new Dimension(0,0);
     private int imageOffsetX;
@@ -50,8 +52,8 @@ public class Viewport extends JPanel {
 
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(800, 600));
-        updateViewportSize();
         setSplashImage();
+        createNavigationButtons();
     }
 
     public void setImage(BufferedImage newImage) {
@@ -176,6 +178,14 @@ public class Viewport extends JPanel {
         pen.scale(zoomLevel, zoomLevel);
         pen.drawImage(image, 0,0, null);
         pen.dispose();
+
+        if (navigationAvailable) {
+            pen = (Graphics2D) g.create();
+            int y = (viewportSize.height / 2) - 38;
+            pen.drawImage(previousButton, 0,y, null);
+            pen.drawImage(nextButton, viewportSize.width - 50,y, null);
+            pen.dispose();
+        }
     }
 
     private void setSplashImage() {
@@ -220,7 +230,51 @@ public class Viewport extends JPanel {
         viewportListener.imageSizeChanged(imageSize);
         imageScaledSize = new Dimension(imageSize);
     }
-    
+
+    private void createNavigationButtons() {
+        Polygon chev = new Polygon();
+        chev.addPoint( 5, 18);
+        chev.addPoint(23, 36);
+        chev.addPoint(23, 37);
+        chev.addPoint( 5, 55);
+        chev.addPoint( 0, 50);
+        chev.addPoint( 0, 49);
+        chev.addPoint(12, 37);
+        chev.addPoint(12, 36);
+        chev.addPoint( 0, 24);
+        chev.addPoint( 0, 23);
+        chev.addPoint( 5, 18);
+
+        nextButton = new BufferedImage(50,75, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D pen = nextButton.createGraphics();
+        pen.setColor(new Color( 32, 32, 32,168));
+        pen.fillRect(0,0, 50,75);
+        pen.setColor(new Color(192,192,192,168));
+        pen.drawString("Next", 12,12);
+        pen.drawString("Image", 8,70);
+        pen.translate(2,0);
+        pen.fillPolygon(chev);
+        pen.translate(22,0);
+        pen.fillPolygon(chev);
+
+        pen.dispose();
+
+        previousButton = new BufferedImage(50,75, BufferedImage.TYPE_INT_ARGB);
+        pen = previousButton.createGraphics();
+        pen.setColor(new Color( 32, 32, 32,168));
+        pen.fillRect(0,0, 50,75);
+        pen.setColor(new Color(192,192,192,168));
+        pen.drawString("Prev", 12,12);
+        pen.drawString("Image", 8,70);
+        pen.translate(48,0);
+        pen.scale(-1,1);
+        pen.fillPolygon(chev);
+        pen.translate(22,0);
+        pen.fillPolygon(chev);
+
+        pen.dispose();
+    }
+
     private void updateViewportSize() {
         viewportSize = new Dimension(getSize());
         viewportCenter = new Point(viewportSize.width / 2,
