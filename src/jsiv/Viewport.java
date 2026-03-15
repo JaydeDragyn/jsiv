@@ -24,6 +24,7 @@ public class Viewport extends JPanel {
     private Dimension viewportSize = new Dimension(0,0);
     private Point viewportCenter;
     private double zoomLevel = 1.0;
+    private static final double MIN_PIXELS_ON_ZOOM = 8.0;
     private int openPreviousBorder;
     private int openNextBorder;
     private Point mouseLocation = new Point(0,0);
@@ -65,21 +66,64 @@ public class Viewport extends JPanel {
     }
     
     public void zoomIn(FocusMode focusMode) {
-        System.out.println("Viewport.zoomIn() with Focus Mode: " + focusMode);
-        viewportListener.zoomChanged(1.0f);
+        // Check if we can zoom in any further.  Limit is MIN_PIXELS_ON_ZOOM
+        // visible in the viewport along either axis.  If zooming in would
+        // reduce the visible pixels along either axis to less than that (even
+        // if only by less than one pixel) then we abort the zoom in action.
+        double zoomLevelQuery = zoomLevel * 2.0;
+        if (((viewportSize.width / zoomLevelQuery) < MIN_PIXELS_ON_ZOOM) ||
+            ((viewportSize.height / zoomLevelQuery) < MIN_PIXELS_ON_ZOOM)) {
+            return;
+        }
+
+        setZoom(zoomLevelQuery, focusMode);
     }
     
     public void zoomOut(FocusMode focusMode) {
-        System.out.println("Viewport.zoomOut() with Focus Mode: " + focusMode);
-        viewportListener.zoomChanged(1.0f);
+        // Check if we can zoom out any further.  Limit is the largest
+        // of 1x or whatever is needed to bring the scaled image size to fit
+        // within the viewport.  If zooming out would try to reduce the
+        // scaled image below that, then the zoom out action will be ignored.
+        double zoomLevelQuery = zoomLevel / 2.0;
+        if (zoomLevelQuery < 1.0) {
+            // check the current size, not the potential new size.
+            if ((viewportSize.width >= imageScaledSize.width) &&
+                (viewportSize.height >= imageScaledSize.height)) { return; }
+        }
+
+        setZoom(zoomLevelQuery, focusMode);
     }
     
     public void resetZoom() {
         System.out.println("Viewport.resetZoom() ");
+        zoomLevel = 1.0;
         centerImage(FocusMode.WINDOW_CENTER);
-        viewportListener.zoomChanged(1.0f);
+        repaint();
     }
     
+    private void setZoom(double newZoomLevel, FocusMode focusMode) {
+
+        Point focusPoint = switch (focusMode) {
+            case WINDOW_CENTER -> new Point(viewportCenter);
+            case POINTER       -> new Point(mouseLocation);
+        };
+
+        int focusPixelX = (focusPoint.x - imageOffsetX) / (int)zoomLevel;
+        int focusPixelY = (focusPoint.y - imageOffsetY) / (int)zoomLevel;
+
+        zoomLevel = newZoomLevel;
+        imageScaledSize = new Dimension((int)(imageSize.width * zoomLevel),
+                                        (int)(imageSize.height * zoomLevel));
+
+        imageOffsetX = focusPoint.x - (int)(focusPixelX * zoomLevel) - (int)(zoomLevel / 2);
+        imageOffsetY = focusPoint.y - (int)(focusPixelY * zoomLevel) - (int)(zoomLevel / 2);
+
+        updateClampLimits();
+        clampImageToViewport();
+        repaint();
+        viewportListener.zoomChanged(zoomLevel);
+    }
+
     public void centerImage(FocusMode focusMode) {
         switch (focusMode) {
             case WINDOW_CENTER :
