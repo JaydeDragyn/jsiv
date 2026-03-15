@@ -114,12 +114,11 @@ public class Viewport extends JPanel {
         super.paintComponent(g);
         if (image == null) { return; }
 
-        Graphics2D pen = (Graphics2D) g;
+        Graphics2D pen = (Graphics2D) g.create();
         pen.translate(imageOffsetX, imageOffsetY);
         pen.scale(zoomLevel, zoomLevel);
         pen.drawImage(image, 0,0, null);
         pen.dispose();
-
     }
 
     private void setSplashImage() {
