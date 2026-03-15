@@ -187,18 +187,17 @@ public class Viewport extends JPanel {
         // maxLargeOffset is always going to be 0,0
     }
 
-    private boolean viewportContainsImage() {
-        return viewportSize.width >= imageScaledSize.width
-                && viewportSize.height >= imageScaledSize.height;
-    }
-
     private void clampImageToViewport() {
-        imageOffsetX = viewportContainsImage()?
-                        Math.max(0, Math.min(maxSmallOffset.x, imageOffsetX)) :
+        // for each axis:
+        // if the viewport is larger than the image, use maxSmallOffset
+        // otherwise use minLargeOffset
+        // No minSmallOffset or maxLargeOffset because for this application,
+        // both will always be 0,0, so they are hardcoded
+        imageOffsetX = (viewportSize.width >= imageScaledSize.width)?
+                        Math.max(0, Math.min(maxSmallOffset.x, imageOffsetX)):
                         Math.max(minLargeOffset.x, Math.min(0, imageOffsetX));
-
-        imageOffsetY = viewportContainsImage()?
-                        Math.max(0, Math.min(maxSmallOffset.y, imageOffsetY)) :
+        imageOffsetY = (viewportSize.height >= imageScaledSize.height)?
+                        Math.max(0, Math.min(maxSmallOffset.y, imageOffsetY)):
                         Math.max(minLargeOffset.y, Math.min(0, imageOffsetY));
     }
 
