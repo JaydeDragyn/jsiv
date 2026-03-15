@@ -118,55 +118,53 @@ public class Viewport extends JPanel {
 
         Graphics2D pen = (Graphics2D) g;
         pen.translate(imageOffsetX, imageOffsetY);
+        pen.scale(zoomLevel, zoomLevel);
         pen.drawImage(image, 0,0, null);
         pen.dispose();
 
     }
 
     private void setSplashImage() {
-        image = new BufferedImage(600, 400, BufferedImage.TYPE_INT_ARGB);
-        colorModel = image.getColorModel();
-        Graphics2D pen = image.createGraphics();
+        BufferedImage splashImage = new BufferedImage(300, 255, BufferedImage.TYPE_INT_ARGB);
+        colorModel = splashImage.getColorModel();
+        Graphics2D pen = splashImage.createGraphics();
         
-        pen.setColor(Color.DARK_GRAY);
-        pen.fillRect(0,0, 600,400);
-
         pen.setColor(new Color(255, 0, 0, 255));
-        pen.fillRect(150,70, 200,200);
+        pen.fillRect(0,0, 200,200);
         
         pen.setColor(new Color(0, 255, 0, 250));
-        pen.fillRect(300,100, 150,200);
+        pen.fillRect(150,30, 150,200);
         
         pen.setColor(new Color(0, 0, 255, 245));
-        pen.fillRect(225,175, 200,150);
+        pen.fillRect(75,105, 200,150);
         
         pen.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
         pen.setColor(Color.WHITE);
         pen.setFont(new Font("SansSerif", Font.BOLD, 48));
-        pen.drawString("JSIV", 175,150);
+        pen.drawString("JSIV", 25,80);
         
         pen.setColor(new Color(168, 255, 192, 255));
         pen.setFont(new Font("SansSerif", Font.BOLD, 24));
-        pen.drawString("Jayde's", 330,150);
+        pen.drawString("Jayde's", 180,80);
         
         pen.setColor(new Color(168, 192, 255, 255));
         pen.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        pen.drawString("Simple", 265,230);
-        pen.drawString("Image",  280,255);
-        pen.drawString("Viewer", 295,280);
+        pen.drawString("Simple", 115,160);
+        pen.drawString("Image",  130,185);
+        pen.drawString("Viewer", 145,210);
         
         pen.dispose();
-        
-        imageSize = new Dimension(600, 400);
-        viewportListener.imageSizeChanged(imageSize);
-        imageScaledSize = new Dimension(imageSize);
-        updateClampLimits();
-        imageOffsetX = 100;
-        imageOffsetY = 100;
 
-        repaint();
+        setImage(splashImage);
+
+        // manually set the image offset, assuming we get an 800x600 viewport
+        // because this will be called in the Viewport constructor, and the
+        // viewport size will not yet be available, so these will end up as
+        // 0,0 otherwise, putting the splash image in the top-left corner.
+        imageOffsetX = 250;
+        imageOffsetY = 172;
     }
     
     private void updateViewportSize() {
