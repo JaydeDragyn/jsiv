@@ -185,7 +185,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Zoom In action -> ");
                 viewport.zoomIn(Viewport.FocusMode.WINDOW_CENTER);
             }
         };
@@ -200,7 +199,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Zoom Out action -> ");
                 viewport.zoomOut(Viewport.FocusMode.WINDOW_CENTER);
             }
         }; 
@@ -228,7 +226,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Center Image action -> ");
                 viewport.centerImage(Viewport.FocusMode.WINDOW_CENTER);
             }
         };

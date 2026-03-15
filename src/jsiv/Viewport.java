@@ -263,14 +263,12 @@ public class Viewport extends JPanel {
     }
 
     private void openNextRequested() {
-        System.out.println("Viewport.openNextRequested()");
         if (!navigationAvailable) { return; }
         viewportListener.requestOpenNext();
         repaint();
     }
     
     private void openPreviousRequested() {
-        System.out.println("Viewport.openPreviousRequested()");
         if (!navigationAvailable) { return; }
         viewportListener.requestOpenPrevious();
         repaint();
@@ -311,8 +309,6 @@ public class Viewport extends JPanel {
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     rightButtonPressed = true;
                     rightButtonDragged = false;
-                    System.out.println("RMB pressed at " + pressPoint.x +
-                                        "," + pressPoint.y);
                 }
             }
             
