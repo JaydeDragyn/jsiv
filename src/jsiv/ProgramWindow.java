@@ -212,7 +212,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Reset Zoom action -> ");
                 viewport.resetZoom();
             }
         };

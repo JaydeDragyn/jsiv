@@ -95,12 +95,25 @@ public class Viewport extends JPanel {
     }
     
     public void resetZoom() {
-        System.out.println("Viewport.resetZoom() ");
         zoomLevel = 1.0;
         centerImage(FocusMode.WINDOW_CENTER);
+
+        while (imageBelowHalfViewportSize()) { zoomIn(FocusMode.WINDOW_CENTER); }
+        while (imageExceedsViewportBounds()) { zoomOut(FocusMode.WINDOW_CENTER); }
+
         repaint();
     }
     
+    private boolean imageExceedsViewportBounds() {
+        return (imageScaledSize.width > viewportSize.width)
+                || (imageScaledSize.height > viewportSize.height);
+    }
+
+    private boolean imageBelowHalfViewportSize() {
+        return (imageScaledSize.width < (viewportSize.width / 2))
+                || (imageScaledSize.height < (viewportSize.height / 2));
+    }
+
     private void setZoom(double newZoomLevel, FocusMode focusMode) {
 
         Point focusPoint = switch (focusMode) {
@@ -108,8 +121,8 @@ public class Viewport extends JPanel {
             case POINTER       -> new Point(mouseLocation);
         };
 
-        int focusPixelX = (focusPoint.x - imageOffsetX) / (int)zoomLevel;
-        int focusPixelY = (focusPoint.y - imageOffsetY) / (int)zoomLevel;
+        int focusPixelX = (int)((focusPoint.x - imageOffsetX) / zoomLevel);
+        int focusPixelY = (int)((focusPoint.y - imageOffsetY) / zoomLevel);
 
         zoomLevel = newZoomLevel;
         imageScaledSize = new Dimension((int)(imageSize.width * zoomLevel),
@@ -166,8 +179,8 @@ public class Viewport extends JPanel {
     }
 
     private void setSplashImage() {
-        BufferedImage splashImage = new BufferedImage(300, 255, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D pen = splashImage.createGraphics();
+        image = new BufferedImage(300, 255, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D pen = image.createGraphics();
         
         pen.setColor(new Color(255, 0, 0, 255));
         pen.fillRect(0,0, 200,200);
@@ -197,14 +210,15 @@ public class Viewport extends JPanel {
         
         pen.dispose();
 
-        setImage(splashImage);
-
-        // manually set the image offset, assuming we get an 800x600 viewport
-        // because this will be called in the Viewport constructor, and the
-        // viewport size will not yet be available, so these will end up as
-        // 0,0 otherwise, putting the splash image in the top-left corner.
+        // manually set Viewport fields because this method is called
+        // during the Viewport constructor, and the Viewport will have
+        // a size of 0,0 at this time.
+        zoomLevel = 1.0;
         imageOffsetX = 250;
         imageOffsetY = 172;
+        imageSize = new Dimension(image.getWidth(), image.getHeight());
+        viewportListener.imageSizeChanged(imageSize);
+        imageScaledSize = new Dimension(imageSize);
     }
     
     private void updateViewportSize() {
@@ -344,8 +358,8 @@ public class Viewport extends JPanel {
                 mouseLastLocation = new Point(mouseLocation);
                 mouseLocation = e.getPoint();
                 
-                int focusPixelX = (mouseLocation.x - imageOffsetX) / (int)zoomLevel;
-                int focusPixelY = (mouseLocation.y - imageOffsetY) / (int)zoomLevel;
+                int focusPixelX = (int)((mouseLocation.x - imageOffsetX) / zoomLevel);
+                int focusPixelY = (int)((mouseLocation.y - imageOffsetY) / zoomLevel);
                 
                 // if pointer is not over the image, report Black pixel
                 if ((focusPixelX < 0) || (focusPixelY < 0) ||
