@@ -83,7 +83,7 @@ public class Viewport extends JPanel {
     public void centerImage(FocusMode focusMode) {
         switch (focusMode) {
             case WINDOW_CENTER :
-                // pan the image by the different between the center of the
+                // pan the image by the difference between the center of the
                 // viewport and the image offset (less half image size)
                 panImage(viewportCenter.x - imageOffsetX - (imageScaledSize.width / 2),
                          viewportCenter.y - imageOffsetY - (imageScaledSize.height / 2));
