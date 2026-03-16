@@ -256,7 +256,6 @@ public class Viewport extends JPanel {
         pen.fillPolygon(chev);
         pen.translate(22,0);
         pen.fillPolygon(chev);
-
         pen.dispose();
 
         previousButton = new BufferedImage(50,75, BufferedImage.TYPE_INT_ARGB);
@@ -434,16 +433,15 @@ public class Viewport extends JPanel {
                      (focusPixelX >= imageSize.width) ||
                      (focusPixelY >= imageSize.height)) {
                      viewportListener.newColorUnderPointer(0, 0, 0);
-                     return;
+                } else {
+                    // otherwise report color of pixel under pointer
+                    Color c = new Color(image.getRGB(focusPixelX,focusPixelY), true);
+                    viewportListener.newColorUnderPointer(
+                        c.getRed(),
+                        c.getGreen(),
+                        c.getBlue()
+                    );
                 }
-
-                // otherwise report color of pixel under pointer
-                Color c = new Color(image.getRGB(focusPixelX,focusPixelY), true);
-                viewportListener.newColorUnderPointer(
-                    c.getRed(),
-                    c.getGreen(),
-                    c.getBlue()
-                );
             }
 
             @Override
