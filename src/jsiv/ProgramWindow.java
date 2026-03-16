@@ -158,7 +158,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("Refresh Action ->");
                 imageNavigator.refresh();
             }
         };
