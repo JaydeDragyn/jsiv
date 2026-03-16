@@ -167,7 +167,6 @@ public class Viewport extends JPanel {
     }
 
     public void setNavigationAvailability(boolean available) {
-        System.out.println("Viewport.setNavigationAvailable(" + available + ")");
         navigationAvailable = available;
     }
 
@@ -325,15 +324,9 @@ public class Viewport extends JPanel {
         Dimension distanceFromPress = new Dimension(
                     Math.abs(mouseLocation.x - pressPoint.x),
                     Math.abs(mouseLocation.y - pressPoint.y));
-        System.out.println("Left Click at " + mouseLocation.x +
-                "," + mouseLocation.y +
-                " - " + distanceFromPress.width +
-                "," + distanceFromPress.height +
-                " pixels from starting location of " + pressPoint.x +
-                "," + pressPoint.y);
+
         if (distanceFromPress.width > POINTER_DRIFT_THRESHOLD ||
             distanceFromPress.height > POINTER_DRIFT_THRESHOLD) {
-                System.out.println("Pointer drifted too far, aborting click.");
                 return;
         }
         if (previousButtonArea.contains(pressPoint)) {
@@ -383,8 +376,6 @@ public class Viewport extends JPanel {
                 // Left button?
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     leftButtonPressed = true;
-                    System.out.println("LMB pressed at " + pressPoint.x +
-                                        "," + pressPoint.y);
                 }
                 
                 // Right button?
