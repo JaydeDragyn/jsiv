@@ -14,10 +14,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private Action openPreviousAction;
     private Action refreshAction;
     private Action quitAction;
-    private Action panUpAction;
-    private Action panDownAction;
-    private Action panLeftAction;
-    private Action panRightAction;
     private Action zoomInAction;
     private Action zoomOutAction;
     private Action resetZoomAction;
