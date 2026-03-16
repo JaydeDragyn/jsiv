@@ -426,11 +426,12 @@ public class Viewport extends JPanel {
                     }
                 }
 
-                // if pointer is not over the image, report Black pixel
+                // if pointer is not over the image, or if there is no image,
+                // report Black pixel
                 if ((focusPixelX < 0) || (focusPixelY < 0)
                      || (focusPixelX >= imageSize.width)
-                     || (focusPixelY >= imageSize.height))
-                     || (image == null) {
+                     || (focusPixelY >= imageSize.height)
+                     || (image == null)) {
                      viewportListener.newColorUnderPointer(0, 0, 0);
                 } else {
                     // otherwise report color of pixel under pointer
