@@ -103,6 +103,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private void setNavigationAvailability(boolean available) {
         openNextAction.setEnabled(available);
         openPreviousAction.setEnabled(available);
+        refreshAction.setEnabled(available);
         viewport.setNavigationAvailability(available);
     }
     
