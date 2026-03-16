@@ -61,7 +61,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     public void newImageLoaded(String imageName,
                                 BufferedImage image,
                                 int index, int total) {
-        frame.setTitle(imageName);
+        frame.setTitle("JSIV - " + imageName);
         viewport.setImage(image);
         statusBar.updateIndexCount(index, total);
     }
