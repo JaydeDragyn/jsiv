@@ -17,6 +17,9 @@ public class Viewport extends JPanel {
     private BufferedImage image;
     private BufferedImage nextButton;
     private BufferedImage previousButton;
+    private Rectangle nextButtonArea;
+    private Rectangle previousButtonArea;
+    private boolean inButtonAreas;
     private Dimension imageSize = new Dimension(0,0);
     private Dimension imageScaledSize = new Dimension(0,0);
     private int imageOffsetX;
@@ -174,12 +177,13 @@ public class Viewport extends JPanel {
         if (image == null) { return; }
 
         Graphics2D pen = (Graphics2D) g.create();
+
         pen.translate(imageOffsetX, imageOffsetY);
         pen.scale(zoomLevel, zoomLevel);
         pen.drawImage(image, 0,0, null);
         pen.dispose();
 
-        if (navigationAvailable) {
+        if (inButtonAreas) {
             pen = (Graphics2D) g.create();
             int y = (viewportSize.height / 2) - 38;
             pen.drawImage(previousButton, 0,y, null);
@@ -271,16 +275,21 @@ public class Viewport extends JPanel {
         pen.fillPolygon(chev);
         pen.translate(22,0);
         pen.fillPolygon(chev);
-
         pen.dispose();
+
     }
 
     private void updateViewportSize() {
         viewportSize = new Dimension(getSize());
         viewportCenter = new Point(viewportSize.width / 2,
                                    viewportSize.height / 2);
-        openPreviousBorder = viewportCenter.x / 2;
-        openNextBorder = viewportCenter.x + openPreviousBorder;
+        int y = (viewportSize.height / 2) - (nextButton.getHeight() / 2);
+        nextButtonArea = new Rectangle(
+                        viewportSize.width - nextButton.getWidth(),y,
+                        nextButton.getWidth(), nextButton.getHeight());
+        previousButtonArea = new Rectangle(
+                        0, y,
+                        previousButton.getWidth(), previousButton.getHeight());
         viewportListener.viewportSizeChanged(viewportSize);
     }
 
@@ -307,6 +316,11 @@ public class Viewport extends JPanel {
                         Math.max(minLargeOffset.y, Math.min(0, imageOffsetY));
     }
 
+    private boolean inNavigationButtonAreas() {
+        return (nextButtonArea.contains(mouseLocation)
+                || previousButtonArea.contains(mouseLocation));
+    }
+
     private void handleLeftClick() {
         Dimension distanceFromPress = new Dimension(
                     Math.abs(mouseLocation.x - pressPoint.x),
@@ -322,10 +336,10 @@ public class Viewport extends JPanel {
                 System.out.println("Pointer drifted too far, aborting click.");
                 return;
         }
-        if (pressPoint.x < openPreviousBorder) {
+        if (previousButtonArea.contains(pressPoint)) {
             openPreviousRequested();
         }
-        if (pressPoint.x > openNextBorder) {
+        if (nextButtonArea.contains(pressPoint)) {
             openNextRequested();
         }
     }
@@ -415,6 +429,18 @@ public class Viewport extends JPanel {
                 int focusPixelX = (int)((mouseLocation.x - imageOffsetX) / zoomLevel);
                 int focusPixelY = (int)((mouseLocation.y - imageOffsetY) / zoomLevel);
                 
+                if (navigationAvailable && inNavigationButtonAreas()) {
+                    if (!inButtonAreas) {
+                        inButtonAreas = true;
+                        repaint();
+                    }
+                } else {
+                    if (inButtonAreas) {
+                        inButtonAreas = false;
+                        repaint();
+                    }
+                }
+
                 // if pointer is not over the image, report Black pixel
                 if ((focusPixelX < 0) || (focusPixelY < 0) ||
                      (focusPixelX >= imageSize.width) ||
