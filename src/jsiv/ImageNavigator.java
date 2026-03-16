@@ -65,8 +65,8 @@ public class ImageNavigator {
             // there now no image files?  We'll report at least the
             // one file we were able to open and disable navigation.
             changeNavigationAvailability(false);
-            imageNavigatorListener.newImageLoaded(currentImageFile.getName(),
-                                                  currentImage, 1, 1);
+            imageNavigatorListener.newImageLoaded(file.getName(),
+                                                  tempImage.get(), 1, 1);
             return;
         }
 
