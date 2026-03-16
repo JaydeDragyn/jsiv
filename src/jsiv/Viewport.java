@@ -27,7 +27,7 @@ public class Viewport extends JPanel {
     private Point maxSmallOffset;
     private Point minLargeOffset;
     private Dimension viewportSize = new Dimension(0,0);
-    private Point viewportCenter;
+    private Point viewportCenter = new Point(0,0);
     private double zoomLevel = 1.0;
     private static final double MIN_PIXELS_ON_ZOOM = 8.0;
     private int openPreviousBorder;
