@@ -302,6 +302,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         fileMenu.add(new JMenuItem(openNextAction));
         fileMenu.add(new JMenuItem(openPreviousAction));
         fileMenu.add(new JMenuItem(refreshAction));
+        fileMenu.addSeparator();
         fileMenu.add(new JMenuItem(quitAction));
         
         menuBar.add(fileMenu);
