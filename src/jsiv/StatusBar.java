@@ -47,7 +47,7 @@ public class StatusBar extends JPanel {
         updateIndexCount(0, 0);
         updateImageSize(new Dimension(0, 0));
         updateViewportSize(new Dimension(0, 0));
-        updateZoomLevel(1.0f);
+        updateZoomLevel(1.0);
         updateRGB(0, 0, 0);
         
         imageSizeLabel.setToolTipText("Size of this image in pixels.");
