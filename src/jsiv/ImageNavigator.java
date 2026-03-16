@@ -209,9 +209,6 @@ public class ImageNavigator {
             if (temp.isEmpty()) {
                 // we did not load anything, so remove the image from the list
                 imageFileList.remove(imageFileIndex);
-
-                // and if direction is -1 (previous) then fix the index
-                if (direction < 0) { imageFileIndex--; }
             }
 
         } while (temp.isEmpty());
