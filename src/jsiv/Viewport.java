@@ -64,8 +64,6 @@ public class Viewport extends JPanel {
         imageSize = new Dimension(image.getWidth(), image.getHeight());
         viewportListener.imageSizeChanged(imageSize);
         imageScaledSize = new Dimension(imageSize);
-        imageOffsetX = (viewportSize.width - imageScaledSize.width) / 2;
-        imageOffsetY = (viewportSize.height - imageScaledSize.height) / 2;
         updateClampLimits();
         resetZoom();
     }
@@ -101,10 +99,10 @@ public class Viewport extends JPanel {
     
     public void resetZoom() {
         zoomLevel = 1.0;
-        centerImage(FocusMode.WINDOW_CENTER);
 
         while (imageBelowHalfViewportSize()) { zoomIn(FocusMode.WINDOW_CENTER); }
         while (imageExceedsViewportBounds()) { zoomOut(FocusMode.WINDOW_CENTER); }
+        centerImage(FocusMode.WINDOW_CENTER);
 
         repaint();
     }
@@ -145,10 +143,9 @@ public class Viewport extends JPanel {
     public void centerImage(FocusMode focusMode) {
         switch (focusMode) {
             case WINDOW_CENTER :
-                // pan the image by the difference between the center of the
-                // viewport and the image offset (less half image size)
-                panImage(viewportCenter.x - imageOffsetX - (imageScaledSize.width / 2),
-                         viewportCenter.y - imageOffsetY - (imageScaledSize.height / 2));
+                imageOffsetX = viewportCenter.x - (imageScaledSize.width / 2);
+                imageOffsetY = viewportCenter.y - (imageScaledSize.height / 2);
+                repaint();
                 break;
             case POINTER :
                 // pan the image by the difference between the
