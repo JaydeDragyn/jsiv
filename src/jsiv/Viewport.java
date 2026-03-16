@@ -35,7 +35,7 @@ public class Viewport extends JPanel {
     private Point mouseLocation = new Point(0,0);
     private Point mouseLastLocation = new Point(0,0);
 
-    private Point pressPoint;
+    private Point pressPoint = new Point(0,0);
     private boolean leftButtonPressed;
     private boolean rightButtonPressed;
     private boolean rightButtonDragged;
@@ -367,7 +367,7 @@ public class Viewport extends JPanel {
                 if (leftButtonPressed || rightButtonPressed) { return; }
                 
                 // record the position the user pressed the button
-                pressPoint = new Point(mouseLocation);
+                pressPoint.setLocation(mouseLocation);
                 
                 // Left button?
                 if (e.getButton() == MouseEvent.BUTTON1) {
@@ -410,7 +410,7 @@ public class Viewport extends JPanel {
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                mouseLastLocation = new Point(mouseLocation);
+                mouseLastLocation.setLocation(mouseLocation);
                 mouseLocation = e.getPoint();
                 
                 int focusPixelX = (int)((mouseLocation.x - imageOffsetX) / zoomLevel);
@@ -446,7 +446,7 @@ public class Viewport extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                mouseLastLocation = new Point(mouseLocation);
+                mouseLastLocation.setLocation(mouseLocation);
                 mouseLocation = e.getPoint();
 
                 // This application only drags with RMB
