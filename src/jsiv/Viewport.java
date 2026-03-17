@@ -53,8 +53,15 @@ public class Viewport extends JPanel {
 
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(800, 600));
-        setSplashImage();
         createNavigationButtons();
+        setImage(JSIVSplash.getSplashImage());
+
+        // manually set Viewport fields for the splash image because during
+        // the Viewport constructor the Viewport will have a size of 0,0
+        zoomLevel = 1.0;
+        imageOffsetX = 250;
+        imageOffsetY = 172;
+        imageScaledSize = new Dimension(imageSize);
     }
 
     public void setImage(BufferedImage newImage) {
@@ -62,7 +69,7 @@ public class Viewport extends JPanel {
         imageSize = new Dimension(image.getWidth(), image.getHeight());
         viewportListener.imageSizeChanged(imageSize);
         imageScaledSize = new Dimension(imageSize);
-        updateClampLimits();
+//        updateClampLimits();
         resetZoom();
     }
     
@@ -206,49 +213,6 @@ public class Viewport extends JPanel {
             pen.drawImage(nextButton, viewportSize.width - 50,y, null);
             pen.dispose();
         }
-    }
-
-    private void setSplashImage() {
-        image = new BufferedImage(300, 255, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D pen = image.createGraphics();
-        
-        pen.setColor(new Color(255, 0, 0, 255));
-        pen.fillRect(0,0, 200,200);
-        
-        pen.setColor(new Color(0, 255, 0, 250));
-        pen.fillRect(150,30, 150,200);
-        
-        pen.setColor(new Color(0, 0, 255, 245));
-        pen.fillRect(75,105, 200,150);
-        
-        pen.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                     RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        
-        pen.setColor(Color.WHITE);
-        pen.setFont(new Font("SansSerif", Font.BOLD, 48));
-        pen.drawString("JSIV", 25,80);
-        
-        pen.setColor(new Color(168, 255, 192, 255));
-        pen.setFont(new Font("SansSerif", Font.BOLD, 24));
-        pen.drawString("Jayde's", 180,80);
-        
-        pen.setColor(new Color(168, 192, 255, 255));
-        pen.setFont(new Font("SansSerif", Font.PLAIN, 24));
-        pen.drawString("Simple", 115,160);
-        pen.drawString("Image",  130,185);
-        pen.drawString("Viewer", 145,210);
-        
-        pen.dispose();
-
-        // manually set Viewport fields because this method is called
-        // during the Viewport constructor, and the Viewport will have
-        // a size of 0,0 at this time.
-        zoomLevel = 1.0;
-        imageOffsetX = 250;
-        imageOffsetY = 172;
-        imageSize = new Dimension(image.getWidth(), image.getHeight());
-        viewportListener.imageSizeChanged(imageSize);
-        imageScaledSize = new Dimension(imageSize);
     }
 
     private void createNavigationButtons() {
