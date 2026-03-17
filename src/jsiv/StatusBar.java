@@ -74,7 +74,8 @@ public class StatusBar extends JPanel {
     }
     
     public void updateZoomLevel(double zoomLevel) {
-        zoomLevelLabel.setText("Zoom: " + zoomLevel);
+        int adjZoomLevel = (int)(zoomLevel * 100);
+        zoomLevelLabel.setText("Zoom: " + adjZoomLevel + "%");
     }
     
     public void updateRGB(int red, int green, int blue) {
