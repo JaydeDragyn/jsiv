@@ -87,9 +87,14 @@ public class Viewport extends JPanel {
         // scaled image below that, then the zoom out action will be ignored.
         double zoomLevelQuery = zoomLevel / 2.0;
         if (zoomLevelQuery < 1.0) {
-            // check the current size, not the potential new size.
+            // Since we're here, the next potential zoomLevel will be < 1x
+            // Check the current size (not the potential new size)
+            // if the current size would fit, then we don't want to zoom out
+            // further, we abort and leave the zoomLevel as-is
             if ((viewportSize.width >= imageScaledSize.width) &&
-                (viewportSize.height >= imageScaledSize.height)) { return; }
+                (viewportSize.height >= imageScaledSize.height)) {
+                return;
+            }
         }
 
         setZoom(zoomLevelQuery, focusMode);
@@ -151,7 +156,7 @@ public class Viewport extends JPanel {
                 panImage(viewportCenter.x - pressPoint.x,
                         viewportCenter.y - pressPoint.y);
                 break;
-        };
+        }
     }
 
     public void panImage(int dx, int dy) {
@@ -315,12 +320,11 @@ public class Viewport extends JPanel {
     }
 
     private void handleLeftClick() {
-        Dimension distanceFromPress = new Dimension(
-                    Math.abs(mouseLocation.x - pressPoint.x),
-                    Math.abs(mouseLocation.y - pressPoint.y));
+        int distanceFromPressX = Math.abs(mouseLocation.x - pressPoint.x);
+        int distanceFromPressY = Math.abs(mouseLocation.y - pressPoint.y);
 
-        if (distanceFromPress.width > POINTER_DRIFT_THRESHOLD ||
-            distanceFromPress.height > POINTER_DRIFT_THRESHOLD) {
+        if (distanceFromPressX > POINTER_DRIFT_THRESHOLD ||
+            distanceFromPressY > POINTER_DRIFT_THRESHOLD) {
                 return;
         }
         if (previousButtonArea.contains(pressPoint)) {
@@ -379,6 +383,7 @@ public class Viewport extends JPanel {
                 }
             }
             
+            @Override
             public void mouseReleased(MouseEvent e) {
                 mouseLocation = e.getPoint();
 
@@ -428,10 +433,10 @@ public class Viewport extends JPanel {
 
                 // if pointer is not over the image, or if there is no image,
                 // report Black pixel
-                if ((focusPixelX < 0) || (focusPixelY < 0)
+                if ((image == null)
+                     || (focusPixelX < 0) || (focusPixelY < 0)
                      || (focusPixelX >= imageSize.width)
-                     || (focusPixelY >= imageSize.height)
-                     || (image == null)) {
+                     || (focusPixelY >= imageSize.height)) {
                      viewportListener.newColorUnderPointer(0, 0, 0);
                 } else {
                     // otherwise report color of pixel under pointer

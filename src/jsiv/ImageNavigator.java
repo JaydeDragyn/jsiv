@@ -78,7 +78,7 @@ public class ImageNavigator {
         // we will simply declare an error and abort
         if (tempIndex == -1) {
             showError("File error", fullPathName +
-                        "appears to have been moved or deleted.");
+                        " appears to have been moved or deleted.");
             return;
         }
 
@@ -103,7 +103,7 @@ public class ImageNavigator {
         if (currentImageFile == null) { return; }
 
         // build the new file list
-        createImageFileList(getParentPathName(currentImageFile));
+        createImageFileList(currentImageFile.getParent());
 
         if (imageFileList.isEmpty()) {
             // There are no files in the directory now.  Since we have
@@ -293,10 +293,6 @@ public class ImageNavigator {
             fullPathName = file.getAbsolutePath();
         }
         return fullPathName;
-    }
-
-    private String getParentPathName(File file) {
-        return file.getParent();
     }
 }
 

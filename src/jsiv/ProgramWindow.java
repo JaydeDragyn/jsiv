@@ -21,10 +21,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private Action userManualAction;
     private Action aboutAction;
 
-    // Input and Action maps
-    private InputMap inputMap;
-    private ActionMap actionMap;
-    
     // Window components
     private JFrame frame;
     private ImageNavigator imageNavigator;
@@ -250,8 +246,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
 
     private void initInputActionMaps() {
-        inputMap = viewport.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        actionMap = viewport.getActionMap();
+        InputMap inputMap = viewport.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = viewport.getActionMap();
 
         inputMap.put(panNavKey(KeyEvent.VK_UP, true, false), "panUpFine");
         inputMap.put(panNavKey(KeyEvent.VK_UP, true, true), "panUpCoarse");
