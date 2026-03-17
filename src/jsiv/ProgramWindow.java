@@ -102,7 +102,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     
     private void showHelpAboutDialog() {
         JOptionPane.showMessageDialog(frame,
-            "JSIV - Jayde's Simple Image Viewr\n" +
+            "JSIV - Jayde's Simple Image Viewer\n" +
             "Version 1.0.0\n\n" +
             "Developed by: Jayde Dragyn\n" +
             "Contact: JaydeDragyn@outlook.com\n" +
