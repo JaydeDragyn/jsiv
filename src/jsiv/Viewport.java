@@ -56,12 +56,12 @@ public class Viewport extends JPanel {
         createNavigationButtons();
         setImage(JSIVSplash.getSplashImage());
 
-        // manually set Viewport fields for the splash image because during
-        // the Viewport constructor the Viewport will have a size of 0,0
-        zoomLevel = 1.0;
+        // setImage() will call resetZoom() to ensure the splash image we just
+        // gave it is centered and zoomed appropriately, but right now the
+        // Viewport has a size of 0,0 which will make resetZoom() abort, so
+        // we will manually set the image position.
         imageOffsetX = 250;
         imageOffsetY = 172;
-        imageScaledSize = new Dimension(imageSize);
     }
 
     public void setImage(BufferedImage newImage) {
@@ -69,7 +69,6 @@ public class Viewport extends JPanel {
         imageSize = new Dimension(image.getWidth(), image.getHeight());
         viewportListener.imageSizeChanged(imageSize);
         imageScaledSize = new Dimension(imageSize);
-//        updateClampLimits();
         resetZoom();
     }
     
@@ -134,16 +133,6 @@ public class Viewport extends JPanel {
         viewportListener.zoomChanged(zoomLevel);
     }
     
-    private boolean imageExceedsViewportBounds() {
-        return (imageScaledSize.width > viewportSize.width)
-                || (imageScaledSize.height > viewportSize.height);
-    }
-
-    private boolean imageBelowHalfViewportSize() {
-        return (imageScaledSize.width < (viewportSize.width / 2))
-                || (imageScaledSize.height < (viewportSize.height / 2));
-    }
-
     private void setZoom(double newZoomLevel, FocusMode focusMode) {
 
         Point focusPoint = switch (focusMode) {
