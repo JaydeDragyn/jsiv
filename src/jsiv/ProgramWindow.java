@@ -100,6 +100,21 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         viewport.setNavigationAvailability(available);
     }
     
+    private void showHelpAboutDialog() {
+        JOptionPane.showMessageDialog(frame,
+            "JSIV - Jayde's Simple Image Viewr\n" +
+            "Version 1.0.0\n\n" +
+            "Developed by: Jayde Dragyn\n" +
+            "Contact: JaydeDragyn@outlook.com\n" +
+            "Source code: https://github.com/JaydeDragyn/jsiv\n\n" +
+            "Built with Java 17.0.4.1 2022-08-18 LTS\n\n" +
+            "Technical guidance assisted by ChatGPT (OpenAI) and Claude (Anthropic)",
+            "JSIV - About",
+            JOptionPane.INFORMATION_MESSAGE,
+            new ImageIcon(JSIVSplash.getSplashImage())
+        );
+    }
+
     private void initActionItems() {
         openFileAction = new AbstractAction("Open File") {
             {
@@ -241,7 +256,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("About action -> ");
+                showHelpAboutDialog();
             }
         };
     }
@@ -289,7 +304,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             }
         };
     }
-        
+
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
 
