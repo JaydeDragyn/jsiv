@@ -101,13 +101,30 @@ public class Viewport extends JPanel {
     }
     
     public void resetZoom() {
-        zoomLevel = 1.0;
+        // If viewport has not been sized yet, abort
+        if (viewportSize.width == 0 || viewportSize.height == 0) { return; }
 
-        while (imageBelowHalfViewportSize()) { zoomIn(FocusMode.WINDOW_CENTER); }
-        while (imageExceedsViewportBounds()) { zoomOut(FocusMode.WINDOW_CENTER); }
+        // Find the continuous zoom (not power of 2 yet) that makes both
+        // axis fit in the viewport
+        double fitZoom = Math.min(
+            (double) viewportSize.width / imageSize.width,
+            (double) viewportSize.height / imageSize.height
+        );
+
+        // Now convert down to the nearest power of 2
+        int n = (int) Math.floor(Math.log(fitZoom) / Math.log(2));
+        zoomLevel = Math.pow(2, n);
+
+        // update, center and notify of the new zoomLevel
+        imageScaledSize = new Dimension(
+            (int)(imageSize.width * zoomLevel),
+            (int)(imageSize.height * zoomLevel)
+        );
+
+        updateClampLimits();
         centerImage(FocusMode.WINDOW_CENTER);
-
         repaint();
+        viewportListener.zoomChanged(zoomLevel);
     }
     
     private boolean imageExceedsViewportBounds() {
