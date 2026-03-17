@@ -29,6 +29,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     
     public ProgramWindow() {
         frame = new JFrame("JSIV");
+        frame.setIconImage(JSIVSplash.getSplashImage());
         imageNavigator = new ImageNavigator(this, frame);
         statusBar = new StatusBar();
         viewport = new Viewport(this);
