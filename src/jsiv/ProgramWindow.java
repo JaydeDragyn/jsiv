@@ -123,7 +123,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             "Source code: https://github.com/JaydeDragyn/jsiv\n\n" +
             "Built with Java 17.0.4.1 2022-08-18 LTS\n\n" +
             "Technical guidance assisted by:\n" +
-            "\t\tChatGPT (OpenAI) and Claude (Anthropic)",
+            "        ChatGPT (OpenAI) and Claude (Anthropic)",
             "JSIV - About",
             JOptionPane.INFORMATION_MESSAGE,
             new ImageIcon(JSIVSplash.getSplashImage())
