@@ -99,7 +99,6 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     
     @Override
     public void newColorUnderPointer(Color color) {
-        backgroundColor = color;
         if (colorMode == ColorMode.RGB) {
             statusBar.updateRGB(color);
         } else {
@@ -122,7 +121,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             "Contact: JaydeDragyn@outlook.com\n" +
             "Source code: https://github.com/JaydeDragyn/jsiv\n\n" +
             "Built with Java 17.0.4.1 2022-08-18 LTS\n\n" +
-            "Technical guidance assisted by ChatGPT (OpenAI) and Claude (Anthropic)",
+            "Technical guidance assisted by:\n" +
+            "\t\tChatGPT (OpenAI) and Claude (Anthropic)",
             "JSIV - About",
             JOptionPane.INFORMATION_MESSAGE,
             new ImageIcon(JSIVSplash.getSplashImage())
