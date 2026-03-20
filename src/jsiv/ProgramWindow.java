@@ -53,6 +53,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
         setNavigationAvailability(false);
         useRGBColorModeAction.setEnabled(false);
+        useHexColorModeAction.setEnabled(true);
 
         frame.pack();
         frame.setVisible(true);
