@@ -18,6 +18,9 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private Action zoomOutAction;
     private Action resetZoomAction;
     private Action centerImageAction;
+    private Action changeBackgroundColorAction;
+    private Action useRGBColorModeAction;
+    private Action useHexColorModeAction;
     private Action userManualAction;
     private Action aboutAction;
 
@@ -26,7 +29,12 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private ImageNavigator imageNavigator;
     private Viewport viewport;
     private StatusBar statusBar;
-    
+
+    // Color reporting
+    private enum ColorMode { RGB, HEX };
+    private ColorMode colorMode = ColorMode.RGB;
+    private Color backgroundColor = Color.BLACK;
+
     public ProgramWindow() {
         frame = new JFrame("JSIV");
         frame.setIconImage(JSIVSplash.getSplashImage());
@@ -44,6 +52,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         frame.add(statusBar, BorderLayout.SOUTH);
 
         setNavigationAvailability(false);
+        useRGBColorModeAction.setEnabled(false);
 
         frame.pack();
         frame.setVisible(true);
@@ -89,8 +98,13 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
     
     @Override
-    public void newColorUnderPointer(int red, int green, int blue) {
-        statusBar.updateRGB(red, green, blue);
+    public void newColorUnderPointer(Color color) {
+        backgroundColor = color;
+        if (colorMode == ColorMode.RGB) {
+            statusBar.updateRGB(color);
+        } else {
+            statusBar.updateHex(color);
+        }
     }
     
     private void setNavigationAvailability(boolean available) {
@@ -236,7 +250,56 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                 viewport.centerImage(Viewport.FocusMode.WINDOW_CENTER);
             }
         };
-        
+
+        changeBackgroundColorAction = new AbstractAction("Change Background Color") {
+            {
+                putValue(ACCELERATOR_KEY,
+                        KeyStroke.getKeyStroke(KeyEvent.VK_B,
+                        InputEvent.CTRL_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_B);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Color newColor = JColorChooser.showDialog(
+                    frame,
+                    "Choose a new Background color",
+                    backgroundColor
+                );
+                if (newColor == null) { return; } // user cancelled
+                backgroundColor = newColor;
+                viewport.changeBackgroundColor(newColor);
+            }
+        };
+
+        useRGBColorModeAction = new AbstractAction("Use RGB Mode") {
+            {
+                putValue(MNEMONIC_KEY, KeyEvent.VK_R);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                colorMode = ColorMode.RGB;
+                statusBar.updateRGB(backgroundColor);
+                useRGBColorModeAction.setEnabled(false);
+                useHexColorModeAction.setEnabled(true);
+            }
+        };
+
+        useHexColorModeAction = new AbstractAction("Use HEX Mode") {
+            {
+                putValue(MNEMONIC_KEY, KeyEvent.VK_H);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                colorMode = ColorMode.HEX;
+                statusBar.updateHex(backgroundColor);
+                useRGBColorModeAction.setEnabled(true);
+                useHexColorModeAction.setEnabled(false);
+            }
+        };
+
         userManualAction = new AbstractAction("User Manual") {
             {
                 putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
@@ -316,24 +379,30 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         fileMenu.add(new JMenuItem(refreshAction));
         fileMenu.addSeparator();
         fileMenu.add(new JMenuItem(quitAction));
-        
         menuBar.add(fileMenu);
-        
+
         JMenu imageMenu = new JMenu("Image");
         imageMenu.setMnemonic(KeyEvent.VK_I);
-        
         imageMenu.add(new JMenuItem(zoomInAction));
         imageMenu.add(new JMenuItem(zoomOutAction));
         imageMenu.add(new JMenuItem(resetZoomAction));
         imageMenu.add(new JMenuItem(centerImageAction));
         menuBar.add(imageMenu);
-        
+
+        JMenu colorMenu = new JMenu("Color");
+        colorMenu.setMnemonic(KeyEvent.VK_C);
+        colorMenu.add(new JMenuItem(changeBackgroundColorAction));
+        colorMenu.addSeparator();
+        colorMenu.add(new JMenuItem(useRGBColorModeAction));
+        colorMenu.add(new JMenuItem(useHexColorModeAction));
+        menuBar.add(colorMenu);
+
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic(KeyEvent.VK_H);
         helpMenu.add(new JMenuItem(userManualAction));
         helpMenu.add(new JMenuItem(aboutAction));
         menuBar.add(helpMenu);
-        
+
         frame.setJMenuBar(menuBar);
     }
     

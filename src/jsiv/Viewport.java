@@ -71,6 +71,10 @@ public class Viewport extends JPanel {
         imageScaledSize = new Dimension(imageSize);
         resetZoom();
     }
+
+    public void changeBackgroundColor(Color newColor) {
+        setBackground(newColor);
+    }
     
     public void zoomIn(FocusMode focusMode) {
         // Check if we can zoom in any further.  Limit is MIN_PIXELS_ON_ZOOM
@@ -401,22 +405,20 @@ public class Viewport extends JPanel {
                     }
                 }
 
+                Color color;
                 // if pointer is not over the image, or if there is no image,
-                // report Black pixel
+                // report Background color pixel
                 if ((image == null)
                      || (focusPixelX < 0) || (focusPixelY < 0)
                      || (focusPixelX >= imageSize.width)
                      || (focusPixelY >= imageSize.height)) {
-                     viewportListener.newColorUnderPointer(0, 0, 0);
+                    color = getBackground();
                 } else {
                     // otherwise report color of pixel under pointer
-                    Color c = new Color(image.getRGB(focusPixelX,focusPixelY), true);
-                    viewportListener.newColorUnderPointer(
-                        c.getRed(),
-                        c.getGreen(),
-                        c.getBlue()
-                    );
+                    color = new Color(image.getRGB(focusPixelX,focusPixelY), true);
+                    if (color.getAlpha() < 128) { color = getBackground(); }
                 }
+                viewportListener.newColorUnderPointer(color);
             }
 
             @Override
