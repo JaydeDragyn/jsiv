@@ -1,6 +1,5 @@
 package jsiv;
 
-import java.util.HexFormat;
 import java.awt.*;
 import javax.swing.*;
 
@@ -49,7 +48,7 @@ public class StatusBar extends JPanel {
         updateImageSize(new Dimension(0, 0));
         updateViewportSize(new Dimension(0, 0));
         updateZoomLevel(1.0);
-        updateRGB(Color.BLACK);
+        updateColor("R:- G:- B:-");
         
         imageSizeLabel.setToolTipText("Size of this image in pixels.");
         viewportSizeLabel.setToolTipText("Size of the viewport in pixels.");
@@ -79,23 +78,7 @@ public class StatusBar extends JPanel {
         zoomLevelLabel.setText("Zoom: " + adjZoomLevel + "%");
     }
     
-    public void updateRGB(Color color) {
-        colorLabel.setText("R:" + color.getRed()
-                        + " G:" + color.getGreen()
-                        + " B:" + color.getBlue()
-        );
-    }
-
-    public void updateHex(Color color) {
-        colorLabel.setText("0x" + HexFormat.of()
-                                    .withUpperCase()
-                                    .toHexDigits((byte) (color.getRed() & 0xFF))
-                                + HexFormat.of()
-                                    .withUpperCase()
-                                    .toHexDigits((byte) (color.getGreen() & 0xFF))
-                                + HexFormat.of()
-                                    .withUpperCase()
-                                    .toHexDigits((byte) (color.getBlue() & 0xFF))
-        );
+    public void updateColor(String colorText) {
+        colorLabel.setText(colorText);
     }
 }

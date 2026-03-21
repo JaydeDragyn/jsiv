@@ -1,7 +1,9 @@
 package jsiv;
 
+import java.util.HexFormat;
 import java.util.Optional;
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
@@ -100,13 +102,47 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     
     @Override
     public void newColorUnderPointer(Color color) {
-        if (colorMode == ColorMode.RGB) {
-            statusBar.updateRGB(color);
-        } else {
-            statusBar.updateHex(color);
+        statusBar.updateColor(colorToString(color));
+    }
+
+    @Override
+    public void requestCopyColorToClipboard(Color color) {
+        try {
+            String colorString = colorToString(color);
+            StringSelection stringSelection = new StringSelection(colorString);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+            statusBar.updateColor(colorString + " Copied!");
+        } catch (java.awt.HeadlessException e) {
+            System.err.println("Cannot perform CopyToClipboard function: "
+                            + "Clipboard operations require a graphical environment.");
+        } catch (IllegalStateException e) {
+            JOptionPane.showMessageDialog(frame,
+                                      "Could not copy color to system clipboard",
+                                      "Clipboard is unavailable or busy",
+                                      JOptionPane.WARNING_MESSAGE);
         }
     }
-    
+
+    private String colorToString(Color color) {
+        return new String((colorMode==ColorMode.RGB)?
+                                        colorToRGB(color):
+                                        colorToHex(color));
+    }
+
+    private String colorToRGB(Color color) {
+        return "R:" + color.getRed()
+            + " G:" + color.getGreen()
+            + " B:" + color.getBlue();
+    }
+
+    private String colorToHex(Color color) {
+        return "0x"
+            + HexFormat.of().withUpperCase().toHexDigits((byte)(color.getRed() & 0xFF))
+            + HexFormat.of().withUpperCase().toHexDigits((byte)(color.getGreen() & 0xFF))
+            + HexFormat.of().withUpperCase().toHexDigits((byte)(color.getBlue() & 0xFF));
+    }
+
     private void setNavigationAvailability(boolean available) {
         openNextAction.setEnabled(available);
         openPreviousAction.setEnabled(available);
@@ -242,7 +278,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         centerImageAction = new AbstractAction("Center Image") {
             {
                 putValue(ACCELERATOR_KEY,
-                        KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+                        KeyStroke.getKeyStroke(KeyEvent.VK_C,
+                        InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_C);
             }
             
@@ -281,7 +318,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 colorMode = ColorMode.RGB;
-                statusBar.updateRGB(backgroundColor);
+                statusBar.updateColor(colorToString(backgroundColor));
                 useRGBColorModeAction.setEnabled(false);
                 useHexColorModeAction.setEnabled(true);
             }
@@ -295,7 +332,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 colorMode = ColorMode.HEX;
-                statusBar.updateHex(backgroundColor);
+                statusBar.updateColor(colorToString(backgroundColor));
                 useRGBColorModeAction.setEnabled(true);
                 useHexColorModeAction.setEnabled(false);
             }

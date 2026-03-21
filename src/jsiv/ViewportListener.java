@@ -9,4 +9,5 @@ public interface ViewportListener {
     void viewportSizeChanged(Dimension newViewportSize);
     void zoomChanged(double newZoomLevel);
     void newColorUnderPointer(Color color);
+    void requestCopyColorToClipboard(Color color);
 }

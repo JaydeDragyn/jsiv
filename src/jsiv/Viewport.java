@@ -301,12 +301,35 @@ public class Viewport extends JPanel {
             distanceFromPressY > POINTER_DRIFT_THRESHOLD) {
                 return;
         }
+
+        int focusPixelX = (int)((pressPoint.x - imageOffsetX) / zoomLevel);
+        int focusPixelY = (int)((pressPoint.y - imageOffsetY) / zoomLevel);
+
         if (previousButtonArea.contains(pressPoint)) {
             openPreviousRequested();
-        }
-        if (nextButtonArea.contains(pressPoint)) {
+        } else if (nextButtonArea.contains(pressPoint)) {
             openNextRequested();
+        } else {
+            viewportListener.requestCopyColorToClipboard(
+                    getColorUnderPointer(focusPixelX, focusPixelY));
         }
+    }
+
+    private Color getColorUnderPointer(int pointerX, int pointerY) {
+        Color color;
+        // if pointer is not over the image, or if there is no image,
+        // report Background color pixel
+        if ((image == null)
+                || (pointerX < 0) || (pointerY < 0)
+                || (pointerX >= imageSize.width)
+                || (pointerY >= imageSize.height)) {
+            color = getBackground();
+        } else {
+            // otherwise report color of pixel under pointer
+            color = new Color(image.getRGB(pointerX,pointerY), true);
+            if (color.getAlpha() < 128) { color = getBackground(); }
+        }
+        return color;
     }
 
     private void openNextRequested() {
@@ -405,20 +428,8 @@ public class Viewport extends JPanel {
                     }
                 }
 
-                Color color;
-                // if pointer is not over the image, or if there is no image,
-                // report Background color pixel
-                if ((image == null)
-                     || (focusPixelX < 0) || (focusPixelY < 0)
-                     || (focusPixelX >= imageSize.width)
-                     || (focusPixelY >= imageSize.height)) {
-                    color = getBackground();
-                } else {
-                    // otherwise report color of pixel under pointer
-                    color = new Color(image.getRGB(focusPixelX,focusPixelY), true);
-                    if (color.getAlpha() < 128) { color = getBackground(); }
-                }
-                viewportListener.newColorUnderPointer(color);
+                viewportListener.newColorUnderPointer(
+                        getColorUnderPointer(focusPixelX, focusPixelY));
             }
 
             @Override
