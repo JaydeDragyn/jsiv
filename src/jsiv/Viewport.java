@@ -39,6 +39,7 @@ public class Viewport extends JPanel {
     private boolean rightButtonDragged;
     private static final int MOUSE_DRAG_THRESHOLD = 1;
     private static final int POINTER_DRIFT_THRESHOLD = 4;
+    private static final int NAVIGATION_BUTTON_OFFSET = 10;
 
     public static final int PAN_FINE = 1;
     public static final int PAN_COARSE = 10;
@@ -151,8 +152,8 @@ public class Viewport extends JPanel {
         imageScaledSize = new Dimension((int)(imageSize.width * zoomLevel),
                                         (int)(imageSize.height * zoomLevel));
 
-        imageOffsetX = focusPoint.x - (int)(focusPixelX * zoomLevel) - (int)(zoomLevel / 2);
-        imageOffsetY = focusPoint.y - (int)(focusPixelY * zoomLevel) - (int)(zoomLevel / 2);
+        imageOffsetX = focusPoint.x -(int)(focusPixelX * zoomLevel) -(int)(zoomLevel /2);
+        imageOffsetY = focusPoint.y -(int)(focusPixelY * zoomLevel) -(int)(zoomLevel /2);
 
         updateClampLimits();
         clampImageToViewport();
@@ -201,9 +202,14 @@ public class Viewport extends JPanel {
 
         if (inButtonAreas) {
             pen = (Graphics2D) g.create();
-            int y = (viewportSize.height / 2) - 38;
-            pen.drawImage(previousButton, 0,y, null);
-            pen.drawImage(nextButton, viewportSize.width - 50,y, null);
+            pen.drawImage(previousButton,
+                            previousButtonArea.x,
+                            previousButtonArea.y,
+                            null);
+            pen.drawImage(nextButton,
+                            nextButtonArea.x,
+                            nextButtonArea.y,
+                            null);
             pen.dispose();
         }
     }
@@ -255,13 +261,16 @@ public class Viewport extends JPanel {
         viewportSize = new Dimension(getSize());
         viewportCenter = new Point(viewportSize.width / 2,
                                    viewportSize.height / 2);
-        int y = (viewportSize.height / 2) - (nextButton.getHeight() / 2);
         nextButtonArea = new Rectangle(
-                        viewportSize.width - nextButton.getWidth(),y,
-                        nextButton.getWidth(), nextButton.getHeight());
+                viewportSize.width - nextButton.getWidth() - NAVIGATION_BUTTON_OFFSET,
+                (viewportSize.height / 2) - (nextButton.getHeight() / 2),
+                nextButton.getWidth(),
+                nextButton.getHeight());
         previousButtonArea = new Rectangle(
-                        0, y,
-                        previousButton.getWidth(), previousButton.getHeight());
+                NAVIGATION_BUTTON_OFFSET,
+                (viewportSize.height / 2) - (previousButton.getHeight() / 2),
+                previousButton.getWidth(),
+                previousButton.getHeight());
         viewportListener.viewportSizeChanged(viewportSize);
     }
 
