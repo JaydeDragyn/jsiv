@@ -35,12 +35,11 @@ public class Viewport extends JPanel {
 
     private Point pressPoint = new Point(0,0);
     private boolean leftButtonPressed;
+    private boolean leftButtonDragged;
     private boolean rightButtonPressed;
-    private boolean rightButtonDragged;
     private static final int LMB = MouseEvent.BUTTON1;
     private static final int RMB = MouseEvent.BUTTON3;
-    private static final int MOUSE_DRAG_THRESHOLD = 1;
-    private static final int POINTER_DRIFT_THRESHOLD = 4;
+    private static final int MOUSE_DRAG_THRESHOLD = 3;
     private static final int NAVIGATION_BUTTON_OFFSET = 10;
 
     public static final int PAN_FINE = 1;
@@ -299,31 +298,16 @@ public class Viewport extends JPanel {
                         Math.max(minLargeOffset.y, Math.min(0, imageOffsetY));
     }
 
-    private boolean inNavigationButtonAreas() {
-        return (nextButtonArea.contains(mouseLocation)
-                || previousButtonArea.contains(mouseLocation));
+    private boolean inPreviousButtonArea() {
+        return previousButtonArea.contains(mouseLocation);
     }
 
-    private void handleLeftClick() {
-        int distanceFromPressX = Math.abs(mouseLocation.x - pressPoint.x);
-        int distanceFromPressY = Math.abs(mouseLocation.y - pressPoint.y);
+    private boolean inNextButtonArea() {
+        return nextButtonArea.contains(mouseLocation);
+    }
 
-        if (distanceFromPressX > POINTER_DRIFT_THRESHOLD ||
-            distanceFromPressY > POINTER_DRIFT_THRESHOLD) {
-                return;
-        }
-
-        int focusPixelX = (int)((pressPoint.x - imageOffsetX) / zoomLevel);
-        int focusPixelY = (int)((pressPoint.y - imageOffsetY) / zoomLevel);
-
-        if (previousButtonArea.contains(pressPoint)) {
-            openPreviousRequested();
-        } else if (nextButtonArea.contains(pressPoint)) {
-            openNextRequested();
-        } else {
-            viewportListener.requestCopyColorToClipboard(
-                    getColorUnderPointer(focusPixelX, focusPixelY));
-        }
+    private boolean inNavigationButtonAreas() {
+        return (inPreviousButtonArea() || inNextButtonArea());
     }
 
     private Color getColorUnderPointer(int pointerX, int pointerY) {
@@ -341,18 +325,6 @@ public class Viewport extends JPanel {
             if (color.getAlpha() < 128) { color = getBackground(); }
         }
         return color;
-    }
-
-    private void openNextRequested() {
-        if (!navigationAvailable) { return; }
-        viewportListener.requestOpenNext();
-        repaint();
-    }
-    
-    private void openPreviousRequested() {
-        if (!navigationAvailable) { return; }
-        viewportListener.requestOpenPrevious();
-        repaint();
     }
 
     private void initResizeListener() {
@@ -382,38 +354,63 @@ public class Viewport extends JPanel {
                 // Left button?
                 if (e.getButton() == LMB) {
                     leftButtonPressed = true;
+                    leftButtonDragged = false;
                 }
                 
                 // Right button?
                 if (e.getButton() == RMB) {
                     rightButtonPressed = true;
-                    rightButtonDragged = false;
                 }
             }
             
             @Override
             public void mouseReleased(MouseEvent e) {
-                mouseLocation = e.getPoint();
-
-                // LMB
+                // If LMB then this is either navigation, a recenter or a drag
                 if (e.getButton() == LMB) {
-                    // verify the correct button was released or don't act
+                    // Verify if LMB is the button we are even processing
                     if (!leftButtonPressed) { return; }
-                    handleLeftClick();
-                    leftButtonPressed = false;
-                }
-                
-                // RMB
-                if (e.getButton() == RMB) {
-                    // verify the correct button was released or don't act
-                    if (!rightButtonPressed) { return; }
-                    
-                    // if this wasn't a drag, it's a click.
-                    if (!rightButtonDragged) {
+
+                    // If it was a drag, then clean up and done
+                    if (leftButtonDragged) {
+                        leftButtonPressed = false;
+                        leftButtonDragged = false;
+                        return;
+                    }
+
+                    // If it was navigation, then navigate
+                    if (inPreviousButtonArea()) {
+                        if (navigationAvailable) {
+                            viewportListener.requestOpenPrevious();
+                            repaint();
+                        }
+                    } else if (inNextButtonArea()) {
+                        if (navigationAvailable) {
+                            viewportListener.requestOpenNext();
+                            repaint();
+                        }
+                    } else {
+                        // It wasn't a drag or navigation, so recenter on mouse
                         centerImage(FocusMode.POINTER);
                     }
+
+                    // Finally, clear LMB to wait for new press, and done
+                    leftButtonPressed = false;
+                    return;
+                }
+                
+                // If RMB then it is a copy-color request
+                if (e.getButton() == RMB) {
+                    // Verify if RMB is the button we are even processing
+                    if (!rightButtonPressed) { return; }
+                    
+                    viewportListener.requestCopyColorToClipboard(
+                        getColorUnderPointer(
+                            (int)((pressPoint.x - imageOffsetX) / zoomLevel),
+                            (int)((pressPoint.y - imageOffsetY) / zoomLevel)));
+
+                    // Finally, clear RMB to wait for new press, and done
                     rightButtonPressed = false;
-                    rightButtonDragged = false;
+                    return;
                 }
             }
         });
@@ -423,24 +420,26 @@ public class Viewport extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 mouseLastLocation.setLocation(mouseLocation);
                 mouseLocation = e.getPoint();
-                
-                int focusPixelX = (int)((mouseLocation.x - imageOffsetX) / zoomLevel);
-                int focusPixelY = (int)((mouseLocation.y - imageOffsetY) / zoomLevel);
-                
+
+                // This is when mouse moves without any buttons pressed, so
                 if (navigationAvailable && inNavigationButtonAreas()) {
+                    // Show navigation buttons if pointer just moved over one
                     if (!inButtonAreas) {
                         inButtonAreas = true;
                         repaint();
                     }
                 } else {
+                    // Hide navigation buttons if pointer moved away from them
                     if (inButtonAreas) {
                         inButtonAreas = false;
                         repaint();
                     }
                 }
 
-                viewportListener.newColorUnderPointer(
-                        getColorUnderPointer(focusPixelX, focusPixelY));
+                // Now report color under pointer
+                viewportListener.newColorUnderPointer(getColorUnderPointer(
+                    (int)((mouseLocation.x - imageOffsetX) / zoomLevel),
+                    (int)((mouseLocation.y - imageOffsetY) / zoomLevel)));
             }
 
             @Override
@@ -448,16 +447,24 @@ public class Viewport extends JPanel {
                 mouseLastLocation.setLocation(mouseLocation);
                 mouseLocation = e.getPoint();
 
-                // This application only drags with RMB
-                if (!rightButtonPressed) { return; }
+                // This application only drags with LMB
+                if (!leftButtonPressed) { return; }
                 
-                if (!rightButtonDragged) {
-                    int dx = Math.abs(mouseLocation.x - pressPoint.x);
-                    int dy = Math.abs(mouseLocation.y - pressPoint.y);
-                    if (dx > MOUSE_DRAG_THRESHOLD || dy > MOUSE_DRAG_THRESHOLD) { 
-                        rightButtonDragged = true; 
+                // Check if we are already dragging
+                if (!leftButtonDragged) {
+                    int dx = mouseLocation.x - pressPoint.x;
+                    int dy = mouseLocation.y - pressPoint.y;
+
+                    // Not yet, so make sure mouse moved beyond drag threshold
+                    if (Math.abs(dx) > MOUSE_DRAG_THRESHOLD
+                     || Math.abs(dy) > MOUSE_DRAG_THRESHOLD) {
+                        // It did, so mark as a drag now and pan from
+                        // pressPoint to keep image properly with mouse
+                        leftButtonDragged = true;
+                        panImage(dx, dy);
                     }
                 } else {
+                    // We are already panning, so move from last mouse location
                     panImage(mouseLocation.x - mouseLastLocation.x,
                              mouseLocation.y - mouseLastLocation.y);
                 }
