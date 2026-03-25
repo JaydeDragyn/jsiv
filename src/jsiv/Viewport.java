@@ -74,10 +74,6 @@ public class Viewport extends JPanel {
         resetZoom();
     }
 
-    public void changeBackgroundColor(Color newColor) {
-        setBackground(newColor);
-    }
-    
     public void zoomIn(FocusMode focusMode) {
         // Check if we can zoom in any further.  Limit is MIN_PIXELS_ON_ZOOM
         // visible in the viewport along either axis.  If zooming in would

@@ -238,7 +238,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         zoomInAction = new AbstractAction("Zoom In") {
             {
                 putValue(ACCELERATOR_KEY,
-                    KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK));
+                    KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS,
+                    InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_I);
             }
             
@@ -251,7 +252,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         zoomOutAction = new AbstractAction("Zoom Out") {
             {
                 putValue(ACCELERATOR_KEY,
-                    KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
+                    KeyStroke.getKeyStroke(KeyEvent.VK_MINUS,
+                    InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_O);
                 putValue(DISPLAYED_MNEMONIC_INDEX_KEY, 5);
             }
@@ -265,7 +267,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         resetZoomAction = new AbstractAction("Reset Zoom") {
             {
                 putValue(ACCELERATOR_KEY,
-                        KeyStroke.getKeyStroke(KeyEvent.VK_0, InputEvent.CTRL_DOWN_MASK));
+                        KeyStroke.getKeyStroke(KeyEvent.VK_0,
+                        InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_R);
             }
             
@@ -306,7 +309,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                 );
                 if (newColor == null) { return; } // user cancelled
                 backgroundColor = newColor;
-                viewport.changeBackgroundColor(newColor);
+                viewport.setBackground(newColor);
             }
         };
 
