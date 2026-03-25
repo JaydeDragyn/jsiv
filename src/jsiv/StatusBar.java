@@ -53,8 +53,8 @@ public class StatusBar extends JPanel {
         imageSizeLabel.setToolTipText("Size of this image in pixels.");
         viewportSizeLabel.setToolTipText("Size of the viewport in pixels.");
         zoomLevelLabel.setToolTipText("Image magnification level.");
-        colorLabel.setToolTipText(
-            "Red, Green and Blue values of pixel under the pointer.");
+        colorLabel.setToolTipText("Color of pixel under the pointer "
+                                + "(Right click to copy to clipboard).");
     }
 
     public void updateIndexCount(int index, int imageCount) {
