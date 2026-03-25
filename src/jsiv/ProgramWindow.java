@@ -142,6 +142,15 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             + hex.toHexDigits((byte)(color.getBlue()  & 0xFF));
     }
 
+    private void setColorMode(ColorMode mode) {
+        colorMode = mode;
+
+        statusBar.updateColor(colorToString(backgroundColor));
+
+        useRGBColorModeAction.setEnabled(mode != ColorMode.RGB);
+        useHexColorModeAction.setEnabled(mode != ColorMode.HEX);
+    }
+
     private void setNavigationAvailability(boolean available) {
         openNextAction.setEnabled(available);
         openPreviousAction.setEnabled(available);
@@ -319,10 +328,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                colorMode = ColorMode.RGB;
-                statusBar.updateColor(colorToString(backgroundColor));
-                useRGBColorModeAction.setEnabled(false);
-                useHexColorModeAction.setEnabled(true);
+                setColorMode(ColorMode.RGB);
             }
         };
 
@@ -333,10 +339,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                colorMode = ColorMode.HEX;
-                statusBar.updateColor(colorToString(backgroundColor));
-                useRGBColorModeAction.setEnabled(true);
-                useHexColorModeAction.setEnabled(false);
+                setColorMode(ColorMode.HEX);
             }
         };
 
