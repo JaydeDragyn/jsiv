@@ -147,8 +147,8 @@ public class Viewport extends JPanel {
             case POINTER       -> new Point(mouseLocation);
         };
 
-        int focusPixelX = (int)((focusPoint.x - imageOffsetX) / zoomLevel);
-        int focusPixelY = (int)((focusPoint.y - imageOffsetY) / zoomLevel);
+        int focusPixelX = (int)Math.floor((focusPoint.x - imageOffsetX) / zoomLevel);
+        int focusPixelY = (int)Math.floor((focusPoint.y - imageOffsetY) / zoomLevel);
 
         zoomLevel = newZoomLevel;
         imageScaledSize = new Dimension((int)(imageSize.width * zoomLevel),
