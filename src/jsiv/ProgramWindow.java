@@ -137,10 +137,11 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
 
     private String colorToHex(Color color) {
+        HexFormat hex = HexFormat.of().withUpperCase();
         return "0x"
-            + HexFormat.of().withUpperCase().toHexDigits((byte)(color.getRed() & 0xFF))
-            + HexFormat.of().withUpperCase().toHexDigits((byte)(color.getGreen() & 0xFF))
-            + HexFormat.of().withUpperCase().toHexDigits((byte)(color.getBlue() & 0xFF));
+            + hex.toHexDigits((byte)(color.getRed()   & 0xFF))
+            + hex.toHexDigits((byte)(color.getGreen() & 0xFF))
+            + hex.toHexDigits((byte)(color.getBlue()  & 0xFF));
     }
 
     private void setNavigationAvailability(boolean available) {
