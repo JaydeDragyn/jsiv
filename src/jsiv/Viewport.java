@@ -17,8 +17,8 @@ public class Viewport extends JPanel {
     private BufferedImage image;
     private BufferedImage nextButton;
     private BufferedImage previousButton;
-    private Rectangle nextButtonArea;
-    private Rectangle previousButtonArea;
+    private Rectangle nextButtonArea = new Rectangle(0,0,0,0);
+    private Rectangle previousButtonArea = new Rectangle(0,0,0,0);
     private boolean inButtonAreas;
     private Dimension imageSize = new Dimension(0,0);
     private Dimension imageScaledSize = new Dimension(0,0);
@@ -255,15 +255,15 @@ public class Viewport extends JPanel {
     }
 
     private void updateViewportSize() {
-        viewportSize = new Dimension(getSize());
-        viewportCenter = new Point(viewportSize.width / 2,
+        viewportSize.setSize(getSize());
+        viewportCenter.setLocation(viewportSize.width / 2,
                                    viewportSize.height / 2);
-        nextButtonArea = new Rectangle(
+        nextButtonArea.setBounds(
                 viewportSize.width - nextButton.getWidth() - NAVIGATION_BUTTON_OFFSET,
                 (viewportSize.height / 2) - (nextButton.getHeight() / 2),
                 nextButton.getWidth(),
                 nextButton.getHeight());
-        previousButtonArea = new Rectangle(
+        previousButtonArea.setBounds(
                 NAVIGATION_BUTTON_OFFSET,
                 (viewportSize.height / 2) - (previousButton.getHeight() / 2),
                 previousButton.getWidth(),
