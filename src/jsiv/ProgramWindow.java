@@ -125,9 +125,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
 
     private String colorToString(Color color) {
-        return new String((colorMode==ColorMode.RGB)?
-                                        colorToRGB(color):
-                                        colorToHex(color));
+        return (colorMode==ColorMode.RGB)?colorToRGB(color):colorToHex(color);
     }
 
     private String colorToRGB(Color color) {
