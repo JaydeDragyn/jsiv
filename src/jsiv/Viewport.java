@@ -37,6 +37,8 @@ public class Viewport extends JPanel {
     private boolean leftButtonPressed;
     private boolean rightButtonPressed;
     private boolean rightButtonDragged;
+    private static final int LMB = MouseEvent.BUTTON1;
+    private static final int RMB = MouseEvent.BUTTON3;
     private static final int MOUSE_DRAG_THRESHOLD = 1;
     private static final int POINTER_DRIFT_THRESHOLD = 4;
     private static final int NAVIGATION_BUTTON_OFFSET = 10;
@@ -378,12 +380,12 @@ public class Viewport extends JPanel {
                 pressPoint.setLocation(mouseLocation);
                 
                 // Left button?
-                if (e.getButton() == MouseEvent.BUTTON1) {
+                if (e.getButton() == LMB) {
                     leftButtonPressed = true;
                 }
                 
                 // Right button?
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (e.getButton() == RMB) {
                     rightButtonPressed = true;
                     rightButtonDragged = false;
                 }
@@ -394,7 +396,7 @@ public class Viewport extends JPanel {
                 mouseLocation = e.getPoint();
 
                 // LMB
-                if (e.getButton() == MouseEvent.BUTTON1) {
+                if (e.getButton() == LMB) {
                     // verify the correct button was released or don't act
                     if (!leftButtonPressed) { return; }
                     handleLeftClick();
@@ -402,7 +404,7 @@ public class Viewport extends JPanel {
                 }
                 
                 // RMB
-                if (e.getButton() == MouseEvent.BUTTON3) {
+                if (e.getButton() == RMB) {
                     // verify the correct button was released or don't act
                     if (!rightButtonPressed) { return; }
                     
