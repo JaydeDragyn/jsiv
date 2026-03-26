@@ -11,6 +11,9 @@ public class Viewport extends JPanel {
         WINDOW_CENTER, POINTER
     };
 
+    public static final int PAN_FINE = 1;
+    public static final int PAN_COARSE = 10;
+
     private final ViewportListener viewportListener;
     private boolean navigationAvailable;
 
@@ -19,6 +22,7 @@ public class Viewport extends JPanel {
     private BufferedImage previousButton;
     private Rectangle nextButtonArea = new Rectangle(0,0,0,0);
     private Rectangle previousButtonArea = new Rectangle(0,0,0,0);
+    private static final int NAVIGATION_BUTTON_OFFSET = 10;
     private boolean inButtonAreas;
     private Dimension imageSize = new Dimension(0,0);
     private Dimension imageScaledSize = new Dimension(0,0);
@@ -40,16 +44,12 @@ public class Viewport extends JPanel {
     private static final int LMB = MouseEvent.BUTTON1;
     private static final int RMB = MouseEvent.BUTTON3;
     private static final int MOUSE_DRAG_THRESHOLD = 3;
-    private static final int NAVIGATION_BUTTON_OFFSET = 10;
-
-    public static final int PAN_FINE = 1;
-    public static final int PAN_COARSE = 10;
 
 
     public Viewport(ViewportListener viewportListener) {
         this.viewportListener = viewportListener;
         navigationAvailable = false;
-        
+
         initResizeListener();
         initMouseListeners();
 
