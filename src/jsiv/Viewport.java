@@ -117,8 +117,8 @@ public class Viewport extends JPanel {
         // If viewport has not been sized yet, abort
         if (viewportSize.width == 0 || viewportSize.height == 0) { return; }
 
-        // Find the continuous zoom (not power of 2 yet) that makes both
-        // axis fit in the viewport
+        // Find the actual zoom level that makes both axis fit within
+        // the viewport at the largest size possible.
         double fitZoom = Math.min(
             (double) viewportSize.width / imageSize.width,
             (double) viewportSize.height / imageSize.height
@@ -128,12 +128,11 @@ public class Viewport extends JPanel {
         int n = (int) Math.floor(Math.log(fitZoom) / Math.log(2));
         zoomLevel = Math.pow(2, n);
 
-        // update, center and notify of the new zoomLevel
-        imageScaledSize.setSize(
-            (int)(imageSize.width * zoomLevel),
-            (int)(imageSize.height * zoomLevel)
-        );
-
+        // Now finish the reset by calculating the scaled image size,
+        // clamp limits, image position (to be centered) and finally
+        // report the new zoom level to the listener
+        imageScaledSize.setSize((int)(imageSize.width * zoomLevel),
+                                (int)(imageSize.height * zoomLevel));
         updateClampLimits();
         centerImage(FocusMode.WINDOW_CENTER);
         repaint();
@@ -141,7 +140,6 @@ public class Viewport extends JPanel {
     }
     
     private void setZoom(double newZoomLevel, FocusMode focusMode) {
-
         Point focusPoint = switch (focusMode) {
             case WINDOW_CENTER -> new Point(viewportCenter);
             case POINTER       -> new Point(mouseLocation);
@@ -154,6 +152,10 @@ public class Viewport extends JPanel {
         imageScaledSize.setSize((int)(imageSize.width * zoomLevel),
                                 (int)(imageSize.height * zoomLevel));
 
+        // The end term "-(int)(zoomLevel/2)" is to line up the center of the
+        // focused pixel under the mouse, so when zoomed in and the pixels
+        // are large enough, the mouse will always remain in the center of
+        // the pixel that was focused on
         imageOffsetX = focusPoint.x -(int)(focusPixelX * zoomLevel) -(int)(zoomLevel /2);
         imageOffsetY = focusPoint.y -(int)(focusPixelY * zoomLevel) -(int)(zoomLevel /2);
 
@@ -195,13 +197,14 @@ public class Viewport extends JPanel {
         super.paintComponent(g);
         if (image == null) { return; }
 
+        // draw the image at zoomed scale where user last put it
         Graphics2D pen = (Graphics2D) g.create();
-
         pen.translate(imageOffsetX, imageOffsetY);
         pen.scale(zoomLevel, zoomLevel);
         pen.drawImage(image, 0,0, null);
         pen.dispose();
 
+        // draw navigation buttons if mouse is over one of them
         if (inButtonAreas) {
             pen = (Graphics2D) g.create();
             pen.drawImage(previousButton,
@@ -344,9 +347,8 @@ public class Viewport extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // ignore if a button is already pressed
-                // only one should be pressed at a time,
-                // so this will cause us to ignore the other one
+                // abort if a button is already pressed
+                // only one button should be pressed at a time,
                 if (leftButtonPressed || rightButtonPressed) { return; }
                 
                 // record the position the user pressed the button
