@@ -35,6 +35,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     // Color reporting
     private enum ColorMode { RGB, HEX };
     private ColorMode colorMode = ColorMode.RGB;
+    private Color lastColor = Color.BLACK;
     private Color backgroundColor = Color.BLACK;
 
     public ProgramWindow() {
@@ -102,6 +103,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     
     @Override
     public void newColorUnderPointer(Color color) {
+        lastColor = color;
         statusBar.updateColor(colorToString(color));
     }
 
@@ -145,7 +147,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private void setColorMode(ColorMode mode) {
         colorMode = mode;
 
-        statusBar.updateColor(colorToString(backgroundColor));
+        statusBar.updateColor(colorToString(lastColor));
 
         useRGBColorModeAction.setEnabled(mode != ColorMode.RGB);
         useHexColorModeAction.setEnabled(mode != ColorMode.HEX);
