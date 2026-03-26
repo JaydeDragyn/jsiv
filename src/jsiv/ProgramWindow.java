@@ -49,6 +49,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         initInputActionMaps();
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTransferHandler(new ImageDropHandler(imageNavigator));
         frame.getContentPane().setLayout(new BorderLayout());
 
         frame.add(viewport, BorderLayout.CENTER);

@@ -39,9 +39,12 @@ public class ImageNavigator {
             return;
         }
 
+        openFile(fileDialog.getDirectory(), fileDialog.getFile());
+    }
+
+
+    public void openFile(String path, String name) {
         // user selected a file, try to open the file
-        String path = fileDialog.getDirectory();
-        String name = fileDialog.getFile();
         File file = new File(path, name);
         String fullPathName = getFullPathName(file);
 
@@ -225,7 +228,7 @@ public class ImageNavigator {
                                                 imageFileList.size());
     }
 
-    private void showError(String title, String error) {
+    public void showError(String title, String error) {
         JOptionPane.showMessageDialog(dialogParent,
                                       error,
                                       title,
