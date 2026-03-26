@@ -28,8 +28,8 @@ public class Viewport extends JPanel {
     private Dimension imageScaledSize = new Dimension(0,0);
     private int imageOffsetX;
     private int imageOffsetY;
-    private Point maxSmallOffset;
-    private Point minLargeOffset;
+    private Point maxSmallOffset = new Point(0,0);
+    private Point minLargeOffset = new Point(0,0);
     private Dimension viewportSize = new Dimension(0,0);
     private Point viewportCenter = new Point(0,0);
     private double zoomLevel = 1.0;
@@ -69,13 +69,13 @@ public class Viewport extends JPanel {
     public void setImage(BufferedImage newImage) {
         image = newImage;
         if (image == null) {
-            imageSize = new Dimension(0,0);
+            imageSize.setSize(0,0);
         } else {
-            imageSize = new Dimension(image.getWidth(), image.getHeight());
+            imageSize.setSize(image.getWidth(), image.getHeight());
         }
 
-        viewportListener.imageSizeChanged(imageSize);
-        imageScaledSize = new Dimension(imageSize);
+        imageScaledSize.setSize(imageSize);
+        viewportListener.imageSizeChanged(new Dimension(imageSize));
         resetZoom();
     }
 
@@ -129,7 +129,7 @@ public class Viewport extends JPanel {
         zoomLevel = Math.pow(2, n);
 
         // update, center and notify of the new zoomLevel
-        imageScaledSize = new Dimension(
+        imageScaledSize.setSize(
             (int)(imageSize.width * zoomLevel),
             (int)(imageSize.height * zoomLevel)
         );
@@ -151,8 +151,8 @@ public class Viewport extends JPanel {
         int focusPixelY = (int)Math.floor((focusPoint.y - imageOffsetY) / zoomLevel);
 
         zoomLevel = newZoomLevel;
-        imageScaledSize = new Dimension((int)(imageSize.width * zoomLevel),
-                                        (int)(imageSize.height * zoomLevel));
+        imageScaledSize.setSize((int)(imageSize.width * zoomLevel),
+                                (int)(imageSize.height * zoomLevel));
 
         imageOffsetX = focusPoint.x -(int)(focusPixelX * zoomLevel) -(int)(zoomLevel /2);
         imageOffsetY = focusPoint.y -(int)(focusPixelY * zoomLevel) -(int)(zoomLevel /2);
@@ -273,15 +273,15 @@ public class Viewport extends JPanel {
                 (viewportSize.height / 2) - (previousButton.getHeight() / 2),
                 previousButton.getWidth(),
                 previousButton.getHeight());
-        viewportListener.viewportSizeChanged(viewportSize);
+        viewportListener.viewportSizeChanged(new Dimension(viewportSize));
     }
 
     private void updateClampLimits() {
         // minSmallOffset is always going to be 0,0
-        maxSmallOffset = new Point(viewportSize.width - imageScaledSize.width,
-                                       viewportSize.height - imageScaledSize.height);
-        minLargeOffset = new Point(-(imageScaledSize.width - viewportSize.width),
-                                     -(imageScaledSize.height - viewportSize.height));
+        maxSmallOffset.setLocation(viewportSize.width - imageScaledSize.width,
+                                    viewportSize.height - imageScaledSize.height);
+        minLargeOffset.setLocation(-(imageScaledSize.width - viewportSize.width),
+                                    -(imageScaledSize.height - viewportSize.height));
         // maxLargeOffset is always going to be 0,0
     }
 
