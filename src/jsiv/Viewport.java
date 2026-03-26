@@ -326,7 +326,6 @@ public class Viewport extends JPanel {
         } else {
             // otherwise report color of pixel under pointer
             color = new Color(image.getRGB(pointerX,pointerY), true);
-            if (color.getAlpha() < 128) { color = getBackground(); }
         }
         return color;
     }
