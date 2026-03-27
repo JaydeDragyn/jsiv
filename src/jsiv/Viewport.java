@@ -379,6 +379,13 @@ public class Viewport extends JPanel {
                         return;
                     }
 
+                    // If it was Ctrl-Click, then recenter
+                    if (e.isControlDown()) {
+                        centerImage(FocusMode.POINTER);
+                        leftButtonPressed = false;
+                        return;
+                    }
+
                     // If it was navigation, then navigate
                     if (inPreviousButtonArea()) {
                         if (navigationAvailable) {
@@ -390,9 +397,6 @@ public class Viewport extends JPanel {
                             viewportListener.requestOpenNext();
                             repaint();
                         }
-                    } else {
-                        // It wasn't a drag or navigation, so recenter on mouse
-                        centerImage(FocusMode.POINTER);
                     }
 
                     // Finally, clear LMB to wait for new press, and done
