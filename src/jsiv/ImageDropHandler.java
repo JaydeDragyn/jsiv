@@ -28,8 +28,13 @@ public class ImageDropHandler extends TransferHandler {
                     .getTransferData(DataFlavor.javaFileListFlavor);
 
             if (!files.isEmpty()) {
-                String path = files.get(0).getParent();
-                String name = files.get(0).getName();
+                // We only care about the first file in the list,
+                // so if the user dropped multiple files, we ignore
+                // the rest.  The order the system reports the files
+                // to us determines what we consider the "first file"
+                File droppedFile = files.get(0);
+                String path = droppedFile.getParent();
+                String name = droppedFile.getName();
                 imageNavigator.openFile(path, name);
                 return true;
             }

@@ -54,8 +54,14 @@ public class ImageNavigator {
         // dialog that lets the user know we could not open the file.
         // then abort.
         if (tempImage.isEmpty()) {
-            showError("Unable to open file",
-                    "Could not open file: " + fullPathName);
+            if (!isImageFile(file)) {
+                showError("Unable to open file",
+                    fullPathName + "\n" +
+                    "File type not supported.");
+            } else {
+                showError("Unable to open file",
+                        "Could not open file: " + fullPathName);
+            }
             return;
         }
 
@@ -167,6 +173,29 @@ public class ImageNavigator {
         navigate(-1);
     }
 
+    public void showError(String title, String error) {
+        JOptionPane.showMessageDialog(dialogParent,
+                                      error,
+                                      title,
+                                      JOptionPane.WARNING_MESSAGE);
+    }
+
+    private boolean isImageFile(File file) {
+        if (file == null) { return false; }
+        if (!file.isFile()) { return false; }
+
+        String name = file.getName().toLowerCase();
+
+        return name.endsWith(".png")
+            || name.endsWith(".gif")
+            || name.endsWith(".jpg")
+            || name.endsWith(".jpeg")
+            || name.endsWith(".bmp")
+            || name.endsWith(".tif")
+            || name.endsWith(".tiff")
+            || name.endsWith(".wbmp");
+    }
+
     private void navigate(int direction) {
         // first, make sure navigation is available and that we have a list of
         // more than 1 file to navigate through.  If either is false, emit
@@ -182,7 +211,7 @@ public class ImageNavigator {
 
         // now we loop, attempting to load the image in the list that is
         // adjacent to the current index, in direction (+1 for next, -1 for
-        // previous).  If we are unable to laod an image, we will remove it
+        // previous).  If we are unable to load an image, we will remove it
         // from the list.  If the loop ends, we successfully loaded a new
         // image.  Otherwise, the loop will abort with a return after
         // emitting new state information to the other components.
@@ -228,13 +257,6 @@ public class ImageNavigator {
                                                 imageFileList.size());
     }
 
-    public void showError(String title, String error) {
-        JOptionPane.showMessageDialog(dialogParent,
-                                      error,
-                                      title,
-                                      JOptionPane.WARNING_MESSAGE);
-    }
-
     private Optional<BufferedImage> loadFile(File file) {
         BufferedImage tempImage;
         try {
@@ -245,22 +267,6 @@ public class ImageNavigator {
         }
 
         return Optional.of(tempImage);
-    }
-
-    private boolean isImageFile(File file) {
-        if (file == null) { return false; }
-        if (!file.isFile()) { return false; }
-
-        String name = file.getName().toLowerCase();
-
-        return name.endsWith(".png")
-            || name.endsWith(".gif")
-            || name.endsWith(".jpg")
-            || name.endsWith(".jpeg")
-            || name.endsWith(".bmp")
-            || name.endsWith(".tif")
-            || name.endsWith(".tiff")
-            || name.endsWith(".wbmp");
     }
 
     private void createImageFileList(String path) {
