@@ -67,13 +67,14 @@ public class Viewport extends JPanel {
     }
 
     public void setImage(BufferedImage newImage) {
-        image = newImage;
-        if (image == null) {
-            imageSize.setSize(0,0);
+
+    if (newImage == null) {
+            image = JSIVSplash.getSplashImage();
         } else {
-            imageSize.setSize(image.getWidth(), image.getHeight());
+            image = newImage;
         }
 
+        imageSize.setSize(image.getWidth(), image.getHeight());
         imageScaledSize.setSize(imageSize);
         viewportListener.imageSizeChanged(new Dimension(imageSize));
         resetZoom();
