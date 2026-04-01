@@ -1,0 +1,458 @@
+JSIV user manual
+
+-
+1. Quick Ref
+2. What is this program?
+3. How to use this program
+3.1 Open a file
+3.2 Navigate to other files
+3.3 Zoom in/out
+3.3.1 Zoom In
+3.3.2 Zoom Out
+3.3.3 Reset Zoom
+3.4 Pan
+3.4.1 Drag
+3.4.2 Click
+3.5 Background
+3.6 Color picker
+4. Menu
+5. Viewport
+6. Status bar
+
+--------------------------------------------------------------------------------
+
+1. Quick Reference
+
+Left Mouse Button   Drag - Pan image
+                    Click - Navigate Previous/Next when buttons available
+                    Ctrl-Click - Center pixel under mouse to center of
+                                                            viewport
+
+Right Mouse Button  Click - Copy color under pixel to system clipboard
+
+Scroll forward      Zoom in on mouse pointer
+Scroll backward     Zoom out on mouse pointer
+
+Ctrl-Arrows         Pan image in 1px increments
+Ctrl-Shift-Arrows   Pan image in 10px increments
+
+Ctrl-O              Open File
+Ctrl-Shift-O        Refresh internal file list
+Ctrl-N, right arrow Open Next file when navigation is available
+Ctrl-P, left arrow  Open Previous file when navigation is available
+Ctrl-Q              Quit the program
+
+Ctrl +              Zoom in focused on window center
+Ctrl -              Zoom out focused on window center
+Ctrl-0              Reset Zoom
+Ctrl-C              Center Image in window
+
+Ctrl-B              Change Background color
+
+F1                  Open this user manual
+
+--------------------------------------------------------------------------------
+
+2. What is this program?
+
+I could not find a lightweight image viewer that would do what I wanted, so
+I wrote my own.  This is a simple image viewer designed to help me quickly
+and easily view small icons and images in the way I want.  It can open large
+images as well, I just designed it more with small images in mind.
+
+While working on a game, I have folders full of image assets that are all
+quite small (16x16 and 32x32 pixels).  I want to view them sequentially,
+but not at the original 16x16 or 32x32 sizes which are difficult to see
+when I am trying to look at detail.  Zooming in with the image viewers I
+had took extra steps, slowing me down, and some did pixel interpolation
+which makes the enlarged images look fuzzy.  Not desireable.
+
+So my simple image viewer will open an image, make a list of all the other
+images in the folder, and zoom in so the image is as large as possible
+in the window without making it too large to fit.  It will allow you to
+quickly navigate to the next image in the folder (or previous image),
+opening and sizing it the same way, so you can quickly scan a folder's
+images without manually enlarging each image.
+
+You can pan the image around, zoom in and out, and navigate to the next or
+previous image by pressing the left or right arrow keys.
+
+As a bonus, this viewer will give the RGB or Hex values for the pixels in
+the image as you mouse over them, and right clicking on a pixel will copy
+that pixel's RGB or Hex color to the system clipboard so you can paste it
+somewhere easily.
+
+--------------------------------------------------------------------------------
+
+3. How to use this program
+
+My intent was to easily scan through folders full of images, so open an
+image and then navigate through the folder with the left and right arrow
+keys, or the navigation buttons on either side of the viewport to view
+the other images.
+
+---
+
+3.1 Open a file
+
+This image viewer can read the following image formats:
+    .png .jpg .jpeg .gif .tif .tiff .bmp .wbmp
+
+An image can be opened in the following ways:
+
+A. Open dialog
+
+    Use the File menu and select Open File, or press Ctrl-O to bring up a
+    dialog where you can select a file.
+
+B. Drag 'n Drop
+
+    You can drag an image file onto the JSIV window to open it.
+
+If JSIV cannot open the file, it will give an error message.  If the
+reason is available, it will provide the reason.  Otherwise you may
+have to verify the file some other way.
+
+Once the file is open, JSIV will center it and size it to be as large
+in the window as it can get without any part going out of the window,
+and respecting the zoom constraints (see 3.3 Image magnification).
+
+JSIV will also display the filename in the program window title bar,
+it will display the image size, the Viewport size (the Viewport is
+the part of the program window where the image is displayed) and
+the current magnification.
+
+When a new image is opened, the window is resized or the image is
+magnified, the window title and status bar will update.
+
+---
+
+3.2 Navigate to other files
+
+The main reason for this program's existence is this navigation feature.
+When you open a file, JSIV will make a list of all of the other image
+files in the folder by matching file extensions - if a file has a .png
+extension but is not actually a .png file, JSIV will not know until it
+tries to open it.
+
+Once it has this list, it will display a file index in the status bar,
+
+    File 1 of 20
+
+The first number is which file you are currently viewing and the second is
+the total number of files.
+
+When an image is opened via navigation, it will open the same way as if
+it was opened with Ctrl-O, File->Open File, or dragging an image file
+onto the program window: it will be enlarged and centered, regardless
+of the state of the last image you were viewing.
+
+---
+
+3.2.1 Navigate to Previous/Next image
+
+If there are other image files in the same folder as the image currently
+displayed, when the mouse moves over the left and right edges of the
+viewport, navigation buttons will appear.  See 5. Viewport
+
+You can left click on the Previous << Image button, press the Left Arrow key,
+go to File->Open Previous or press Ctrl-P to navigate to the Previous image
+in the list.  If you are currently viewing the first image, navigating to
+the previous image will wrap around to view the last image.
+
+You can left click on the Next >> Image button, press the Right Arrow key,
+go to File->Open Next or press Ctrl-N to navigate to the Next image in the
+list.  If you are currently viewing the last image, navigating to the next
+image will wrap around to view the first image.
+
+---
+
+3.2.2 Navigation issues
+
+If there are any issues opening a file while navigating, JSIV will not
+interrupt you with a popup error message.  It will instead try to
+update it's list of files and move on so you can continue to quickly
+navigate through the folder.
+
+3.2.2.1 Only one file in the folder
+
+If there are no other image files in the folder with the image currently
+displayed, image navigation will not be available.  JSIV will not move up
+or down the folder structure, it will only navigate within one folder at
+a time.  In this case, the File index on the Status Bar will show
+
+    File 1 of 1
+
+To view another image, you will need to Open an image from a different
+folder.  See 3.1 Open a file
+
+---
+
+3.2.2.2 No valid image to display
+
+When you open JSIV, it will display the startup image, navigation will not be
+available, and the File index on the Status Bar will show
+
+    File: 0 of 0
+
+To view an image, you will need to Open an image as explained in
+3.1 Open a file
+
+---
+
+3.2.2.3 Image will not open or was deleted
+
+If an image in the current folder is moved or deleted, or is unable to be
+opened for some reason, then trying to navigate to this file will cause
+JSIV to remove that file from its list without a popup so you can continue
+navigating without interruption.  The File index on the Status bar
+will update to reflect the new file count, and navigation will attempt to
+move on to the next image file in the list in the direction you are
+navigating.  If all of the images except the one currently displayed are
+removed from the folder, then navigation will be disabled until a new
+file is opened from a folder with more than one image file.
+
+---
+
+3.2.2.4 Current image is removed
+
+If the image currently being displayed is removed from the folder, JSIV will
+continue to display it until you navigate away from it or Open a different
+file.  If JSIV is able to detect this, it will update the File index on the
+Status bar to show
+
+    File 0 of 20
+
+Showing "File 0" means it is showing an image file that no longer exists.
+
+---
+
+3.2.2.5 Refreshing the file list
+
+If you are viewing images in a folder and make changes to it, you can use
+JSIV's Refresh feature (File->Refresh or Ctrl-Shift-O) to have JSIV
+reindex the image files so you are not trying to have it open files that
+no longer exist.
+
+---
+
+3.3 Image magnification
+
+The other main reason for this image viewer is to easily magnify small
+images.
+
+As you zoom in and out, the Status Bar will display the image
+magnification.  Zooming in and out are done in powers of 2:
+Enlarging an image goes from 100% -> 200% -> 400% -> 800% etc.
+Reducing an image goes the other way, and large images can be
+reduced to less than 100% magnification: 100%->50%->25%->12%, etc.
+
+---
+
+3.3.1 Zoom In
+
+You can zoom in by scrolling the mouse wheel toward the screen, by
+    pressing Ctrl-'+', or with the Menu Image->Zoom In.
+
+Zooming in makes the pixels of the image appear larger.  The maximum zoom
+for any image will be when between 8 and 15 full pixels appear in the
+program window in either axis.  Fewer than 8 pixels visible does not really
+provide any additional meaningful information, so that is the limit.
+
+---
+
+3.3.2 Zoom Out
+
+You can zoom out by scrolling the mouse wheel away from the screen,
+    by pressing Ctrl-'-', or with the Menu Image->Zoom Out.
+
+Zooming out makes the pixels of the image appear smaller.  The minimum
+zoom for any image will be either 1x (100%) so you can see the pixels
+as they actually are, or if the image is too big to fit in the window
+at 1x, you can continue zooming out until the entire image is visible.
+
+---
+
+3.3.3 Reset Zoom
+
+You can reset the Zoom level by pressing Ctrl-0 or in the Menu,
+Image->Reset Zoom.
+
+Resetting the Zoom will put it back to the magnification level when
+the image was opened - as large in the window as it can get, with a
+power of 2 magnification, without any part of the image outside of
+the bounds of the window.
+
+---
+
+3.4 Pan
+
+You can pan the image (move it around) in several ways.  This is most
+useful when the image is magnified since the entire image may no longer
+fit in the window, but will work at any image size.
+
+Ctrl-Arrow will move the image 1 pixel in the direction of the arrow key.
+Ctrl-Shift-Arrow will move the image 10 pixels in that direction.
+If the image is magnified, the movement from the arrow keys will be a
+full image pixel, so at 800%, Ctrl-Right Arrow will move the image 8
+screen pixels to the right, making the image appear to move a full-
+enlarged pixel to the right.
+
+---
+
+3.4.1 Drag
+
+Holding the Left Mouse Button down, you can drag the image around within
+the window.  If the image is smaller than the window, it will not go past
+the edges.  If the image is bigger than the window (including if it is
+magnified), the edge of the image will stop at the edges of the window
+so there will always be some part of the image in view.
+
+---
+
+3.4.2 Click
+
+Using Ctrl-Left Click, the image will shift so that whatever pixel the
+mouse is over will move to the center of the screen.  Essentially, this
+centers that pixel on the screen, taking the rest of the image with it.
+
+---
+
+3.4.3 Center
+
+Pressing Ctrl-C will center the entire image in the window.
+
+---
+
+3.5 Background
+
+If the current background color hides some of the pixels of the image,
+such as a dark image on a black background, you can change the background
+color by pressing Ctrl-B or Menu Color->Change Background.
+
+This will bring up a color chooser that will let you pick a new background
+color from among several options - swatches, HSL, HSV, RGB/Hex or CMYK.
+
+---
+
+3.6 Color picker
+
+As you move the mouse around, the color of the pixel under the mouse will
+appear in the Status Bar at the bottom of the screen.  You can click with
+the Right Mouse Button to have the program copy that color to the system
+clipboard to paste into another program, document, whatever.  When you
+do this, the Status Bar will confirm it was copied by displaying
+"Copied!" next to the color value.  That "Copied!" will disappear when
+the mouse moves to a different pixel.
+
+In the Color menu, you can choose RGB mode or HEX mode.
+
+RGB mode will display the color as RGB values between 0-255 in the
+Status Bar, and will copy the color in the format it shows.
+
+HEX mode will display the color as a Hex code: 6 hexadecimal digits
+that represent the RGB colors: 0xRRGGBB.  00 is 0, FF is 255, and
+everything in between is from 1-254. So if RGB would show
+
+    R:255 G:0 B:0
+
+then HEX will show
+
+    0xFF0000
+
+--------------------------------------------------------------------------------
+
+4. Menu
+
+The Menus include File operations, Image controls, Color settings and
+a Help menu.
+
+File (Alt-F)
+    Open File (Ctrl-O)      See 3.1
+    Open Next (Ctrl-N)      See 3.2
+    Open Previous (Ctrl-P)  See 3.2
+    Refresh (Ctrl-Shift-O)  See 3.2.2.5
+
+Image (Alt-I)
+    Zoom In (Ctrl-'+')      See 3.3.1
+    Zoom Out (Ctrl-'-')     See 3.3.2
+    Reset Zoom (Ctrl-0)     See 3.3.3
+    Center Image (Ctrl-C)   See 3.4.3
+
+Color (Alt-C)
+    Change Background Color (Ctrl-B)    See 3.5
+    Use RGB Mode            See 3.6
+    Use HEX Mode            See 3.6
+
+Help (Alt-H)
+    User Manual (F1)
+    About
+
+--------------------------------------------------------------------------------
+
+5. Viewport
+
+The Viewport is the largest part of the program window where the images you
+view will be displayed.  It will initially be a Black background, but you
+can change it in the Color Menu Color->Change Background Color (or Ctrl-B).
+See 3.5 Background
+
+On startup, the Viewport will display a startup image.  You can move this
+image around and magnify it like any other image, but it is just meant to
+confirm that the program has successfully started.
+
+When an image is open from a folder with other images, hovering over the
+left or right side of the Viewport (a few screen pixels in from the edges
+and about half-way between the top and bottom), navigation buttons will
+appear.  You can Left Click those to navigate to the previous or next
+image without having to use the keyboard commands.
+
+--------------------------------------------------------------------------------
+
+6. Status bar
+
+The bottom of the program window is the Status Bar that shows information
+about the image currently being displayed, and about the program.
+
+---
+
+File Index:
+
+This starts out showing
+
+    File: 0 of 0
+
+while the splash screen is displayed.  Once an image is loaded, it will
+change to show the current file index.  See also 3.2 Navigate to other files
+
+---
+
+Image Size:
+
+This shows the original image size in pixels, ignoring any magnification.
+
+---
+
+Viewport:
+
+This shows the size of the Viewport in pixels so you can get an idea of
+how large the image will be compared to a given window size by adjusting
+the size of the program window.
+
+---
+
+Zoom:
+
+This shows the current magnification as a percentage - 100% is 1x so the
+image will appear at the size that Image Size shows.  200% is double the
+size, 400% is 4x the size, etc.
+
+---
+
+R:## G:## B:##
+-OR-
+0x######
+
+This shows both the color of the pixel the mouse is hovering over, and
+the mode so you can see at a glance what will be copied to the system
+clipboard if you right click.
