@@ -6,13 +6,21 @@ JSIV user manual
 3. How to use this program
 3.1 Open a file
 3.2 Navigate to other files
-3.3 Zoom in/out
+3.2.1 Navigate to Previous/Next image
+3.2.2 Navigation issues
+3.2.2.1 Only one file in the folder
+3.2.2.2 No valid image to display
+3.2.2.3 Image will not open or was removed
+3.2.2.4 Current image is removed
+3.2.2.5 Refreshing the internal file list
+3.3 Image magnification
 3.3.1 Zoom In
 3.3.2 Zoom Out
 3.3.3 Reset Zoom
 3.4 Pan
 3.4.1 Drag
 3.4.2 Click
+3.4.3 Center
 3.5 Background
 3.6 Color picker
 4. Menu
@@ -200,7 +208,7 @@ To view an image, you will need to Open an image as explained in
 
 ---
 
-3.2.2.3 Image will not open or was deleted
+3.2.2.3 Image will not open or was removed
 
 If an image in the current folder is moved or deleted, or is unable to be
 opened for some reason, then trying to navigate to this file will cause
@@ -227,7 +235,7 @@ Showing "File 0" means it is showing an image file that no longer exists.
 
 ---
 
-3.2.2.5 Refreshing the file list
+3.2.2.5 Refreshing the internal file list
 
 If you are viewing images in a folder and make changes to it, you can use
 JSIV's Refresh feature (File->Refresh or Ctrl-Shift-O) to have JSIV
