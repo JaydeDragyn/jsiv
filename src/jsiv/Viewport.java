@@ -11,8 +11,8 @@ public class Viewport extends JPanel {
         WINDOW_CENTER, POINTER
     };
 
-    public static final int PAN_FINE = 1;
-    public static final int PAN_COARSE = 10;
+    public static final int MOVE_FINE = 1;
+    public static final int MOVE_COARSE = 10;
 
     private final ViewportListener viewportListener;
     private boolean navigationAvailable;
@@ -182,7 +182,16 @@ public class Viewport extends JPanel {
         }
     }
 
+    public void moveImage(int dx, int dy) {
+        // Moves the image dx,dy image pixels
+        imageOffsetX += (dx * zoomLevel);
+        imageOffsetY += (dy * zoomLevel);
+        clampImageToViewport();
+        repaint();
+    }
+
     public void panImage(int dx, int dy) {
+        // Moves the image dx,dy screen pixels
         imageOffsetX += dx;
         imageOffsetY += dy;
         clampImageToViewport();
