@@ -16,7 +16,7 @@ JSIV user manual
 3.3 Image magnification
 3.3.1 Zoom In
 3.3.2 Zoom Out
-3.3.3 Reset Zoom
+3.3.3 Reset Magnification
 3.4 Pan
 3.4.1 Drag
 3.4.2 Click
@@ -26,6 +26,7 @@ JSIV user manual
 4. Menu
 5. Viewport
 6. Status bar
+7. About
 
 --------------------------------------------------------------------------------
 
@@ -65,8 +66,8 @@ F1                  Open this user manual
 
 I could not find a lightweight image viewer that would do what I wanted, so
 I wrote my own.  This is a simple image viewer designed to help me quickly
-and easily view small icons and images in the way I want.  It can open large
-images as well, I just designed it more with small images in mind.
+and easily view small images in the way I want.  It can open large images as
+well, I just designed it more with small images in mind.
 
 While working on a game, I have folders full of image assets that are all
 quite small (16x16 and 32x32 pixels).  I want to view them sequentially,
@@ -123,7 +124,7 @@ have to verify the file some other way.
 
 Once the file is open, JSIV will center it and size it to be as large
 in the window as it can get without any part going out of the window,
-and respecting the zoom constraints (see 3.3 Image magnification).
+and respecting the magnification limits (see 3.3 Image magnification).
 
 JSIV will also display the filename in the program window title bar,
 it will display the image size, the Viewport size (the Viewport is
@@ -145,7 +146,7 @@ tries to open it.
 
 Once it has this list, it will display a file index in the status bar,
 
-    File 1 of 20
+    File: 1 of 20
 
 The first number is which file you are currently viewing and the second is
 the total number of files.
@@ -161,7 +162,8 @@ of the state of the last image you were viewing.
 
 If there are other image files in the same folder as the image currently
 displayed, when the mouse moves over the left and right edges of the
-viewport, navigation buttons will appear.  See 5. Viewport
+viewport (at around half-way between top and bottom), navigation buttons
+will appear.  See 5. Viewport
 
 You can left click on the Previous << Image button, press the Left Arrow key,
 go to File->Open Previous or press Ctrl-P to navigate to the Previous image
@@ -189,7 +191,7 @@ displayed, image navigation will not be available.  JSIV will not move up
 or down the folder structure, it will only navigate within one folder at
 a time.  In this case, the File index on the Status Bar will show
 
-    File 1 of 1
+    File: 1 of 1
 
 To view another image, you will need to Open an image from a different
 folder.  See 3.1 Open a file
@@ -203,8 +205,11 @@ available, and the File index on the Status Bar will show
 
     File: 0 of 0
 
-To view an image, you will need to Open an image as explained in
-3.1 Open a file
+If an image fails to load and there is no image to fall back to, JSIV will
+display the startup image again.
+
+To view an image in this situation, you will need to Open an image as
+explained in 3.1 Open a file
 
 ---
 
@@ -229,18 +234,19 @@ continue to display it until you navigate away from it or Open a different
 file.  If JSIV is able to detect this, it will update the File index on the
 Status bar to show
 
-    File 0 of 20
+    File: 0 of 20
 
-Showing "File 0" means it is showing an image file that no longer exists.
+Showing "File 0" means it is showing an image file that no longer exists in
+the folder.
 
 ---
 
 3.2.2.5 Refreshing the internal file list
 
 If you are viewing images in a folder and make changes to it, you can use
-JSIV's Refresh feature (File->Refresh or Ctrl-Shift-O) to have JSIV
-reindex the image files so you are not trying to have it open files that
-no longer exist.
+the Refresh feature (File->Refresh or Ctrl-Shift-O) to have JSIV reindex
+the image files so you are not trying to have it open files that no longer
+exist.
 
 ---
 
@@ -281,12 +287,12 @@ at 1x, you can continue zooming out until the entire image is visible.
 
 ---
 
-3.3.3 Reset Zoom
+3.3.3 Reset Magnification
 
-You can reset the Zoom level by pressing Ctrl-0 or in the Menu,
+You can reset the magnification by pressing Ctrl-0 or in the Menu,
 Image->Reset Zoom.
 
-Resetting the Zoom will put it back to the magnification level when
+Resetting the magnification will  put it back to what it was when
 the image was opened - as large in the window as it can get, with a
 power of 2 magnification, without any part of the image outside of
 the bounds of the window.
@@ -313,7 +319,7 @@ enlarged pixel to the right.
 Holding the Left Mouse Button down, you can drag the image around within
 the window.  If the image is smaller than the window, it will not go past
 the edges.  If the image is bigger than the window (including if it is
-magnified), the edge of the image will stop at the edges of the window
+magnified), the edge of the image will stop at the edge of the window
 so there will always be some part of the image in view.
 
 ---
@@ -339,7 +345,7 @@ such as a dark image on a black background, you can change the background
 color by pressing Ctrl-B or Menu Color->Change Background.
 
 This will bring up a color chooser that will let you pick a new background
-color from among several options - swatches, HSL, HSV, RGB/Hex or CMYK.
+color from one of several methods - swatches, HSL, HSV, RGB/Hex or CMYK.
 
 ---
 
@@ -355,12 +361,13 @@ the mouse moves to a different pixel.
 
 In the Color menu, you can choose RGB mode or HEX mode.
 
-RGB mode will display the color as RGB values between 0-255 in the
-Status Bar, and will copy the color in the format it shows.
+RGB mode will display the color as RGB values in the Status Bar, each
+between 0-255, and will copy the color in the format it shows.
 
 HEX mode will display the color as a Hex code: 6 hexadecimal digits
-that represent the RGB colors: 0xRRGGBB.  00 is 0, FF is 255, and
-everything in between is from 1-254. So if RGB would show
+that represent the RGB colors: 0xRRGGBB with 0x in front to denote it is
+a hexadecimal value.  00 is 0, FF is 255, and everything in between is
+from 1-254. So if RGB would show
 
     R:255 G:0 B:0
 
@@ -376,24 +383,24 @@ The Menus include File operations, Image controls, Color settings and
 a Help menu.
 
 File (Alt-F)
-    Open File (Ctrl-O)      See 3.1
-    Open Next (Ctrl-N)      See 3.2
-    Open Previous (Ctrl-P)  See 3.2
-    Refresh (Ctrl-Shift-O)  See 3.2.2.5
+    Open File (Ctrl-O)              See 3.1
+    Open Next (Ctrl-N)              See 3.2
+    Open Previous (Ctrl-P)          See 3.2
+    Refresh (Ctrl-Shift-O)          See 3.2.2.5
 
 Image (Alt-I)
-    Zoom In (Ctrl-'+')      See 3.3.1
-    Zoom Out (Ctrl-'-')     See 3.3.2
-    Reset Zoom (Ctrl-0)     See 3.3.3
-    Center Image (Ctrl-C)   See 3.4.3
+    Zoom In (Ctrl-'+')              See 3.3.1
+    Zoom Out (Ctrl-'-')             See 3.3.2
+    Reset Magnification (Ctrl-0)    See 3.3.3
+    Center Image (Ctrl-C)           See 3.4.3
 
 Color (Alt-C)
-    Change Background Color (Ctrl-B)    See 3.5
-    Use RGB Mode            See 3.6
-    Use HEX Mode            See 3.6
+    Change Background Color (Ctrl-B) See 3.5
+    Use RGB Mode                    See 3.6
+    Use HEX Mode                    See 3.6
 
 Help (Alt-H)
-    User Manual (F1)
+    User Manual (F1)                This document
     About
 
 --------------------------------------------------------------------------------
@@ -413,7 +420,9 @@ When an image is open from a folder with other images, hovering over the
 left or right side of the Viewport (a few screen pixels in from the edges
 and about half-way between the top and bottom), navigation buttons will
 appear.  You can Left Click those to navigate to the previous or next
-image without having to use the keyboard commands.
+image without having to use the keyboard commands.  These buttons only
+appear when the mouse is hovering over them so that they do not obscure
+an image if part of the image is in that area.
 
 --------------------------------------------------------------------------------
 
@@ -464,3 +473,23 @@ R:## G:## B:##
 This shows both the color of the pixel the mouse is hovering over, and
 the mode so you can see at a glance what will be copied to the system
 clipboard if you right click.
+
+--------------------------------------------------------------------------------
+
+7. About
+
+This program was written entirely by me, Jayde Dragyn.
+
+Questions, contact me at JaydeDragyn@outlook.com
+
+You can find the source code on GitHub at:
+
+    https://github.com/JaydeDragyn/jsiv
+
+This program was built using Java 17.0.4.1 2022-08-18 LTS
+No IDE, just a text editor (Kate) and a git bash terminal.
+The startup image and navigation buttons are drawn by the
+program using Java's Graphics2D class.
+
+Technical guidance, proofreading, and code review assistance by:
+    ChatGPT (OpenAI) and Claude Sonnet (Anthropic)
