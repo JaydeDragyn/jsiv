@@ -18,7 +18,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private Action quitAction;
     private Action zoomInAction;
     private Action zoomOutAction;
-    private Action resetZoomAction;
+    private Action resetMagnificationAction;
     private Action centerImageAction;
     private Action changeBackgroundColorAction;
     private Action useRGBColorModeAction;
@@ -275,7 +275,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             }
         }; 
         
-        resetZoomAction = new AbstractAction("Reset Zoom") {
+        resetMagnificationAction = new AbstractAction("Reset Magnification") {
             {
                 putValue(ACCELERATOR_KEY,
                         KeyStroke.getKeyStroke(KeyEvent.VK_0,
@@ -431,7 +431,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         imageMenu.setMnemonic(KeyEvent.VK_I);
         imageMenu.add(new JMenuItem(zoomInAction));
         imageMenu.add(new JMenuItem(zoomOutAction));
-        imageMenu.add(new JMenuItem(resetZoomAction));
+        imageMenu.add(new JMenuItem(resetMagnificationAction));
         imageMenu.add(new JMenuItem(centerImageAction));
         menuBar.add(imageMenu);
 
