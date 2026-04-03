@@ -64,13 +64,28 @@ public class StatusBar extends JPanel {
     }
     
     public void updateImageSize(Dimension imageSize) {
-        imageSizeLabel.setText("Image Size: " + 
-                        imageSize.width + "x" + imageSize.height);
+        String labelText;
+
+        if (imageSize == null) {
+            labelText = "No Image Size";
+        } else {
+            labelText = "Image Size: " +
+                        imageSize.width + "x" + imageSize.height;
+
+        imageSizeLabel.setText(labelText);
     }
     
     public void updateViewportSize(Dimension viewportSize) {
-        viewportSizeLabel.setText("Viewport: " +
-                        viewportSize.width + "x" + viewportSize.height);
+        String labelText;
+
+        if (viewportSize == null) {
+            labelText = "No Viewport Size";
+        } else {
+            labelText = "Viewport: " +
+                    viewportSize.width + "x" + viewportSize.height);
+        }
+
+        viewportSizeLabel.setText(labelText);
     }
     
     public void updateZoomLevel(double zoomLevel) {
@@ -79,6 +94,10 @@ public class StatusBar extends JPanel {
     }
     
     public void updateColor(String colorText) {
-        colorLabel.setText(colorText);
+        if (colorText == null) {
+            colorLabel.setText("No Color Info");
+        } else {
+            colorLabel.setText(colorText);
+        }
     }
 }
