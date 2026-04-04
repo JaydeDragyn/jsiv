@@ -130,7 +130,7 @@ todo Ensure file index changes (both current and total) when opening files
 todo Ensure Image Size updates when new file is opened
 good Ensure Viewport Size is updated when the Viewport size changes
 todo Ensure Zoom level updates when user zooms in or out, or resets the zoom
-todo Ensure pixel color is correctly displayed when pointer hovers a new pixel
+good Ensure pixel color is correctly displayed when pointer hovers a new pixel
 
 ------------------------------
 Polish

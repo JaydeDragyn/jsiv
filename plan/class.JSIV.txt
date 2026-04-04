@@ -1,0 +1,6 @@
+jsiv JSIV
+
+This is the entry point of the program.  It is not part of the jsiv package,
+instead sitting outside of the jsiv package and creating a ProgramWindow
+on the EDT.  Instantiation of the ProgramWindow is what initializes the
+program and sets up the UI and behavior.

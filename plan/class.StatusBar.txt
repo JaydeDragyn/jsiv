@@ -2,28 +2,68 @@ jsiv StatusBar
 
 The StatusBar will live at the bottom of the program window and will be
 responsible for displaying certain information about the currently loaded
-image at all times.  Whenever the information it displays is updated,
-it will update what it is displaying to match.
+image at all times.  Whenever it is given new information for one of the
+status fields, it will update what it is displaying in that field to match.
 
-Useful information:
+It will accept updates via the following methods:
 
-Zoom level
-Image Size
-Viewport Size
+    void updateIndexCount(int index, int imageCount);
+    void updateImageSize(Dimension imageSize);
+    void updateViewportSize(Dimension viewportSize);
+    void updateZoomLevel(double zoomLevel);
+    void updateColor(String colorText);
 
-additional things suggested by ChatGPT that I like:
+-------------------------------------------------------------------------------
 
-file index (eg. 3 / 42) where current dir has 42 viewable images and we are
-looking at image# 3
+updateIndexCount(int index, int imageCount)
 
-pixel under pointer (provide RGB values)
+When given the index and imageCount, it will display
 
-    private int index;
-    private int imageCount;
-    private Dimension imageSize;
-    private Dimension viewportSize;
-    private int zoomLevel;
-    private int red;
-    private int green;
-    private int blue;
-    
+    File: index of imageCount
+
+For example, for the first image in a directory with 10 images:
+
+    File: 1 of 10
+
+If index or imageCount are 0 or negative numbers, StatusBar will accept
+them and display them as-is.  The client code calling this method must
+make sure the values are correct.
+
+-------------------------------------------------------------------------------
+
+updateImageSize(Dimension imageSize)
+
+When given a valid dimension (for example 800 x 600), display:
+
+    Image Size: 800x600
+
+if imageSize is null, display "No Image Size"
+
+-------------------------------------------------------------------------------
+
+updateViewportSize(Dimension viewportSize)
+
+When given a valid dimension (for example 800 x 600), display:
+
+    Viewport: 800x600
+
+If viewportSize is null, display "No Viewport Size"
+
+-------------------------------------------------------------------------------
+
+updateZoomLevel(double zoomLevel)
+
+Convert the zoomLevel to an integer and then display it as:
+
+    Zoom: 200%
+
+-------------------------------------------------------------------------------
+
+updateColor(String colorText)
+
+When given a valid String, display it exactly as provided.
+
+If the String is null, instead display "No Color Info"
+
+
+

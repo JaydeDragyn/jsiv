@@ -8,9 +8,9 @@ directory.
 
 ImageNavigator will handle these with four public methods:
     openFile()      - Show FileDialog to let user pick an initial file
+    refresh()       - Update the file list in case files have changed
     openNext()      - Load the next image in the current directory
     openPrevious()  - Load the previous image in the current directory
-    refresh()       - Update the file list in case files have changed
 
 ImageNavigator will communicate through the ImageNavigatorListener interface.
 When the ImageNavigator is created, it needs to be provided with an object
@@ -27,6 +27,22 @@ The ImageNavigatorListener interface provides 2 methods:
 openFile()
 
 This method shows the user a FileDialog and allows them to pick a file to open.
+
+If the user selects a file, then this method passes the directory and file
+to the overloaded openFile(String path, String name).  Otherwise the user
+cancelled the FileDialog, so it just returns and nothing further happens
+with this request.
+
+-------------------------------------------------------------------------------
+
+openFile(String path, String name)
+
+This overloaded openFile() method allows multiple paths to opening a file:
+- openFile() /* no parameters */ will present the FileDialog for the user
+            to pick a file to open
+- ImageDropHandler will interpret the file being dropped onto the window
+            and pass the path and filename so ImageNavigator can handle
+            opening the file as it would for a file chosen another way
 
 If the user chooses a file that is not an image, or is not an image that the
 standard java implementation can handle (.png, .gif, .jpg, .jpeg, .bmp, .tif,

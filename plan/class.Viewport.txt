@@ -1,144 +1,407 @@
 jsiv Viewport
 
-The Viewport will be responsible for displaying the image at the appropriate
-offset and zoom level.  It will be a JPanel and will take care of the
-image file loading, keeping track of where the image is displayed, the limits
-of panning and zooming, etc.
+The Viewport class is responsible for displaying the image.  This class will
+handle all things related to the image (except for loading it from a file),
+including positioning via pan and center operations, and image size via zoom
+levels.  The Viewport will accept signals from other components to accomplish
+these things, and will also listen to mouse gestures to do these things on its
+own.
 
-Viewport will:
-    Process raw mouse input
-        Pan operations (RMB clicks, RMB drags, Scroll, Shift-Scroll)
-        Zoom operations (Ctrl-Scroll)
-        Open Next (LMB click on right side of Viewport)
-        Open Previous (LMB click on left side of Viewport)
-    Accept requests from the Program Window (Controller)
-        Pan operations (Arrow Keys, Menu->Image->Center Image)
-        Zoom operations (Ctrl-'+', Ctrl-'-', Menu->Image->Zoom In,
-                         Menu->Image->Zoom Out, Menu->Image->Reset Zoom)
-        Open File (Menu->File->Open)
-        Open Next (Menu->File->Next)
-        Open Previous (Menu->File->Previous)
+The Viewport will provide these public methods:
+    setImage()      - Use the provided image for display
+    zoomIn()        - Make the apparent size of the image larger
+    zoomOut()       - Make the apparent size of the image smaller
+    resetZoom()     - Reset the zoom level
+    centerImage()   - Move the image to the center of the viewport
+    moveImage()     - Move the image by x,y image pixels
+    panImage()      - Move the image by x,y screen pixels
+    setNavigationAvailability() - Enable or disable Viewport's ability to
+                        request displaying another image
+    paintComponent() - Paints the Viewport (technically public, but should
+                        not be called directly)
 
-Actions:
+The Viewport will communicate through the ViewportListener interface to
+provide information and signal behaviors.  When the Viewport is created,
+it must be provided with an object that implements the ViewportListener
+interface.
 
-    Pan
-    Zoom
-    Open Files
-    
----
+The ViewportListener interface provides the following methods:
+    void requestOpenNext()
+    void requestOpenPrevious()
+    void imageSizeChanged(Dimension imageSize)
+    void viewportSizeChanged(Dimension viewportSize)
+    void zoomChanged(double zoomLevel)
+    void newColorUnderPointer(int red, int green, int blue)
+    void requestCopyColorToClipboard(Color color)
 
-Pan
 
-Moving the image around in the window.  This will be controlled with an
-offset.  If the Viewport pans down, the image will appear to move up (like
-scrolling down on a webpage).  
+The Viewport will use these private methods to perform its work:
+    setZoom()       - The actual work of changing the zoom
+    createNavigationButtons() - Make the images used for the navigation buttons
+    updateViewportSize() - Update settings when viewport size changes
+    updateClampLimits() - Update settings when image or viewport sizes change
+    clampImageToViewport() - Ensure the image remains in view
+    inPreviousButtonArea() - True if mouse cursor is over the previous button
+    inNextButtonArea() - True if mouse cursor is over the next button
+    inNavigationButtonAreas() - True if inPrevious/NextButtonArea are true
+    getColorUnderPointer() - Returns the color under the mouse cursor
+    initResizeListener() - Sets the handler for when the Viewport resizes
+    initMouseListeners() - Sets the handlers for mouse gestures
 
-So when the user presses an arrow key or drags with RMB, they will drag the
-Viewport, but the Viewport will move in the opposite direction so the user
-can feel like they are dragging the image.
+-------------------------------------------------------------------------------
 
-When the user RMB clicks to re-center, or uses Menu->Image->Center Image,
-that is also a pan operation, but it takes a specific point and calculates
-how much to adjust the offset so that point moves to the center of the
+enum FocusMode
+
+For centering and zooming, there are two modes of focus - WINDOW_CENTER
+and POINTER.
+
+WINDOW_CENTER means the action should focus on the center point of
+the Viewport.  Zooming in or out will keep the pixel in the center
+of the Viewport in place at the center of the Viewport while everything
+else shifts and resizes to accomodate the zoom.  Centering the image
+will put the center pixel of the image over the center pixel of the
 Viewport.
 
-Panning will also have limits to prevent the image from ever fulling going
-outside of the bounds of the Program Window.  This limiting behavior will
-have two possibilities, applied to each axis independantly (so horizontal
-may use one limit while vertical uses the other limit if the image is 
-tall and thin or short and wide).
-1) If the image fits completely within the Viewport:
+POINTER means the action should focus on the pixel under the mouse
+pointer.  Zooming in or out will keep the pixel under the cursor in
+place under the cursor so everything else appears to adjust around it.
+Centering the image will put the pixel under the cursor at the center
+of the Viewport.
 
-    image.size < Viewport.size
-    
-Then we will allow the image to pan until 1/2 the image is out of frame.
-This will keep at least 1/2 of the image visible at all times, and should
-allow the user to drag the left side of their image to at least the
-middle of the Viewport.
-2) If the image is larger than the Viewport for that axis:
+-------------------------------------------------------------------------------
 
-    image.size >= Viewport.size
-    
-Then we will allow the edge of the image to go to the half-way point of 
-the Viewport toward the opposite side.  i.e. Left edge of image can be
-panned right until it hits about center.
+Mouse gestures
 
----
+The Viewport will keep track of mouse movements, button clicks, and
+scroll wheel input.
 
-Zoom
+Mouse Movement will be tracked whenever mouse is within the Viewport, both
+regular movement and dragging, so that whenever a request is made that needs
+to know where the mouse pointer is, the Viewport will already know.
+The Viewport will also emit newColorUnderPointer() with the Color of the
+pixel under the pointer whenever the pointer is over a pixel in the image.
+If the pointer is over an area where the image is not present, the Viewport
+will report the Color of the Background.
 
-Zooming in and out of the image to make the pixels appear larger and smaller.
-Zooming in makes the pixels look larger, but less pixels can be seen at a time.
-Zooming out makes the pixels smaller so more cna be seen at a time.
+The Left Mouse Button (LMB) will be the activity button, dragging the image,
+activating the navigation buttons and re-centering the image.
 
-We will allow zooming in as far as 64x or 128x (where that number defines how
-many pixels high and wide each individual pixel in the image will be displayed
-as.  Zoomed in to 8x, each pixel will be displayed as a 8px x 8px square.
-There will be no smoothing, pixels will be square and easy to reason about.
+The Right Mouse Button (RMB) will be a Color Copy button, responsible for
+sending the Color to the ViewportListener as a request to copy the Color
+to the clipboard.
 
-We will allow zooming out beyond 1x zoom (where each pixel in the image is
-a single pixel on screen).  This will cause pixels to disappear as the image
-gets smaller than the screen pixels can display it.  This can be useful for
-looking at a large image that is too big to fit on screen. 
+Scrolling the mouse wheel will call zoomIn(FocusMode.POINTER) or
+zoomOut(FocusMode.POINTER) for each registration of the mouse wheel scroll.
+Scrolling toward the screen will zoom in, scrolling away from the screen
+will zoom out.
 
-We will constrain the zoom based on both the image size and the size of the
-Viewport.  
-    Highest zoom will be when you cannot see more than 8 pixels on an axis
-    in the current Viewport.  Enlarging the Viewport (by making the
-    Program Window larger) might allow you to zoom further in.
-    
-    Lowest zoom will be when you can see the full image in the Viewport with
-    a little room on the sides.  Reducing the size of the Viewport (by making
-    the Program Window smaller) will allow you to zoom further out.
+-------------------------------------------------------------------------------
 
-When zooming, there will be a focus point for the zoom operation.  If keyboard
-or Menu operations are used, that focus point will be the center of the
-Viewport (if an axis has an even number of pixels, then it will be the pixel
-to the left or above center).  If using the Scroll Wheel, the pixel under the
-mouse pointer will be the focus.
+setImage(BufferedImage image)
 
-The focus point pixel will, after the zoom operation, remain at the focus point.
-This will make the image appear to zoom in or out centered on the mouse pointer.
-If you zoom in with the pointer in the top-left corner, the majority of the
-image will enlarge to the right and bottom.  Zoom out in that spot and the
-bottom and right will seem to be the majority of the shrinkage.  The pixels
-under the pointer will remain under the pointer after the zoom.  (or center
-pixel will remain at center when keyboard or menu zoom is used)
+This method accepts an image to display.  When this image is received, the
+Viewport will calculate how big it needs to be to fill the current Viewport
+with the highest zoom magnification that will not make it too large to fit
+within the display area.  Then it will calculate where it needs to move the
+image so it is centered in the Viewport, and finally it will emit signals
+through imageSizeChanged() and zoomChanged() listener methods.
 
----
+The BufferedImage object received should be a valid image, however if the
+image reference is null, the Viewport will get the splash image so it does
+not end up trying to dereference a null pointer.
 
-Open Files
+-------------------------------------------------------------------------------
 
-The Viewport will know how to open files in order to display them, and will
-know how to read files in a given directory so it knows how to select the
-"Next" and "Previous" images to open.
+zoomIn(FocusMode focusMode)
 
-When opening a file, the existing file is dereferenced so it can be garbage
-collected.
+This method tells the Viewport to increase the zoom level, and provides the
+FocusMode to use, which will either be WINDOW_CENTER or POINTER.
 
-When a file opens, by default we will calculate how much zoom is needed for
-the image to appear as large as possible in the Viewport without any of the
-image going out of frame.  For small, icon sized images and a decently large
-Viewport, this will result in being zoomed in, maybe to 4x or 8x, or larger.
-For large images, this may result in being zoomed out to where some pixels
-are hidden due to the compression of pixels that happens when you shrink
-the image.
+This method checks to see if zooming in will be allowed by checking if there
+will be at least MIN_PIXELS_ON_ZOOM number of pixels in each axis at the
+proposed zoom level.  If there are less than that many pixels, even if only
+by a fraction, then zoomIn() will abort.
 
-If there is a problem loading the new image, we will take one of two paths:
+Otherwise it calls setZoom() with the new zoom level and passes the
+FocusMode through.
 
-- If we used the File->Open request, we will pop up an error dialog to let
-    the user know that the file they requested is invalid (and why if we can).
-- If we used Open Next or Open Previous, we will simply skip the file that
-    could not be opened and navigate to the next one in the appropriate
-    direction.  We will repeat this until we get to a file that we can open.
-    
-Using this scheme, we will not be able to traverse the directory for images
-unless we are able to open at least one image successfully.  If there are 3 
-images and two of them are bad, when we open one and try to open next, we
-will fail on the next two and return to the one that did open.
+-------------------------------------------------------------------------------
 
-In that case, we will keep track of the files, so if the open file is the
-only "valid" image file in the directory when the user tries to Open Next
-or Open Previous, we will pop up a dialog to alert the user that there are
-no other images that we can open, and then we won't re-open the image
-already in the viewer.
+zoomOut(FocusMode focusMode)
+
+This method tells the Viewport to decrease the zoom level and provides the
+FocusMode to use, which will either be WINDOW_CENTER or POINTER.
+
+This method checks to see if zooming out will be allowed by first checking
+if the zoom level is < 1.0 (1x zoom or 100% image size).  We will always
+allow the user to zoom out so the image displays at 100% size.
+
+If the image is already at 1x zoom or lower, then we check to see if image
+already fits within the Viewport on both axis.  If it already fits (or is
+the exact same size) then we do not want to allow zooming out any further,
+and zoomOut() will abort.
+
+Otherwise it calls setZoom() with the new zoom level and passes the
+FocusMode through.
+
+-------------------------------------------------------------------------------
+
+resetZoom()
+
+This method tells the Viewport to reset the zoom level as if the image was
+just opened: the image will be sized such that the zoom level is the
+largest power of 2 that fits within the Viewport on both axis.
+
+This method was derived with the help of Claude AI and uses some clever math
+(in my opinion).
+
+First, abort if the viewport is still at 0 size in either axis - we can't
+display anything at this viewport size.
+
+Next, find the actual largest zoom level (not a power of 2) that still fits
+the image within the Viewport.  Then we round that zoom level down to the
+nearest power of 2 using log2n, and finally set the new zoom level to
+2^n where n is that rounded zoom level.
+
+This method ensures that the image is always the largest power of 2 zoom
+level that fits within the viewport without needing to do bounds checking.
+
+Once we have calculated the new zoom level, we update the scaled image size,
+update clamp limits, center the image (with
+centerImage(FocusMode.WINDOW_CENTER)), repaint the window so the user sees
+it, and then emit zoomChanged() to the ViewportListener.
+
+-------------------------------------------------------------------------------
+
+centerImage(FocusMode focusMode)
+
+This method tells the Viewport to pan the image depending on the FocusMode
+provided.
+
+If the focusMode is WINDOW_CENTER, then the image will be moved so that the
+center of the image lines up with the center of the Viewport.  We do this
+by calculating the new offset as half the size of the image, subtracted
+from the viewport centerpoint and then repaint the window and done.
+
+If the focusMode is POINTER, then the image will be moved so that the pixel
+under the mouse pointer becomes the pixel in the center of the Viewport.
+We do that by panning the image by the difference between the pixel position
+under the pointer and the center of the viewport.
+
+-------------------------------------------------------------------------------
+
+moveImage(int dx, int dy)
+
+This method tells the Viewport to move the image by dx,dy image pixels where
+
+-dx is left, +dx is right
+-dy is up,   -dy is down
+
+The distance is maginified by the zoomLevel, so if the user is viewing the
+image at 800% size, then moving by 1 will actually move the image by 8
+screen pixels so the image appears to move by 1 magnified pixel.
+
+After the move, it will clamp the image to the viewport so the user doesn't
+move it out of the view.
+
+-------------------------------------------------------------------------------
+
+panImage(int dx, int dy)
+
+This method tells the Viewport to move the image by dx,dy screen pixels,
+similar to moveImage() above.
+
+However, this will not magnify the movement by the zoomLevel, so a movement
+of 1 will actually move 1 screen pixel regardless of how magnified the
+view is.
+
+After the move, it will clamp the image to the viewport so the user doesn't
+move it out of the view.
+
+-------------------------------------------------------------------------------
+
+setNavigationAvailability(boolean available)
+
+This tells the Viewport whether navigation is available - if it is, then
+the Viewport will put navigation arrows on the sides of the Viewport and
+interpret LMB clicks on those arrows as requests to navigate to the next
+or previous image (left side is previous, right side is next).  If the
+user clicks on the left side arrow, Viewport will emit requestOpenPrevious().
+If the user clicks on the right side arrow, Viewport will emit
+requestOpenNext().
+
+If this is set to false, then the navigation arrows will not appear and a
+user LMB click will have no effect.
+
+-------------------------------------------------------------------------------
+
+@Override
+paintComponent(Graphics g)
+
+This is the swing method called when the Viewport's JPanel needs to be
+repainted.  It should never be called directly - instead call repaint().
+
+We start by calling the super class paintComponent() meethod and then
+checking for a null image (and aborting if the image is null).  This
+should never happen, but Viewport does not assume the rest of the program
+is perfect.
+
+First we draw the image, translated by the image offsets and scaled by
+the zoom level.
+
+Then, create a new graphics context (so the translate and scale does not
+affect this part) and draw the navigation buttons if inButtonAreas is true.
+This will only be true if navigation is available AND the pointer is in
+one of the navigation button areas - if navigation is not available then
+inButtonAreas will stay false regardless of where the pointer is.
+
+We draw the navigation buttons after the image because each time we draw,
+we are drawing on top of whatever was there previously, so HUD elements
+have to be drawn last or they may be obscured by image elements.
+
+-------------------------------------------------------------------------------
+
+setZoom(double newZoomLevel, FocusMode focusMode)
+
+This does the work of zooming in and out (resetZoom() does its own
+calculations so does not call this).
+
+First, we set a focus point - either the viewport center if the mode is
+WINDOW_CENTER, or the mouse location if the mode is POINTER.  Everything
+that follows works on that point.
+
+We calculate the pixel at that focus point (the focusPixel) by subtracting
+the image offset and then dividing by the zoom level.  This will adjust
+so the real window pixel coordinate takes into account how much of the
+image is outside of the viewport on the origin side, and dividing by the
+zoomLevel further refines the adjustment to account for larger pixels
+displayed.
+
+Then record the new zoom level (don't want to record it before now or
+we calculate the focus incorrectly) and set the new scaled image size
+so we can calculate the new image offset.
+
+Last, we calculate that offset by subtracting the scaled focusPixel from
+the focusPoint, which would effectively pan the image such that the
+focusPoint is now on the top-left (origin) of the pixel if it is
+larger than 1px x 1px (i.e. the top-left of an 8px x 8px pixel when
+zoomed in at 8.0x).  Then we subtract half the zoom level, which is
+also the size of each zoomed in pixel, so the focusPoint is now in
+the center of the pixel.  If the zoom level is 1 then the focusPoint
+is just on the pixel, and a zoom level of less than 1 is missing
+pixels to begin with, so the focusPoint ends up on the top-left of
+the cluster of pixels (2px x 2px at 0.5x zoom means we only see 1
+of the 4 pixels, and the focusPoint will be on that 1 pixel).
+
+Finally, we finish by updating clamp limits, clamping the image to the
+viewport, repainting so the user can see the result, and emit a
+zoomChanged() message to the ViewportListener.
+
+-------------------------------------------------------------------------------
+
+createNavigationButtons()
+
+This method creates BufferedImages for the Previous Image and Next Image
+navigation buttons and then draws them using simple geometry for the
+chevrons and basic text.  The BufferedImages are ARGB so the buttons can
+be somewhat transparent.
+
+This method should probably go in JSIVSplash.java (and that class renamed
+to JSIVImageControl or something), but it started here and I don't want
+to go to the trouble since the program is complete and it all works fine.
+
+-------------------------------------------------------------------------------
+
+updateViewportSize()
+
+This method gets the size of the current viewport window and caches it to
+avoid additional function calls in the other methods that need it (mostly
+the clamp methods), then uses the cached value to calculate the new
+viewport center and where the navigation buttons will be placed.
+
+After that, it emits a viewportSizeChanged() message to the ViewportListener.
+
+-------------------------------------------------------------------------------
+
+updateClampLimits()
+
+This method uses the viewport size to calculate how far the image can be
+panned (the offset range for each axis).
+
+It only needs to calcualte the maxSmallOffset and minLargeOffset because
+if the image is smaller than the viewport, the min small offset will be
+the left or top edge of the image stopping at the left or top edge of
+the Viewport.  If the image is larger than the viewport, the left and
+top edges will have the same stopping point of left/top edges.
+
+-------------------------------------------------------------------------------
+
+clampImageToViewport()
+
+This method adjusts the image offsets such that each axis is:
+
+    min offset >= current offset <= max offset
+
+using the maxSmallOffset and minLargeOffset that updateClampLimits()
+calculated.
+
+So if the current offset is less than the minimum, it becomes the minimum,
+and larger than maximum becomes the maximum.
+
+This keeps the image visible in the Viewport.
+
+-------------------------------------------------------------------------------
+
+inPreviousButtonArea()
+
+This method simply returns true if the mouseLocation is within the
+bounding rectangle of previousButtonArea (that was calculated by
+updateViewportSize() ).  If the mouseLocation is outside of that,
+it returns false.
+
+-------------------------------------------------------------------------------
+
+inNextButtonArea()
+
+This method simply returns true if the mouseLocation is within the
+bounding rectangle of nextButtonArea (that was calculated by
+updateViewportSize() ).  If the mouseLocation is outside of that,
+it returns false.
+
+-------------------------------------------------------------------------------
+
+inNavigationButtonAreas()
+
+This method returns true if either inPreviousButtonArea() or
+inNextButtonArea() return true.  If they both return false, then
+this method returns false.
+
+This is used to determine if inButtonAreas should be set to true for
+the paintComponent() to draw the navigation buttons.
+
+-------------------------------------------------------------------------------
+
+getColorUnderPointer(int pointerX, int pointerY)
+
+This method returns the Color object at the pointerx,pointery coordinate
+of the Viewport.  It checks to see if the pointer is over the image, and
+if it is, it returns the image's pixel color at that location.
+Otherwise it returns the background color.
+
+-------------------------------------------------------------------------------
+
+initResizeListener()
+
+When the user resizes the window, the Viewport must be notified so it can
+ensure the image centers properly and images cannot be panned outside of
+the viewable area in the Viewport.
+
+It uses a Component Adapter to only override the componentResized()
+component.
+
+-------------------------------------------------------------------------------
+
+initMouseListeners()
+
+This method sets the behavior that JSIV has when mouse gestures are used.
+

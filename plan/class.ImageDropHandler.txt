@@ -1,0 +1,29 @@
+jsiv ImageDropHandler
+
+This class handles Drag 'n Drop of files onto the program window.
+
+The ProgramWindow creates it, sets it as the drop handler for the JFrame
+and provides it with the ImageNavigator so it can pass the dropped files
+to the ImageNavigator for loading.
+
+This is not a class that is meant to be explicitly called by other classes
+in our project, instead it extends the TransferHandler class and Overrides
+the canImport() and importData() methods.
+
+canImport() is called as something is dragged over the window, and it is
+called frequently.  Our Override simply returns true if it is a file, and
+false if it is not a file (i.e. dragging copied text).  Returning false
+changes the cursor to an X to show the user it cannot be dropped, and
+returning true shows the user it can be dropped.
+
+importData() is called when the user completes the drag 'n drop, releasing
+the button.  It makes sure the thing being dropped is a file (aborting if
+it is not) and then gets the filename and gives it to the imageNavigator.
+
+If there is a problem with the drag 'n drop, importData() will either
+show an error message (using ImageNavigator's showError() method), or
+ImageDropHandler will simply abort and the user will experience the
+file they dropped simply does nothing.
+
+If there is an error opening the file, that will be handled by the
+ImageNavigator.  This class is only to facilitate the drag 'n drop.
