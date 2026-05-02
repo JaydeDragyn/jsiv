@@ -71,7 +71,7 @@ public class StatusBar extends JPanel {
         } else {
             labelText = "Image Size: " +
                         imageSize.width + "x" + imageSize.height;
-
+        }
         imageSizeLabel.setText(labelText);
     }
     
@@ -82,7 +82,7 @@ public class StatusBar extends JPanel {
             labelText = "No Viewport Size";
         } else {
             labelText = "Viewport: " +
-                    viewportSize.width + "x" + viewportSize.height);
+                    viewportSize.width + "x" + viewportSize.height;
         }
 
         viewportSizeLabel.setText(labelText);
