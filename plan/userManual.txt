@@ -37,7 +37,7 @@ Left Mouse Button   Drag - Pan image
                     Ctrl-Click - Center pixel under mouse to center of
                                                             viewport
 
-Right Mouse Button  Click - Copy color under pixel to system clipboard
+Right Mouse Button  Click - Copy color under pointer to system clipboard
 
 Scroll forward      Zoom in on mouse pointer
 Scroll backward     Zoom out on mouse pointer
