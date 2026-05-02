@@ -1,0 +1,75 @@
+Plan for the UserManual window
+
+This will be a JFrame similar to the main ProgramWindow, but will only provide
+access to the user manual and a links panel.
+
+It will have a menu and respond to some limited keyboard input, such as
+backspace to go back to the last link selected (if any); it will allow
+resizing, zooming in and out (to make the text bigger or smaller) and can
+be closed and re-opened without affecting the main ProgramWindow state.
+
++-----------------------------------------------------------------------------+
+| JSIV User Manual                                                            |
++-----------------------------------------------------------------------------+
+|_Navigation__________________________________________________________________|
+| +-------------------+ +---------------------------------------------------+ |
+| | Section Links [<] | | JSIV User Manual                                  | |
+| | ----------------- | |                                                   | |
+| |  1. Quick Ref     | | 1. Quick Reference                                | |
+| |  2. What is JSIV  | |                                                   | |
+| | >3. How to use    | | Left Mouse Button Drag - Pan image                | |
+| |  4. Menu          | |                   Click - Navigate Previous/Next  | |
+| |  5. Viewport      | |                   Ctrl-Click - Center pixel...    | |
+| |  6. Status Bar    | |                                                   | |
+| |  7. About         | | Right Mouse Button Click - Copy Color...          | |
+| +-------------------+ +---------------------------------------------------+ |
++-----------------------------------------------------------------------------+
+
+Navigation menu will have
+    Hide Navigation     - Collapse/hide the Section Links panel
+    Show Navigation     - Expand/show the Section Links panel
+    Previous Link       - Show the previous link in right window
+    Next Link           - Navigate forward a link
+    Close User Manual   - Close this window
+
+Left panel will be a collapsible JPane.  Collapsible so the user can have the
+right panel expand and show more information.
+This panel will display section links gleaned from the html that is displayed
+in the right panel.  Clicking on one of the section links will be the same
+as clicking on the section link in the table of contents, scrolling the
+right window to the relevant section.
+
+Right panel will be an html display that will basically display the content
+as a web page.  Nothing super fancy - some CSS, enough for headers, link
+navigation, tables, and images (including animated gifs).
+
+Clicking on the [<] button will turn it into this:
+
++-----------------------------------------------------------------------------+
+| JSIV User Manual                                                            |
++-----------------------------------------------------------------------------+
+|_Navigation__________________________________________________________________|
+| +-----+ +-----------------------------------------------------------------+ |
+| | [>] | | JSIV User Manual                                                | |
+| |     | |                                                                 | |
+| |     | | 1. Quick Reference                                              | |
+| |     | |                                                                 | |
+| |     | | Left Mouse Button Drag - Pan image                              | |
+| |     | |                   Click - Navigate Previous/Next when buttons.. | |
+| |     | |                   Ctrl-Click - Center pixel under mouse...      | |
+| |     | |                                                                 | |
+| |     | | Right Mouse Button Click - Copy Color under pointer...          | |
+| +-----+ +-----------------------------------------------------------------+ |
++-----------------------------------------------------------------------------+
+
+The left panel will shrink down and the button will change to a right-pointing
+arrow.  When clicked, the panel will expand and button will change back to be
+the first image above.
+
+This will keep an empty panel on the left side of the window, but it will
+ensure the user knows there is a panel there that they can expand for more
+navigation options, and it should be thin enough to not take up much room
+so the content panel can expand meaningfully (unless the user shrinks the
+window down, but that's the user's fault).
+
+
