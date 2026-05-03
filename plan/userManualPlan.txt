@@ -72,4 +72,4 @@ navigation options, and it should be thin enough to not take up much room
 so the content panel can expand meaningfully (unless the user shrinks the
 window down, but that's the user's fault).
 
-
+-------------
