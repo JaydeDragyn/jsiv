@@ -1,5 +1,6 @@
 package jsiv;
 
+import usermanual.*;
 import java.util.HexFormat;
 import java.util.Optional;
 import java.awt.*;
@@ -47,7 +48,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         initActionItems();
         initMenu();
         initInputActionMaps();
-        
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTransferHandler(new ImageDropHandler(imageNavigator));
         frame.getContentPane().setLayout(new BorderLayout());
@@ -61,13 +62,15 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
         frame.pack();
         frame.setVisible(true);
+
+        UserManualWindow.setTitle("JSIV User Manual");
     }
 
     @Override
     public void navigationAvailabilityChanged(boolean available) {
         setNavigationAvailability(available);
     }
-    
+
     @Override
     public void newImageLoaded(String imageName,
                                 BufferedImage image,
@@ -81,27 +84,27 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     public void requestOpenNext() {
         imageNavigator.openNext();
     }
-    
+
     @Override
     public void requestOpenPrevious() {
         imageNavigator.openPrevious();
     }
-    
+
     @Override
     public void imageSizeChanged(Dimension newImageSize) {
         statusBar.updateImageSize(newImageSize);
     }
-    
+
     @Override
     public void viewportSizeChanged(Dimension newViewportSize) {
         statusBar.updateViewportSize(newViewportSize);
     }
-    
+
     @Override
     public void zoomChanged(double newZoomLevel) {
         statusBar.updateZoomLevel(newZoomLevel);
     }
-    
+
     @Override
     public void newColorUnderPointer(Color color) {
         lastColor = color;
@@ -160,7 +163,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         refreshAction.setEnabled(available);
         viewport.setNavigationAvailability(available);
     }
-    
+
     private void showHelpAboutDialog() {
         JOptionPane.showMessageDialog(frame,
             "JSIV - Jayde's Simple Image Viewer\n" +
@@ -184,13 +187,13 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                     KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_O);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 imageNavigator.openFile();
             }
         };
-        
+
         openNextAction = new AbstractAction("Open Next") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -198,13 +201,13 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                 putValue(MNEMONIC_KEY, KeyEvent.VK_N);
                 putValue(DISPLAYED_MNEMONIC_INDEX_KEY, 5);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 imageNavigator.openNext();
             }
         };
-        
+
         openPreviousAction = new AbstractAction("Open Previous") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -212,7 +215,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                 putValue(MNEMONIC_KEY, KeyEvent.VK_P);
                 putValue(DISPLAYED_MNEMONIC_INDEX_KEY, 5);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 imageNavigator.openPrevious();
@@ -232,20 +235,20 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                 imageNavigator.refresh();
             }
         };
-        
+
         quitAction = new AbstractAction("Quit") {
             {
                 putValue(ACCELERATOR_KEY,
                     KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         };
-              
+
         zoomInAction = new AbstractAction("Zoom In") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -253,13 +256,13 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                     InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_I);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 viewport.zoomIn(Viewport.FocusMode.WINDOW_CENTER);
             }
         };
-        
+
         zoomOutAction = new AbstractAction("Zoom Out") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -268,13 +271,13 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                 putValue(MNEMONIC_KEY, KeyEvent.VK_O);
                 putValue(DISPLAYED_MNEMONIC_INDEX_KEY, 5);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 viewport.zoomOut(Viewport.FocusMode.WINDOW_CENTER);
             }
-        }; 
-        
+        };
+
         resetMagnificationAction = new AbstractAction("Reset Magnification") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -282,13 +285,13 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                         InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_R);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 viewport.resetZoom();
             }
         };
-        
+
         centerImageAction = new AbstractAction("Center Image") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -296,7 +299,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                         InputEvent.CTRL_DOWN_MASK));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_C);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 viewport.centerImage(Viewport.FocusMode.WINDOW_CENTER);
@@ -351,18 +354,18 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                 putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
                 putValue(MNEMONIC_KEY, KeyEvent.VK_U);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("User Manual action -> ");
+                UserManualWindow.show();
             }
         };
-        
+
         aboutAction = new AbstractAction("About") {
             {
                 putValue(MNEMONIC_KEY, KeyEvent.VK_A);
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 showHelpAboutDialog();
@@ -451,5 +454,5 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
         frame.setJMenuBar(menuBar);
     }
-    
+
 }
