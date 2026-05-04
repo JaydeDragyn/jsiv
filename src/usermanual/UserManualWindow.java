@@ -1,4 +1,4 @@
-package jsiv;
+package usermanual;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -19,18 +19,27 @@ public class UserManualWindow {
     private Action toggleNavigationAction;
     private Action navigateNextLinkAction;
     private Action navigatePreviousLinkAction;
-    private Action closeUserManualAction;
+    private Action exitUserManualAction;
 
     // Window components
     private static UserManualWindow userManualWindow;
+    private static String windowTitle = "User Manual";
     private JFrame userManualFrame;
     private JPanel mainPanel;
     private JPanel navContainerPanel;
     private JEditorPane sectionNavigation;
     private JButton toggleNavigationButton;
+    private boolean navigationVisible = true;
     private JEditorPane content;
 
     // Link navigation
+
+    public static void setTitle(String title) {
+        windowTitle = title;
+        if (userManualWindow != null) {
+            userManualWindow.setWindowTitle(title);
+        }
+    }
 
     public static void show() {
         if (userManualWindow == null) {
@@ -39,8 +48,8 @@ public class UserManualWindow {
         userManualWindow.showUserManual();
     }
 
-    public UserManualWindow() {
-        userManualFrame = new JFrame("JSIV User Manual");
+    private UserManualWindow() {
+        userManualFrame = new JFrame(windowTitle);
 
         initActionItems();
         initMainPanel();
@@ -57,11 +66,14 @@ public class UserManualWindow {
         userManualFrame.setVisible(true);
     }
 
+    public void setWindowTitle(String title) {
+        userManualFrame.setTitle(title);
+    }
+
     private void initMainPanel() {
         // Make the main panel
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(800, 600));
-        mainPanel.setBackground(Color.BLACK);
 
         // Add empty borders to the main panel
         mainPanel.add(makeBorderPanel(new Dimension(0, borderSize)), BorderLayout.NORTH);
@@ -141,7 +153,7 @@ public class UserManualWindow {
             }
         };
 
-        closeUserManualAction = new AbstractAction("Exit User Manual") {
+        exitUserManualAction = new AbstractAction("Exit User Manual") {
             {
                 /*
                  * Using Ctrl-E for this instead of Ctrl-C or Ctrl-Q.
@@ -170,9 +182,7 @@ public class UserManualWindow {
                                      .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = mainPanel.getRootPane().getActionMap();
 
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-                        InputEvent.CTRL_DOWN_MASK), "toggleNavigation");
-        actionMap.put("toggleNavigation", toggleNavigationAction);
+
     }
 
     private void initMenu() {
@@ -181,21 +191,23 @@ public class UserManualWindow {
         JMenu navigationMenu = new JMenu("Navigation");
         navigationMenu.setMnemonic(KeyEvent.VK_N);
         navigationMenu.add(new JMenuItem(toggleNavigationAction));
-        navigationMenu.add(new JMenuItem(closeUserManualAction));
+        navigationMenu.add(new JMenuItem(exitUserManualAction));
         menuBar.add(navigationMenu);
 
         userManualFrame.setJMenuBar(menuBar);
     }
 
     private void toggleSectionNavigation() {
-        if (sectionNavigation.isVisible()) {
+        if (navigationVisible) {
             sectionNavigation.setVisible(false);
             toggleNavigationButton.setText(expandButtonText);
             navContainerPanel.setPreferredSize(new Dimension(borderSize * 2, 0));
+            navigationVisible = false;
         } else {
             sectionNavigation.setVisible(true);
             toggleNavigationButton.setText(collapseButtonText);
             navContainerPanel.setPreferredSize(new Dimension(navDefaultSize, 0));
+            navigationVisible = true;
         }
 
         mainPanel.revalidate();
