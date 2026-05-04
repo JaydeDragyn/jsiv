@@ -1,28 +1,25 @@
 Plan for the UserManual window
 
 This will be a JFrame similar to the main ProgramWindow, but will only provide
-access to the user manual and a links panel.
+access to the user manual, a links panel, and a Navigation menu.
 
-It will have a menu and respond to some limited keyboard input, such as
-backspace to go back to the last link selected (if any); it will allow
-resizing, zooming in and out (to make the text bigger or smaller) and can
-be closed and re-opened without affecting the main ProgramWindow state.
+--- Layout ---
 
 +-----------------------------------------------------------------------------+
 | JSIV User Manual                                                            |
 +-----------------------------------------------------------------------------+
 |_Navigation__________________________________________________________________|
-| +-------------------+ +---------------------------------------------------+ |
-| | Section Links [<] | | JSIV User Manual                                  | |
-| | ----------------- | |                                                   | |
-| |  1. Quick Ref     | | 1. Quick Reference                                | |
-| |  2. What is JSIV  | |                                                   | |
-| | >3. How to use    | | Left Mouse Button Drag - Pan image                | |
-| |  4. Menu          | |                   Click - Navigate Previous/Next  | |
-| |  5. Viewport      | |                   Ctrl-Click - Center pixel...    | |
-| |  6. Status Bar    | |                                                   | |
-| |  7. About         | | Right Mouse Button Click - Copy Color...          | |
-| +-------------------+ +---------------------------------------------------+ |
+| +----------------+--+ +---------------------------------------------------+ |
+| | Section Links  |  | | JSIV User Manual                                  | |
+| | -------------- |  | |                                                   | |
+| |  1. Quick Ref  |  | | 1. Quick Reference                                | |
+| |  2. What is... |  | |                                                   | |
+| | >3. How to...  |<|| | Left Mouse Button Drag - Pan image                | |
+| |  4. Menu       |  | |                   Click - Navigate Previous/Next  | |
+| |  5. Viewport   |  | |                   Ctrl-Click - Center pixel...    | |
+| |  6. Status Bar |  | |                                                   | |
+| |  7. About      |  | | Right Mouse Button Click - Copy Color...          | |
+| +----------------+--+ +---------------------------------------------------+ |
 +-----------------------------------------------------------------------------+
 
 Navigation menu will have
@@ -49,17 +46,17 @@ Clicking on the [<] button will turn it into this:
 | JSIV User Manual                                                            |
 +-----------------------------------------------------------------------------+
 |_Navigation__________________________________________________________________|
-| +-----+ +-----------------------------------------------------------------+ |
-| | [>] | | JSIV User Manual                                                | |
-| |     | |                                                                 | |
-| |     | | 1. Quick Reference                                              | |
-| |     | |                                                                 | |
-| |     | | Left Mouse Button Drag - Pan image                              | |
-| |     | |                   Click - Navigate Previous/Next when buttons.. | |
-| |     | |                   Ctrl-Click - Center pixel under mouse...      | |
-| |     | |                                                                 | |
-| |     | | Right Mouse Button Click - Copy Color under pointer...          | |
-| +-----+ +-----------------------------------------------------------------+ |
+| +--+ +--------------------------------------------------------------------+ |
+| |  | | JSIV User Manual                                                   | |
+| |  | |                                                                    | |
+| |  | | 1. Quick Reference                                                 | |
+| |  | |                                                                    | |
+| ||>| | Left Mouse Button Drag - Pan image                                 | |
+| |  | |                   Click - Navigate Previous/Next when buttons..    | |
+| |  | |                   Ctrl-Click - Center pixel under mouse...         | |
+| |  | |                                                                    | |
+| |  | | Right Mouse Button Click - Copy Color under pointer...             | |
+| +--+ +--------------------------------------------------------------------+ |
 +-----------------------------------------------------------------------------+
 
 The left panel will shrink down and the button will change to a right-pointing
@@ -73,3 +70,102 @@ so the content panel can expand meaningfully (unless the user shrinks the
 window down, but that's the user's fault).
 
 -------------
+
+Left pane can be two internal panes, side-by-side; left pane the content pane (containing
+the section links), right pane a single button that fills the entire pane and
+simply has either a > or < as the button label (maybe use an actual filled in
+<| or |> character if we can find a unicode character that exists in the
+default font set in both windows and unix environments, otherwise just use
+the < and > characters).
+
+By default, both sides of the left pane will be visible.  Pressing the <|
+button will collapse this left pane so only the |> button is visible.
+Pressing this |> button will expand the pane so both sides are visible again.
+
+Reasoning for this decision: The expand/collapse button will always be visible
+and will always take up the exact same amount of space.  The button filling
+the entire vertical space of the right pane means the user can click on it
+anywhere to activate the expand/collapse behavior, and even if the window is
+resized, the button will take up the same relative amount of space, so it
+should never become impossible for the user to see it and interact with it.
+
+
+--- Behavior ---
+
+Upon opening, both the Left and Right sections will be visible, so the user
+will see a Navigation Links section on the left that contains section
+header links and a collapse button, and the beginning of the User Manual html
+document on the right.
+
+Scrolling in either section of text will scroll that section up or down like
+any standard document, web page, etc.
+
+Ctrl-Scrolling in either section will reduce or enlarge the text (within
+minimum and maximum size limits) to make it easier to read or show more
+information based on user preference.
+
+Clicking on a link in either section will cause the right section to scroll
+such that the associated section header moves to the top of that right
+section, "navigating to that section".
+
+Clicking on the Collapse button or Navigation->Hide Navigation will hide the
+Section Navigation section and change the button to an Expand button (with a
+|> centered vertically on the button), leaving only the Expand button visible
+on the left side.  This will shift over to the left so the right section is
+wider/takes up more horizontal space so more text is visible.
+
+Clicking on the Expand button or Navigation->Show Navigation will show the
+Section Navigation section and change the button to a Collapse button (with
+a <| centered vertically on the button).  The left edge of the right section
+will shift over to the right so less text is visible and the right section
+takes up less horizontal space, but the navigation links text will be visible
+on the left with the Collapse button between the two sections.  The Collapse
+button will have no space between it and the right edge of the Section
+Navigation text area, but will have the same amount of space as the window
+borders between the right edge of the button and the left edge of the right
+section.
+
+Navigation->Previous or Left Arrow will scroll the right section so the
+last navigated-to section header is at the top of that right section,
+"navigating to the previously chosen section".  If we are at the beginning
+of the list (or no section navigations have occurred) then this will cause
+the right section to scroll to the top, effectively returning the user to
+the "beginning" of the User manual.
+
+Navigation-Next or Right Arrow will scroll the right section to the next
+navigated-to section in the navigation list, that section title moving to
+the top of the right section, "navigating to the next chosen section".
+
+As the user navigates to sections by clicking on section headers (whether
+they click on the left or right side), the UserManualWindow will keep a
+list of those navigations - up to 50 entries.  There are only 26 sections
+in this User Manual, so this will give the user the ability to navigate
+to several sections in a specific order of their choosing, and then
+quickly navigate among them with the left/right arrow keys.  Having the
+list at 50 will allow the user to place almost every section into that
+list twice, with the assumption that they probably won't need to put every
+section in the list twice, and most likely will only really jump around
+between a handfull of sections anyway.
+
+Navigation->Close User Manual or pressing the X on the UserManualWindow will
+hide the UserManualWindow (setVisible(false);).  This window can be brought
+back by pressing F1 or Help->User Manual on the main ProgramWindow, which
+will simply setVisible(true); so the user manual returns with the previous
+state (navigation list, Section Navigation section shown or hidden as it was
+when the UserManualWindow was hidden, right section scrolled to the same
+place as when it was hidden, etc.).
+
+--- Layout Strategy ---
+JFrame
++-ContentPane
+  +-JPanel(BorderLayout)
+    +-NORTH- border panel
+    +-SOUTH- border panel
+    +-WEST - border panel
+    +-EAST - border panel
+    +-CENTER - centerMainPanel
+      +-WEST - navContainerPanel
+        +-EAST - JButton(toggle navigation display)
+        +-CENTER - HTML display for Section Navigation
+      +- CENTER - HTML display for Content
+
