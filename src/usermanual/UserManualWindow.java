@@ -212,4 +212,8 @@ public class UserManualWindow {
 
         mainPanel.revalidate();
     }
+
+    private void setSectionNavigation(boolean setVisible) {
+        if (navigationVisible != setVisible) { toggleSectionNavigation(); }
+    }
 }
