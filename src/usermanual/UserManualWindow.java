@@ -54,9 +54,6 @@ public class UserManualWindow {
         initActionItems();
         initMainPanel();
         initMenu();
-
-        userManualFrame.add(mainPanel, BorderLayout.CENTER);
-
         initInputActionMaps();
 
         userManualFrame.pack();
@@ -113,8 +110,11 @@ public class UserManualWindow {
         centerMainPanel.add(navContainerPanel, BorderLayout.WEST);
         centerMainPanel.add(content, BorderLayout.CENTER);
 
-        // finally add the center part of the main panel to the main panel
+        // add the center part of the main panel to the main panel
         mainPanel.add(centerMainPanel, BorderLayout.CENTER);
+
+        // finally, put the main panel in the center of the frame
+        userManualFrame.add(mainPanel, BorderLayout.CENTER);
     }
 
     private JPanel makeBorderPanel(Dimension size) {
