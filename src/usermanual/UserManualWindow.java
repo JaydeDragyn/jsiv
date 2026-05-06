@@ -3,6 +3,7 @@ package usermanual;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.*;
+import java.util.regex.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -298,8 +299,7 @@ public class UserManualWindow implements HyperlinkListener {
 
             // Finally, populate the navigationSection
             // with links from the document
-
-
+            populateNavigationSection(document);
         }
         // Could not set the content page to the filename
         catch (Exception e) {
@@ -315,9 +315,47 @@ public class UserManualWindow implements HyperlinkListener {
         showSectionNavigation(false);
     }
 
-    private void loadNavigationLinks(String document) {
+    private void populateNavigationSection(String document) {
+        // This will build an .html document for the navigation pane
+        // consisting of links and labels taken in order from the
+        // <a name=""> tags of the given document (which we assume
+        // is the document that the content pane is displaying).
 
+        // Start with the header and open the body
+        String navDocument = "<html>"
+                           + "\n<head>"
+                           + "\n  <style>"
+                           + "\n    body { font-family: sans-serif;"
+                           + "\n           font-size: 12pt;"
+                           + "\n           padding: 5px;"
+                           + "\n    }"
+                           + "\n    a { text-decoration: none;"
+                           + "\n        color: blue;"
+                           + "\n    }"
+                           + "\n  </style>"
+                           + "\n</head>"
+                           + "\n<body>"
+                           + "\n  <h2>Section Navigation</h2>"
+                           + "\n";
 
+        // Now parse the document for those links
+        // looking for <a name="XXX">YYY</a> labels
+        // Display YYY as the body of an anchor that points to #XXX
+        Pattern p = Pattern.compile("<a name=\"(.*?)\">(.*?)</a>", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(document);
 
+        while (m.find()) {
+            String link = m.group(1);
+            String label = m.group(2);
+
+            navDocument += "<a href=\"#" + link + "\">" + label + "<br>\n";
+        }
+
+        // Now close the body and the document
+        navDocument += "</body></html>";
+
+        // Finally, set this to be the sectionNavigation's content
+        sectionNavigation.setText(navDocument);
+        showSectionNavigation(true);
     }
 }
