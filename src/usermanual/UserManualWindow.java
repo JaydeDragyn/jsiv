@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.event.HyperlinkEvent.EventType;
+import javax.swing.text.html.HTMLDocument;
 
 public class UserManualWindow implements HyperlinkListener {
 
@@ -98,7 +99,7 @@ public class UserManualWindow implements HyperlinkListener {
         mainPanel.add(makeBorderPanel(new Dimension(borderSize, 0)), BorderLayout.EAST);
 
         // Section Navigation html display
-        sectionNavigation = new JEditorPane("text/html", "<h1>Section Navigation</h1>");
+        sectionNavigation = new JEditorPane("text/html", "Section Navigation");
         sectionNavigation.setBorder(new EtchedBorder());
         sectionNavigation.setEditable(false);
         sectionNavigation.addHyperlinkListener(this);
@@ -110,7 +111,7 @@ public class UserManualWindow implements HyperlinkListener {
         toggleNavigationButton.setMargin(new Insets(0,0,0,0));
 
         // Content html display
-        content = new JEditorPane("text/html", "<h1>Content</h1>");
+        content = new JEditorPane("text/html", "Content");
         content.setBorder(new EtchedBorder());
         content.setEditable(false);
         content.addHyperlinkListener(this);
@@ -283,19 +284,28 @@ public class UserManualWindow implements HyperlinkListener {
             return;
         }
 
-        // Now have content get the document
         try {
-            content.setPage(url);
+            // Now try to read the document
+            String document = Files.readString(Path.of(url.toURI()));
+
+            // We have the document, set the base URL so any image links
+            // work properly, and then put the document into the content Pane
+            content.setContentType("text/html");
+            HTMLDocument doc = (HTMLDocument) content.getDocument();
+            doc.setBase(url);
+            content.setText(document);
             content.setCaretPosition(0);
+
+            // Finally, populate the navigationSection
+            // with links from the document
+
+
         }
         // Could not set the content page to the filename
-        catch (IOException e) {
+        catch (Exception e) {
             setContentErrorMessage("<h1>Error reading " + documentPath + "</h1>");
             return;
         }
-
-        // content has been set and displayed, gather index links
-
     }
 
     private void setContentErrorMessage(String errorMessage) {
@@ -303,5 +313,11 @@ public class UserManualWindow implements HyperlinkListener {
         content.setCaretPosition(0);
         sectionNavigation.setText("");
         showSectionNavigation(false);
+    }
+
+    private void loadNavigationLinks(String document) {
+
+
+
     }
 }
