@@ -1,0 +1,649 @@
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; font-size: 16pt; padding: 5px;}
+        a { text-decoration: none; color: blue; }
+        ul { margin-left: 15px; padding-left: 0; }
+        li { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+<h1 id="top">JSIV User Manual</h1>
+
+<hr>
+<h2><a name="index">Index</h2>
+
+<table border="0" cellspacing="0" cellpadding="0">
+<tr><td>1.</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S1">Quick Ref</a></td></tr>
+<tr><td>2.</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S2">What is this program</a>?</td></tr>
+<tr><td>3.</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3">How to use this program</a></td></tr>
+<tr><td>3.1</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.1">Open a file</a></td></tr>
+<tr><td>3.2</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2">Navigate to other files</a></td></tr>
+<tr><td>3.2.1</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2.1">Navigate to Previous/Next image</a></td></tr>
+<tr><td>3.2.2</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2.2">Navigation issues</a></td></tr>
+<tr><td>3.2.2.1</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2.2.1">Only one file in the folder</a></td></tr>
+<tr><td>3.2.2.2</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2.2.2">No valid image to display</a></td></tr>
+<tr><td>3.2.2.3</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2.2.3">Image will not open or was removed</a></td></tr>
+<tr><td>3.2.2.4</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2.2.4">Current image is removed</a></td></tr>
+<tr><td>3.2.2.5</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.2.2.5">Refreshing the internal file list</a></td></tr>
+<tr><td>3.3</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.3">Image magnification</a></td></tr>
+<tr><td>3.3.1</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.3.1">Zoom In</a></td></tr>
+<tr><td>3.3.2</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.3.2">Zoom Out</a></td></tr>
+<tr><td>3.3.3</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.3.3">Reset Magnification</a></td></tr>
+<tr><td>3.4</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.4">Pan</a></td></tr>
+<tr><td>3.4.1</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.4.1">Drag</a></td></tr>
+<tr><td>3.4.2</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.4.2">Click</a></td></tr>
+<tr><td>3.4.3</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.4.3">Center</a></td></tr>
+<tr><td>3.5</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.5">Background</a></td></tr>
+<tr><td>3.6</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S3.6">Color picker</a></td></tr>
+<tr><td>4.</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S4">Menu</a></td></tr>
+<tr><td>5.</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S5">Viewport</a></td></tr>
+<tr><td>6.</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S6">Status bar</a></td></tr>
+<tr><td>7.</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="#S7">About</a></td></tr>
+</table>
+<br>
+<hr>
+
+<h2><a name="S1">1. Quick Reference</h2>
+<br>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr><td>Left Mouse Button</td><td><b>Drag</b> - Pan image</td></tr>
+<tr><td></td>                 <td><b>Click</b> - Navigate Previous/Next when buttons available</td></tr>
+<tr><td></td>                 <td><b>Ctrl-Click</b> - Center pixel under mouse to center of viewport</td></tr>
+<tr><td></td>                 <td></td></tr>
+<tr><td>Right Mouse Button&nbsp;&nbsp;</td><td><b>Click</b> - Copy color under pointer to system clipboard</td></tr>
+<tr><td></td>               <td></td></tr>
+<tr><td>Scroll forward</td> <td>Zoom in on mouse pointer</td></tr>
+<tr><td>Scroll backward</td><td>Zoom out on mouse pointer</td></tr>
+<tr><td></td>               <td></td></tr>
+<tr><td>Ctrl-Arrows</td>    <td>Pan image in 1px increments</td></tr>
+<tr><td>Ctrl-Shift-Arrows</td><td>Pan image in 10px increments</td></tr>
+<tr><td></td>               <td></td></tr>
+<tr><td>Ctrl-O</td>         <td>Open File</td></tr>
+<tr><td>Ctrl-Shift-O</td>   <td>Refresh internal file list</td></tr>
+<tr><td>Ctrl-N, right arrow</td><td>Open Next file when navigation is available</td></tr>
+<tr><td>Ctrl-P, left arrow</td><td>Open Previous file when navigation is available</td></tr>
+<tr><td>Ctrl-Q</td>         <td>Quit the program</td></tr>
+<tr><td></td>               <td></td></tr>
+<tr><td>Ctrl +</td>         <td>Zoom in focused on window center</td></tr>
+<tr><td>Ctrl -</td>         <td>Zoom out focused on window center</td></tr>
+<tr><td>Ctrl-0</td>         <td>Reset Zoom</td></tr>
+<tr><td>Ctrl-C</td>         <td>Center Image in window</td></tr>
+<tr><td></td>               <td></td></tr>
+<tr><td>Ctrl-B</td>         <td>Change Background color</td></tr>
+<tr><td></td>               <td></td></tr>
+<tr><td>F1</td>             <td>Open this user manual</td></tr>
+</table>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S2">2. What is this program?</h2>
+
+<p>I could not find a lightweight image viewer that would do what I wanted, so
+I wrote my own.  This is a simple image viewer designed to help me quickly
+and easily view small images in the way I want.  It can open large images as
+well, I just designed it more with small images in mind.</p>
+
+<p>While working on a game, I have folders full of image assets that are all
+quite small (16x16 and 32x32 pixels).  I want to view them sequentially,
+but not at the original 16x16 or 32x32 sizes which are difficult to see
+when I am trying to look at detail.  Zooming in with the image viewers I
+had took extra steps, slowing me down, and some did pixel interpolation
+which makes the enlarged images look fuzzy.  Not desireable.</p>
+
+<p>So my simple image viewer will open an image, make a list of all the other
+images in the folder, and zoom in so the image is as large as possible
+in the window without making it too large to fit.  It will allow you to
+quickly navigate to the next image in the folder (or previous image),
+opening and sizing it the same way, so you can quickly scan a folder's
+images without manually enlarging each image.</p>
+
+<p>As a bonus, this viewer will give the RGB or Hex values for the pixels in
+the image as you mouse over them, and right clicking on a pixel will copy
+that pixel's RGB or Hex color to the system clipboard so you can paste it
+somewhere easily.  You can toggle between copying in RGB format and Hex
+format in the Color menu.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3">3. How to use this program</h2>
+
+<p>My intent was to easily scan through folders full of images, so open an
+image, navigate through the folder, zoom into and out of the image and pan
+the image around.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.1">3.1 Open a file</h2>
+
+This image viewer can read the following image formats:<br>
+<pre>    .png .jpg .jpeg .gif .tif .tiff .bmp .wbmp</pre>
+<br>
+An image can be opened in the following ways:<br>
+<br>
+<table border="0" cellspacing="0" cellpadding="0">
+<tr><td>A.</td><td>Open dialog</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Use the File menu and select Open File, or press <i>Ctrl-O</i> to bring up a dialog where you can select a file.</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td></td></tr>
+<tr><td>B.</td><td>Drag 'n Drop</td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td>You can drag an image file onto the JSIV window to open it.</td></tr>
+</table>
+
+<p>If JSIV cannot open the file, it will give an error message.  If the
+reason is available, it will provide the reason.  Otherwise you may
+have to verify the file some other way.</p>
+
+<p>Once the file is open, JSIV will center it and size it to be as large
+in the window as it can get without any part going out of the window,
+and respecting the magnification limits (see <i>3.3 Image magnification</i>).</p>
+
+<p>JSIV will also display the filename in the program window title bar,
+it will display the image size, the Viewport size (the Viewport is
+the part of the program window where the image is displayed) and
+the current magnification.</p>
+
+<p>When a new image is opened, the window is resized or the image is
+magnified, the window title and status bar will update.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2">3.2 Navigate to other files</h2>
+
+<p>The main reason for this program's existence is this navigation feature.
+When you open a file, JSIV will make a list of all of the other image
+files in the folder by matching file extensions - if a file has a .png
+extension but is not actually a .png file, JSIV will not know until it
+tries to open it.</p>
+
+<p>Once it has this list, it will display a file index in the status bar,</p>
+
+<pre>    File: 1 of 20</pre>
+
+<p>The first number is which file you are currently viewing and the second is
+the total number of files.</p>
+
+<p>When an image is opened via navigation, it will open the same way as if
+it was opened with <i>Ctrl-O</i>, File->Open File, or dragging an image file
+onto the program window: it will be enlarged and centered, regardless
+of the state of the last image you were viewing.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2.1">3.2.1 Navigate to Previous/Next image</h2>
+
+<p>If there are other image files in the same folder as the image currently
+displayed, when the mouse moves over the left and right edges of the
+viewport (at around half-way between top and bottom), navigation buttons
+will appear.  See 5. Viewport</p>
+
+<p>You can left click on the Previous &lt;&lt; Image button, press the Left Arrow key,
+go to File->Open Previous or press <i>Ctrl-P</i> to navigate to the Previous image
+in the list.  If you are currently viewing the first image, navigating to
+the previous image will wrap around to view the last image.</p>
+
+<p>You can left click on the Next >> Image button, press the Right Arrow key,
+go to File->Open Next or press <i>Ctrl-N</i> to navigate to the Next image in the
+list.  If you are currently viewing the last image, navigating to the next
+image will wrap around to view the first image.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2.2">3.2.2 Navigation issues</h2>
+
+<p>If there are any issues opening a file while navigating, JSIV will not
+interrupt you with a popup error message.  It will instead try to
+update it's list of files and move on so you can continue to quickly
+navigate through the folder.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2.2.1">3.2.2.1 Only one file in the folder</h2>
+
+<p>If there are no other image files in the folder with the image currently
+displayed, image navigation will not be available.  JSIV will not move up
+or down the folder structure, it will only navigate within one folder at
+a time.  In this case, the File index on the Status Bar will show</p>
+
+<pre>    File: 1 of 1</pre>
+
+<p>To view another image, you will need to Open an image from a different
+folder.  See 3.1 Open a file.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2.2.2">3.2.2.2 No valid image to display</h2>
+
+<p>When you open JSIV, it will display the startup image, navigation will not be
+available, and the File index on the Status Bar will show</p>
+
+<pre>    File: 0 of 0</pre>
+
+<p>If an image fails to load and there is no image to fall back to, JSIV will
+display the startup image again.</p>
+
+<p>To view an image in this situation, you will need to Open an image as
+explained in 3.1 Open a file.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2.2.3">3.2.2.3 Image will not open or was removed</h2>
+
+<p>If an image in the current folder is moved or deleted, or is unable to be
+opened for some reason, then trying to navigate to this file will cause
+JSIV to remove that file from its list without a popup so you can continue
+navigating without interruption.  The File index on the Status bar
+will update to reflect the new file count, and navigation will attempt to
+move on to the next image file in the list in the direction you are
+navigating.  If all of the images except the one currently displayed are
+removed from the folder, then navigation will be disabled until a new
+file is opened from a folder with more than one image file.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2.2.4">3.2.2.4 Current image is removed</h2>
+
+<p>If the image currently being displayed is removed from the folder, JSIV will
+continue to display it until you navigate away from it or Open a different
+file.  If JSIV is able to detect this, it will update the File index on the
+Status bar to show</p>
+
+<pre>    File: 0 of 20</pre>
+
+<p>Showing <i>File 0</i> means it is showing an image file that no longer exists in
+the folder.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.2.2.5">3.2.2.5 Refreshing the internal file list</h2>
+
+<p>If you are viewing images in a folder and make changes to that folder, you
+can use the Refresh feature (File->Refresh or <i>Ctrl-Shift-O</i>) to have JSIV
+re-index the image files so you are not trying to have it open files that no
+longer exist.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.3">3.3 Image magnification</h2>
+
+<p>The other main reason for this image viewer is to easily magnify small
+images.</p>
+
+<p>As you zoom in and out, the Status Bar will display the image
+magnification.  Zooming in and out are done in powers of 2.
+Enlarging an image goes from</p>
+<pre>    100% -> 200% -> 400% -> 800% etc.</pre>
+<p>Reducing an image goes the other way, and large images can be
+reduced to less than 100% magnification</p>
+<pre>    100%->50%->25%->12%, etc.</pre>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.3.1">3.3.1 Zoom In</h2>
+
+<p>You can zoom in by scrolling the mouse wheel toward the screen, by
+pressing <i>Ctrl-'+'</i>, or with Image->Zoom In.</p>
+
+<p>Zooming in makes the pixels of the image appear larger.  The maximum zoom
+for any image will be when between 8 and 15 full pixels appear in the
+program window in either axis.  Fewer than 8 pixels visible does not really
+provide any additional meaningful information, so that is the limit.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.3.2">3.3.2 Zoom Out</h2>
+
+<p>You can zoom out by scrolling the mouse wheel away from the screen,
+by pressing <i>Ctrl-'-'</i>, or with Image->Zoom Out.</p>
+
+<p>Zooming out makes the pixels of the image appear smaller.  The minimum
+zoom for any image will be either 1x (100%) so you can see the pixels
+as they actually are, or if the image is too big to fit in the window
+at 1x, you can continue zooming out until the entire image is visible.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.3.3">3.3.3 Reset Magnification</h2>
+
+<p>You can reset the magnification by pressing <i>Ctrl-0</i> or
+Image->Reset Zoom.</p>
+
+<p>Resetting the magnification will put it back to what it was when
+the image was opened - as large in the window as it can get, with a
+power of 2 magnification, without any part of the image outside of
+the bounds of the window.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.4">3.4 Pan</h2>
+
+<p>You can pan the image (move it around) in several ways.  This is most
+useful when the image is magnified since the entire image may no longer
+fit in the window, but will work at any image size and magnification.</p>
+
+<p><i>Ctrl-Arrow</i> will move the image 1 pixel in the direction of the
+arrow key.  <i>Ctrl-Shift-Arrow</i> will move the image 10 pixels in that
+direction. If the image is magnified, the movement from the arrow keys will
+be a full image pixel, so at 800%, <i>Ctrl-Right Arrow</i> will move the
+image 8 screen pixels to the right, making the image appear to move a full-
+enlarged pixel to the right.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.4.1">3.4.1 Drag</h2>
+
+<p>Holding the Left Mouse Button down, you can drag the image around within
+the window.  If the image is smaller than the window, it will not go past
+the edges.  If the image is bigger than the window (including if it is
+magnified), the edge of the image will stop at the edge of the window
+so there will always be some part of the image in view.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.4.2">3.4.2 Click</h2>
+
+<p>Using Ctrl-Left Click, the image will shift so that whatever pixel the
+mouse is over will move to the center of the screen.  Essentially, this
+centers that pixel on the screen, taking the rest of the image with it.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.4.3">3.4.3 Center</h2>
+
+<p>Pressing <i>Ctrl-C</i> or Image->Center Image will center the entire image
+in the window.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+<br>
+
+<h2><a name="S3.5">3.5 Background</h2>
+
+<p>If the current background color hides some of the pixels of the image,
+such as a dark image on a black background, you can change the background
+color by pressing <i>Ctrl-B</i> or Color->Change Background.</p>
+
+<p>This will bring up a color chooser that will let you pick a new background
+color from one of several methods - swatches, HSL, HSV, RGB/Hex or CMYK.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S3.6">3.6 Color picker</h2>
+
+<p>As you move the mouse around, the color of the pixel under the mouse will
+appear in the Status Bar at the bottom of the window.  You can click with
+the Right Mouse Button to have the program copy that color to the system
+clipboard so you can paste it into another program.  When you do this, the
+Status Bar will confirm it was copied by displaying "Copied!" next to the
+color value.  That "Copied!" will disappear when the mouse moves to a
+different pixel.</p>
+
+<p>In the Color menu, you can choose RGB mode or HEX mode.</p>
+
+<p>RGB mode will display the color as RGB values in the Status Bar, each
+between 0-255, and will copy the color in the format it shows.</p>
+
+<p>HEX mode will display the color as a Hex code: 6 hexadecimal digits
+that represent the RGB colors: 0xRRGGBB with 0x in front to denote it is
+a hexadecimal value.  00 is 0, FF is 255, and everything in between is
+from 1-254. So if RGB would show</p>
+
+<pre>    R:255 G:0 B:0</pre>
+
+then HEX will show<br>
+
+<pre>    0xFF0000</pre>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S4">4. Menu</h2>
+
+<p>The Menus include File operations, Image controls, Color settings and
+a Help menu.</p><br><br>
+
+<table border="0" cellspacing="0" cellpadding="0">
+<tr><td colspan=2>File (Alt-F)</td>
+    <td></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Open File (Ctrl-O)</td>
+    <td><a href="#S3.1">See 3.1</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Open Next (Ctrl-N)</td>
+    <td><a href="#S3.2">See 3.2</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Open Previous (Ctrl-P)</td>
+    <td><a href="#S3.2">See 3.2</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Refresh (Ctrl-Shift-O)</td>
+    <td><a href="#S3.2.2.5">See 3.2.2.5</a></td></tr>
+<tr><td colspan=3></td></tr>
+<tr><td colspan=2>Image (Alt-I)</td>
+    <td></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Zoom In (Ctrl-'+')</td>
+    <td><a href="#S3.3.1">See 3.3.1</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Zoom Out (Ctrl-'-')</td>
+    <td><a href="#S3.3.2">See 3.3.2</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Reset Magnification (Ctrl-0)</td>
+    <td><a href="#S3.3.3">See 3.3.3</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Center Image (Ctrl-C)</td>
+    <td><a href="#S3.4.3">See 3.4.3</a></td></tr>
+<tr><td colspan=3></td></tr>
+<tr><td colspan=2>Color (Alt-C)</td>
+    <td></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Change Background Color (Ctrl-B)</td>
+    <td><a href="#S3.6">See 3.6</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Use RGB Mode</td>
+    <td><a href="#S3.6">See 3.6</a></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Use HEX Mode</td>
+    <td><a href="#S3.6">See 3.6</a></td></tr>
+<tr><td colspan=3></td></tr>
+<tr><td colspan=2>Help (Alt-H)</td>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>User Manual (F1)</td>
+    <td>This document</td>
+    <td></td></tr>
+<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>About</td>
+    <td></td></tr>
+</table>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S5">5. Viewport</h2>
+
+<p>The Viewport is the largest part of the program window where the images you
+view will be displayed.  It will initially be a Black background, but you
+can change it in Color->Change Background Color or with <i>Ctrl-B</i>.
+See 3.5 Background</p>
+
+<p>On startup, the Viewport will display a startup image.  You can move this
+image around and magnify it like any other image, but it is just meant to
+confirm that the program has successfully started.</p>
+
+<p>When an image is open from a folder with other images, navigation buttons
+will appear when the mouse hovers over the left or right side of the Viewport,
+about half-way between the top and bottom.  You can Left Click on those
+buttons to navigate to the previous or next image without having to use the
+keyboard commands.  These buttons only appear when the mouse is hovering over
+them so that they do not obscure an image if part of the image is in that
+area.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S6">6. Status bar</h2>
+
+<p>The bottom of the program window is the Status Bar that shows information
+about the image currently being displayed, and about the program.</p>
+<br>
+
+<h3>File Index:</h3>
+
+<p>This starts out showing</p>
+
+<pre>    File: 0 of 0</pre>
+
+<p>while the splash screen is displayed.  Once an image is loaded, it will
+change to show the current file index.  See also 3.2 Navigate to other files</p>
+<br>
+
+
+<h3>Image Size:</h3>
+
+<p>This shows the original image size in pixels, ignoring any magnification.</p>
+<br>
+
+
+<h3>Viewport:</h3>
+
+<p>This shows the size of the Viewport in pixels so you can get an idea of
+how large the image will be compared to a given window size by adjusting
+the size of the program window.</p>
+<br>
+
+
+<h3>Zoom:</h3>
+
+<p>This shows the current magnification as a percentage - 100% is 1x so the
+image will appear at the size that Image Size shows.  200% is double the
+size, 400% is 4x the size, etc.</p>
+<br>
+
+
+<b>R:## G:## B:##</b><br>
+-OR-<br>
+<b>0x######</b><br>
+
+<p>This shows both the color of the pixel the mouse is hovering over, and
+the mode so you can see at a glance what will be copied to the system
+clipboard if you right click.</p>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+
+<hr>
+
+<h2><a name="S7">7. About</h2>
+
+<p>This program was written entirely by me, Jayde Dragyn.</p>
+
+<p>Questions, contact me at <b><i>JaydeDragyn@outlook.com</i></b></p>
+
+<p>You can find the source code on GitHub at:</p>
+
+<pre>    https://github.com/JaydeDragyn/jsiv</pre>
+
+<p>This program was built using Java 17.0.4.1 2022-08-18 LTS
+No IDE, just a text editor (Kate) and a git bash terminal.
+The startup image and navigation buttons are drawn by the
+program using Java's Graphics2D class.</p>
+
+<p>Technical guidance, proofreading, and code review assistance by:</p>
+<pre style="font-size: 14">    ChatGPT (OpenAI) and Claude Sonnet (Anthropic)</pre>
+<br>
+<p align="right" style="font-size:10"><a href="#index">Back to top</a></p>
+</body>
+</html>

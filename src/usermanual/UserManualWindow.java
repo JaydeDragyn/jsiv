@@ -1,11 +1,15 @@
 package usermanual;
 
+import java.io.*;
+import java.nio.file.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.event.HyperlinkEvent.EventType;
 
-public class UserManualWindow {
+public class UserManualWindow implements HyperlinkListener {
 
     // Settings
     private static final int borderSize = 15;
@@ -21,6 +25,8 @@ public class UserManualWindow {
     private Action navigatePreviousLinkAction;
     private Action exitUserManualAction;
 
+    private Action reloadUserManualAction;
+
     // Window components
     private static UserManualWindow userManualWindow;
     private static String windowTitle = "User Manual";
@@ -31,6 +37,9 @@ public class UserManualWindow {
     private JButton toggleNavigationButton;
     private boolean navigationVisible = true;
     private JEditorPane content;
+    private JScrollPane contentScrollPane;
+    private static String document = "";
+    private static String userManual = "";
 
     // Link navigation
 
@@ -38,6 +47,13 @@ public class UserManualWindow {
         windowTitle = title;
         if (userManualWindow != null) {
             userManualWindow.setWindowTitle(title);
+        }
+    }
+
+    public static void setDocument(String filename) {
+        document = filename;
+        if (userManualWindow != null) {
+            userManualWindow.loadDocument(document);
         }
     }
 
@@ -57,6 +73,8 @@ public class UserManualWindow {
         initInputActionMaps();
 
         userManualFrame.pack();
+
+        loadDocument(document);
     }
 
     public void showUserManual() {
@@ -82,6 +100,7 @@ public class UserManualWindow {
         sectionNavigation = new JEditorPane("text/html", "<h1>Section Navigation</h1>");
         sectionNavigation.setBorder(new EtchedBorder());
         sectionNavigation.setEditable(false);
+        sectionNavigation.addHyperlinkListener(this);
 
         // Toggle Navigation Button
         toggleNavigationButton = new JButton(toggleNavigationAction);
@@ -93,22 +112,29 @@ public class UserManualWindow {
         content = new JEditorPane("text/html", "<h1>Content</h1>");
         content.setBorder(new EtchedBorder());
         content.setEditable(false);
+        content.addHyperlinkListener(this);
 
         // create and fill the toggle button/border between nav and content
         JPanel borderPanel = new JPanel(new GridLayout(1, 2));
         borderPanel.add(toggleNavigationButton);
         borderPanel.add(makeBorderPanel(new Dimension(borderSize, 0)));
 
+        // Put the Section Navigation display into a Scroll pane
+        JScrollPane sectionNavigationScrollPane = new JScrollPane(sectionNavigation);
+
         // create and fill the Section Navigation panel
         navContainerPanel = new JPanel(new BorderLayout());
         navContainerPanel.setPreferredSize(new Dimension(navDefaultSize, 0));
-        navContainerPanel.add(sectionNavigation, BorderLayout.CENTER);
+        navContainerPanel.add(sectionNavigationScrollPane, BorderLayout.CENTER);
         navContainerPanel.add(borderPanel, BorderLayout.EAST);
+
+        // Put the Content display into a Scroll pane
+        contentScrollPane = new JScrollPane(content);
 
         // create and fill the center part of the main panel
         JPanel centerMainPanel = new JPanel(new BorderLayout());
         centerMainPanel.add(navContainerPanel, BorderLayout.WEST);
-        centerMainPanel.add(content, BorderLayout.CENTER);
+        centerMainPanel.add(contentScrollPane, BorderLayout.CENTER);
 
         // add the center part of the main panel to the main panel
         mainPanel.add(centerMainPanel, BorderLayout.CENTER);
@@ -174,6 +200,19 @@ public class UserManualWindow {
                 userManualFrame.setVisible(false);
             }
         };
+
+        reloadUserManualAction = new AbstractAction("Reload User Manual") {
+            {
+                putValue(ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_R);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setDocument(document);
+            }
+        };
     }
 
 
@@ -190,6 +229,7 @@ public class UserManualWindow {
 
         JMenu navigationMenu = new JMenu("Navigation");
         navigationMenu.setMnemonic(KeyEvent.VK_N);
+        navigationMenu.add(new JMenuItem(reloadUserManualAction));
         navigationMenu.add(new JMenuItem(toggleNavigationAction));
         navigationMenu.add(new JMenuItem(exitUserManualAction));
         menuBar.add(navigationMenu);
@@ -215,5 +255,49 @@ public class UserManualWindow {
 
     private void showSectionNavigation(boolean setVisible) {
         if (navigationVisible != setVisible) { toggleSectionNavigation(); }
+    }
+
+    @Override
+    public void hyperlinkUpdate(HyperlinkEvent e) {
+        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            String bookmark = e.getDescription();
+            if (bookmark != null && bookmark.startsWith("#")) {
+                bookmark = bookmark.substring(1);
+            }
+            content.scrollToReference(bookmark);
+        }
+    }
+
+    private void loadDocument(String filename) {
+        // If no filename has been specified
+        if (filename.isEmpty()) {
+            setContent("<h1>No User Manual specified, nothing to display.</h1>");
+            sectionNavigation.setText("");
+            showSectionNavigation(false);
+            return;
+        }
+
+        // A filename was specified, try to read the file and set
+        // the content to that file content
+        try {
+            String c = Files.readString(new File(filename).toPath());
+            setContent(c);
+        }
+        // Could not set the content page to the filename
+        catch (IOException e) {
+            setContent("<h1>Unable to load " + filename + "</h1>");
+            sectionNavigation.setText("");
+            showSectionNavigation(false);
+            return;
+        }
+
+        // content has been set and displayed, gather index links
+
+    }
+
+    private void setContent(String newContent) {
+        userManual = newContent;
+        content.setText(userManual);
+        content.setCaretPosition(0);
     }
 }
