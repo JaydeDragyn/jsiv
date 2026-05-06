@@ -1,6 +1,7 @@
 package usermanual;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.file.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -268,26 +269,28 @@ public class UserManualWindow implements HyperlinkListener {
         }
     }
 
-    private void loadDocument(String filename) {
+    private void loadDocument(String documentPath) {
         // If no filename has been specified
-        if (filename.isEmpty()) {
-            setContent("<h1>No User Manual specified, nothing to display.</h1>");
-            sectionNavigation.setText("");
-            showSectionNavigation(false);
+        if (documentPath.isEmpty()) {
+            setContentErrorMessage("<h1>No User Manual specified, nothing to display.</h1>");
             return;
         }
 
-        // A filename was specified, try to read the file and set
-        // the content to that file content
+        // A path was provided for the document, convert to URL if we can
+        URL url = getClass().getResource(documentPath);
+        if (url == null) {
+            setContentErrorMessage("<h1>Unable to find " + documentPath + "</h2>");
+            return;
+        }
+
+        // Now have content get the document
         try {
-            String c = Files.readString(new File(filename).toPath());
-            setContent(c);
+            content.setPage(url);
+            content.setCaretPosition(0);
         }
         // Could not set the content page to the filename
         catch (IOException e) {
-            setContent("<h1>Unable to load " + filename + "</h1>");
-            sectionNavigation.setText("");
-            showSectionNavigation(false);
+            setContentErrorMessage("<h1>Error reading " + documentPath + "</h1>");
             return;
         }
 
@@ -295,9 +298,10 @@ public class UserManualWindow implements HyperlinkListener {
 
     }
 
-    private void setContent(String newContent) {
-        userManual = newContent;
-        content.setText(userManual);
+    private void setContentErrorMessage(String errorMessage) {
+        content.setText(errorMessage);
         content.setCaretPosition(0);
+        sectionNavigation.setText("");
+        showSectionNavigation(false);
     }
 }
