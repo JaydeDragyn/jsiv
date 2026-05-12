@@ -3,6 +3,7 @@ package usermanual;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.*;
+import java.util.*;
 import java.util.regex.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -24,11 +25,15 @@ public class UserManualWindow implements HyperlinkListener {
 
     // Actions
     private Action toggleNavigationAction;
-    private Action navigateNextLinkAction;
-    private Action navigatePreviousLinkAction;
-    private Action exitUserManualAction;
+    private Action navigateBackAction;
+    private Action closeUserManualAction;
 
-    private Action reloadUserManualAction;
+    private Action reloadUserManualAction;  // Hidden option.
+                                            // Useful for writing/editing
+                                            // the user manual without
+                                            // having to re-compile or
+                                            // re-run the program over
+                                            // and over.
 
     // Window components
     private static UserManualWindow userManualWindow;
@@ -43,6 +48,8 @@ public class UserManualWindow implements HyperlinkListener {
     private JScrollPane contentScrollPane;
     private static String document = "";
     private static String userManual = "";
+    private ArrayList<JMenuItem> navigationMenuItems;
+    private int navigationIndex = 0;
 
     // Link navigation
 
@@ -160,7 +167,7 @@ public class UserManualWindow implements HyperlinkListener {
             }
         };
 
-        navigateNextLinkAction = new AbstractAction("Next Link") {
+        navigateBackAction = new AbstractAction("Back") {
             {
 
             }
@@ -171,31 +178,10 @@ public class UserManualWindow implements HyperlinkListener {
             }
         };
 
-        navigatePreviousLinkAction = new AbstractAction("Previous Link") {
+        closeUserManualAction = new AbstractAction("Close User Manual") {
             {
-
-            }
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        };
-
-        exitUserManualAction = new AbstractAction("Exit User Manual") {
-            {
-                /*
-                 * Using Ctrl-E for this instead of Ctrl-C or Ctrl-Q.
-                 *
-                 * Ctrl-C conflicts with Windows' Copy
-                 * Ctrl-Q would be too easy to accidentally press multiple
-                 *      times and end up closing the program unintentionally
-                 *
-                 * Ctrl-E does not conflict with any other accelerator keys
-                 */
-                putValue(ACCELERATOR_KEY,
-                    KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
-                putValue(MNEMONIC_KEY, KeyEvent.VK_E);
+                // No Accelerator key for this action
+                putValue(MNEMONIC_KEY, KeyEvent.VK_C);
             }
 
             @Override
@@ -224,18 +210,41 @@ public class UserManualWindow implements HyperlinkListener {
                                      .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = mainPanel.getRootPane().getActionMap();
 
-
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK),
+                        "reload");
+        actionMap.put("reload", reloadUserManualAction);
     }
 
     private void initMenu() {
         JMenuBar menuBar = new JMenuBar();
 
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setMnemonic(KeyEvent.VK_V);
+        viewMenu.add(new JMenuItem(toggleNavigationAction));
+        viewMenu.addSeparator();
+        viewMenu.add(new JMenuItem(closeUserManualAction));
+        menuBar.add(viewMenu);
+
         JMenu navigationMenu = new JMenu("Navigation");
-        navigationMenu.setMnemonic(KeyEvent.VK_N);
-        navigationMenu.add(new JMenuItem(reloadUserManualAction));
-        navigationMenu.add(new JMenuItem(toggleNavigationAction));
-        navigationMenu.add(new JMenuItem(exitUserManualAction));
+        navigationMenu.add(navigateBackAction);
+        navigationMenu.addSeparator();
+        navigationMenu.add(new JMenuItem("3.2.2.5 Section about something"));
+        navigationMenu.add(new JMenuItem("1 Quick Reference"));
+        navigationMenu.add(new JMenuItem("3.5 Section about something else"));
+        navigationMenu.add(new JMenuItem("3.2 Section about widgets"));
+        navigationMenu.add(new JMenuItem("5 Section about Menus"));
+        navigationMenu.add(new JMenuItem("3.1 Section about using things"));
+        navigationMenu.add(new JMenuItem("3.2.2.2 Section about zooming"));
+        navigationMenu.add(new JMenuItem("3.2.4.1 Section about panning"));
+        navigationMenu.add(new JMenuItem("6 Section about StatusBar"));
+        navigationMenu.add(new JMenuItem("4 Section about abstraction"));
         menuBar.add(navigationMenu);
+
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.setMnemonic(KeyEvent.VK_H);
+        helpMenu.add(new JMenuItem("Using this User Manual Viewer"));
+        helpMenu.add(new JMenuItem("About this User Manual Viewer"));
+        menuBar.add(helpMenu);
 
         userManualFrame.setJMenuBar(menuBar);
     }

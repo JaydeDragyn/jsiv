@@ -169,3 +169,198 @@ JFrame
         +-CENTER - HTML display for Section Navigation
       +- CENTER - HTML display for Content
 
+-------------------------
+
+Original idea for link tracking was going to be to keep track of the most
+recent 20 or so links the user clicks on and enable them to go forward and
+backward through that list.  While useful, it isn't very intuitive, which
+is something I've been musing over but only tonight thought of a better way
+to implement it that will be intuitive.
+
+Instead of a hidden list of the links, have a Bookmarks menu and a Help
+menu, and change the Navigation menu to a View menu.
+
+View
+  +- Toggle Navigation Pane
+  +- ---
+  +- Exit User Manual (Ctrl-E)
+
+Bookmarks
+  +- Add current link as Bookmark (Ctrl-LMB)
+  +- Remove current link from Bookmark (Ctrl-Shift-LMB)
+  +- ---
+  +- Next Bookmark (Ctrl - ->)
+  +- Previous Bookmar (Ctrl - <-)
+  +- ---
+  +- <Bookmark 1>
+  +- <Bookmark 2>
+     ...
+  +- <Bookmark n>
+
+Help
+  +- Using User Manual Viewer
+  +- About User Manual Viewer
+
+So we will still keep track of up to n links, but as bookmarks that the user
+will explicitly add.  This will allow the user to put up to n sections in the
+bookmarks menu to go to quickly instead of having to scroll around in the
+document to find the index and locate the section they want to view again.
+
+The Help menu will be far simpler - both options will open a modal dialog
+to display information with a single [Ok] button to close them.
+
+Help->Using User Manual Viewer will show something like:
+
+  This viewer displays the <JSIV User Manual>.
+  On the left is a section navigator and on the right is the content.
+  You can manually scroll the content, you can click on links in the
+    section navigator, and you can click on links in the content to
+    go to other parts of the content.
+
+  If you Ctrl-Click a link, it will save as a bookmark, accessible
+    in the Bookmarks menu.  Using Ctrl and the left or right arrow keys
+    will go through the bookmarks you have added.
+
+  The section navigator can be hidden by clicking on the button with
+    the < symbols, and can be restored by clicking on the button with
+    the > symbols.
+
+Note that <JSIV User Manual> will be whatever the client program set as the
+title with the UserManualWindow.setTitle() method.  If nothing is set, then
+this will default to "This viewer displays the user manual for the program
+you are using".
+
+Help->About User Manual Viewer will show something like:
+
+  User Manual Viewer
+  Version 1.0.0
+  Developed by: Jayde Dragyn
+  Contact: JaydeDragyn@outlook.com
+  Source code: https://github.com/JaydeDragyn/UserManualViewer
+  Built with Java 17.0.4.1 2022-08-18 LTS and a text editor
+
+  Technical guidance assisted by:
+    ChatGPT (OpenAI) and Claude Sonnet (Anthropic)
+
+---
+
+This will require updating the Menu whenever a bookmark is added or removed.
+
+--------------------------------------
+
+After further thought:
+
+View
+  Toggle Navigation Pane
+  -----------------------
+  Close User Manual Viewer
+
+Navigation
+  <Last clicked link>
+  <2nd last clicked link>
+  <3rd last clicked link>
+  ...
+  <nth last clicked link>
+
+Help
+  Using this User Manual Viewer
+  About
+
+
+For the View menu:
+* I might add Enlarge Text, Reduce text and Reset text size to
+  enlarge/shrink the text in the content pane if I can figure out how
+  to do this easily.
+  These would use Ctrl-'+', Ctrl-'-' and Ctrl-0 respectively
+
+* Neither the Toggle nor the Close options will have Accelerator keys.
+  - I don't want to interfere with Ctrl-C (system-wide Copy), using a
+    different Accelerator key than 'C' for 'Close' is awkward, and I
+    want to use "Close" instead of "Exit" since this will close the
+    User Manual Viewer, not actually exit or terminate anything.
+  - The Toggle option most likely won't be used much, so requiring Menu
+    access is fine.
+
+For the Help Menu:
+* Neither option will have an Accelerator key.
+  - The "Using" option will bring up a modal dialog that shows a brief
+    blurb that explains the sections of the User Manual Window.
+  - The About option will bring up a modal dialog that provides info
+    about this User Manual Window component, separate from whatever
+    program it is showing a User Manual for.
+
+For the Navigation menu:
+* These will just be the section headers the user last clicked on (it will
+  take the link text and use that).
+  - When the user clicks on a link, if it was the same link that was last
+    clicked on (and thus in the list at the top) then we will not record
+    a second copy of that link in a row.
+* Determining whether we will include Back and Forward options to navigate
+  through the list of links:
+  - Pro: If the user accidentally clicks on a link and wants to go back,
+      having a back option will be useful.  This mirrors behavior in
+      web browsers.
+  - Pro: If the user lines up a couple of links strategically, they can
+      use the Back and Forward options will be useful.
+  - ??: If the user goes back in the list of links, even if we show them
+      where they are in the list (put a checkmark next to the Navigation
+      menu option that is where they most recently clicked), how do we
+      handle them clicking on a new link?
+      1) Put the new link at the end of the list and jump to that link.
+        But going "Back" would not necessarily go back to the link they
+        might expect.
+      2) Clear all links "after" the last clicked link, and then put the
+        newly clicked link at the end of the list.  This mirrors web
+        browser behavior.
+  - Final decision:
+    - Include a Back option
+    - Treat the navigation link history like a stack that only holds 10
+      items.  An 11th item will clear the oldest item so there are still
+      only 10.
+    - Going back to link X and then clicking on a new link will erase all
+      links above link X in the stack, and then put the new link on top.
+    - No forward option - that will be clicking on a new link (or clicking
+      on one of the links "above" the current position in the Navigation
+      menu).
+    * Rationale: Going "back" to a link that the user clicked on previously
+      is intuitive and has a clear place to go.  But if the user scrolls
+      to one of the "future" links and then uses the "forward" option, it
+      is not intuitive where they will end up.  Having the last 10 links
+      they clicked on in the Navigation menu will give them the ability
+      to do that, and clicking on a new link will just add to the stack
+      as usual so the list in the Navigation menu is truly just a list
+      of the last 10 links they clicked on.
+      Exception: If the user clicks on one of the links in the Navigation
+      menu (whether using the menu, using a link in the Content pane or
+      a link in the Section Navigation pane), we'll move the Content
+      pane to that link, and set our internal link index to that link's
+      index instead of erasing other links.  Only if they click on a
+      link that is not already in the last 10 will we remove/clear the
+      links above the current link.
+
+---
+
+Final behavior:
+
+Navigation stack with up to 10 of the most recently clicked links:
+  - Clicking on a link that is already in the list (whether the user
+    clicks on the link in the list, on the content pane or in the
+    section navigation pane) will move that link to the top of the stack.
+  - The stack will have a position index.
+    - This position index will normally point to the most recent link
+      (top of the stack).
+    - If the user clicks on a link, this position index will change to
+      point to the top of the stack after the link is placed at the top
+      of the stack.
+    - If the user uses the Back option, this position index will change
+      to point to the next item down the stack, and the menu will show
+      an icon next to the link and then navigate the content pane to
+      that link.
+      - If the user goes all the way back to the oldest link and tries
+        to go "Back" again, the content pane will scroll back to the
+        top of the document.
+  - Clicking on a link (in the content pane or section navigation pane)
+    that is not already in the list will push that link to the top of
+    the stack, return the position pointer to that top-of-stack link,
+    and then navigate the content pane to the clicked link.
+
