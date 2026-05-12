@@ -25,8 +25,10 @@ public class UserManualWindow implements HyperlinkListener {
 
     // Actions
     private Action toggleNavigationAction;
-    private Action navigateBackAction;
     private Action closeUserManualAction;
+    private Action navigateBackAction;
+    private Action helpInstructionsAction;
+    private Action helpAboutAction;
 
     private Action reloadUserManualAction;  // Hidden option.
                                             // Useful for writing/editing
@@ -167,6 +169,18 @@ public class UserManualWindow implements HyperlinkListener {
             }
         };
 
+        closeUserManualAction = new AbstractAction("Close User Manual") {
+            {
+                // No Accelerator key for this action
+                putValue(MNEMONIC_KEY, KeyEvent.VK_C);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                userManualFrame.setVisible(false);
+            }
+        };
+
         navigateBackAction = new AbstractAction("Back") {
             {
 
@@ -178,15 +192,17 @@ public class UserManualWindow implements HyperlinkListener {
             }
         };
 
-        closeUserManualAction = new AbstractAction("Close User Manual") {
-            {
-                // No Accelerator key for this action
-                putValue(MNEMONIC_KEY, KeyEvent.VK_C);
-            }
-
+        helpInstructionsAction = new AbstractAction("User Manual Instructions") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userManualFrame.setVisible(false);
+
+            }
+        };
+
+        helpAboutAction = new AbstractAction("About") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         };
 
@@ -242,8 +258,8 @@ public class UserManualWindow implements HyperlinkListener {
 
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic(KeyEvent.VK_H);
-        helpMenu.add(new JMenuItem("Using this User Manual Viewer"));
-        helpMenu.add(new JMenuItem("About this User Manual Viewer"));
+        helpMenu.add(helpInstructionsAction);
+        helpMenu.add(helpAboutAction);
         menuBar.add(helpMenu);
 
         userManualFrame.setJMenuBar(menuBar);
