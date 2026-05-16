@@ -183,12 +183,14 @@ public class UserManualWindow implements HyperlinkListener {
 
         navigateBackAction = new AbstractAction("Back") {
             {
-
+                putValue(ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0));
+                putValue(MNEMONIC_KEY, KeyEvent.VK_B);
             }
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                System.out.println("Back");
             }
         };
 
@@ -221,13 +223,27 @@ public class UserManualWindow implements HyperlinkListener {
     }
 
     private void initInputActionMaps() {
-        InputMap inputMap = mainPanel.getRootPane()
-                                     .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap actionMap = mainPanel.getRootPane().getActionMap();
+        // Keys we will use
+        KeyStroke ctrlR = KeyStroke.getKeyStroke(KeyEvent.VK_R,
+                                                InputEvent.CTRL_DOWN_MASK);
+        KeyStroke backspace = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0);
 
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK),
-                        "reload");
+        // First, unbind Backspace so we can use it for navigate Back
+        // (we will not add it here, it will be added in initMenu()
+        //  but we unbind it here since this method handles keybinds)
+        sectionNavigation.getInputMap().put(backspace, "none");
+        content.getInputMap().put(backspace, "none");
+
+        // Now add our key binds
+        JRootPane rootPane = mainPanel.getRootPane();
+        InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = rootPane.getActionMap();
+
+        inputMap.put(ctrlR, "reload");
+
         actionMap.put("reload", reloadUserManualAction);
+
+
     }
 
     private void initMenu() {
