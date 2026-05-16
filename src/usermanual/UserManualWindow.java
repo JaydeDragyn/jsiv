@@ -55,17 +55,17 @@ public class UserManualWindow implements HyperlinkListener {
 
     // Link navigation
 
-    public static void setTitle(String title) {
-        windowTitle = title;
-        if (userManualWindow != null) {
-            userManualWindow.setWindowTitle(title);
-        }
-    }
-
     public static void setDocument(String filename) {
         document = filename;
         if (userManualWindow != null) {
             userManualWindow.loadDocument(document);
+        }
+    }
+
+    public static void setTitle(String title) {
+        windowTitle = title;
+        if (userManualWindow != null) {
+            userManualWindow.setWindowTitle(title);
         }
     }
 
@@ -89,12 +89,12 @@ public class UserManualWindow implements HyperlinkListener {
         loadDocument(document);
     }
 
-    public void showUserManual() {
-        userManualFrame.setVisible(true);
-    }
-
     public void setWindowTitle(String title) {
         userManualFrame.setTitle(title);
+    }
+
+    public void showUserManual() {
+        userManualFrame.setVisible(true);
     }
 
     private void initMainPanel() {
@@ -219,7 +219,6 @@ public class UserManualWindow implements HyperlinkListener {
             }
         };
     }
-
 
     private void initInputActionMaps() {
         InputMap inputMap = mainPanel.getRootPane()
