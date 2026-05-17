@@ -51,7 +51,7 @@ public class UserManualWindow implements HyperlinkListener {
     private static String document = "";
     private static String userManual = "";
     private JMenu navigationMenu;
-    private ArrayList<JMenuItem> navigationList;
+    private ArrayList<JCheckBoxMenuItem> navigationList;
     private ArrayList<String> navigationListText;
     private int navigationListIndex = 0;
     private HashMap<String, String> navigationMap;
@@ -281,7 +281,7 @@ public class UserManualWindow implements HyperlinkListener {
         navigationListText = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
 
         for (int i = 0; i < NAVIGATION_LIST_INDEX_MAX; i++) {
-            navigationList.add(new JMenuItem(""));
+            navigationList.add(new JCheckBoxMenuItem("", false));
         }
 
         navigationList.get(0).setText("<Empty>");
@@ -359,6 +359,7 @@ public class UserManualWindow implements HyperlinkListener {
         // First, update the navigationList with the navigationListStrings
         for (int i = 0; i < navigationListText.size(); i++) {
             navigationList.get(i).setText(navigationMap.get(navigationListText.get(i)));
+            navigationList.get(i).setState(i == navigationListIndex);
         }
 
         // Check to see if all 10 navigation menu items are there
