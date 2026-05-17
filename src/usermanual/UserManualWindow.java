@@ -49,9 +49,7 @@ public class UserManualWindow implements HyperlinkListener {
     private JEditorPane content;
     private JScrollPane contentScrollPane;
     private static String document = "";
-    private static String userManual = "";
     private JMenu navigationMenu;
-    private ArrayList<AbstractAction> navigationActions;
     private ArrayList<JCheckBoxMenuItem> navigationList;
     private ArrayList<String> navigationListText;
     private int navigationListIndex = 0;
@@ -276,7 +274,6 @@ public class UserManualWindow implements HyperlinkListener {
     }
 
     private void initNavigation() {
-        navigationActions = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
         navigationList = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
         navigationListText = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
 
@@ -389,7 +386,7 @@ public class UserManualWindow implements HyperlinkListener {
             // Now loop through the JMenuItems backwards (so the lowest index
             // is the lowest in the list) and add each that is not ""
             for (int i = NAVIGATION_LIST_INDEX_MAX - 1; i >= 0; i--) {
-                if (navigationList.get(i).getText() != "") {
+                if (!navigationList.get(i).getText().isEmpty()) {
                     navigationMenu.add(navigationList.get(i));
                 }
             }
@@ -407,25 +404,25 @@ public class UserManualWindow implements HyperlinkListener {
         // A path was provided for the document, convert to URL if we can
         URL url = getClass().getResource(documentPath);
         if (url == null) {
-            setContentErrorMessage("<h1>Unable to find " + documentPath + "</h2>");
+            setContentErrorMessage("<h1>Unable to find " + documentPath + "</h1>");
             return;
         }
 
         try {
             // Now try to read the document
-            String document = Files.readString(Path.of(url.toURI()));
+            String htmlContent = Files.readString(Path.of(url.toURI()));
 
-            // We have the document, set the base URL so any image links
-            // work properly, and then put the document into the content Pane
+            // We have the document, set the base URL so any image links work
+            // properly, and then put the htmlContent into the content Pane
             content.setContentType("text/html");
             HTMLDocument doc = (HTMLDocument) content.getDocument();
             doc.setBase(url);
-            content.setText(document);
+            content.setText(htmlContent);
             content.setCaretPosition(0);
 
             // Finally, populate the navigationSection
-            // with links from the document
-            populateNavigationSection(document);
+            // with links from the htmlContent
+            populateNavigationSection(htmlContent);
         }
         // Could not set the content page to the filename
         catch (Exception e) {
@@ -461,7 +458,7 @@ public class UserManualWindow implements HyperlinkListener {
                            + "\n  </style>"
                            + "\n</head>"
                            + "\n<body>"
-                           + "\n  <h2>Section Navigation</h2>"
+                           + "\n  <h2>Jump To...</h2>"
                            + "\n";
 
         // Now parse the document for those links
