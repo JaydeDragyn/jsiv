@@ -51,6 +51,7 @@ public class UserManualWindow implements HyperlinkListener {
     private static String document = "";
     private static String userManual = "";
     private JMenu navigationMenu;
+    private ArrayList<AbstractAction> navigationActions;
     private ArrayList<JCheckBoxMenuItem> navigationList;
     private ArrayList<String> navigationListText;
     private int navigationListIndex = 0;
@@ -103,60 +104,48 @@ public class UserManualWindow implements HyperlinkListener {
     }
 
     private void initMainPanel() {
-        // Make the main panel
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setPreferredSize(new Dimension(800, 600));
 
-        // Add empty borders to the main panel
         mainPanel.add(makeBorderPanel(new Dimension(0, borderSize)), BorderLayout.NORTH);
         mainPanel.add(makeBorderPanel(new Dimension(0, borderSize)), BorderLayout.SOUTH);
         mainPanel.add(makeBorderPanel(new Dimension(borderSize, 0)), BorderLayout.WEST);
         mainPanel.add(makeBorderPanel(new Dimension(borderSize, 0)), BorderLayout.EAST);
 
-        // Section Navigation html display
         sectionNavigation = new JEditorPane("text/html", "Section Navigation");
         sectionNavigation.setBorder(new EtchedBorder());
         sectionNavigation.setEditable(false);
         sectionNavigation.addHyperlinkListener(this);
 
-        // Toggle Navigation Button
         toggleNavigationButton = new JButton(toggleNavigationAction);
         toggleNavigationButton.setPreferredSize(new Dimension(borderSize, 0));
         toggleNavigationButton.setText(collapseButtonText);
         toggleNavigationButton.setMargin(new Insets(0,0,0,0));
 
-        // Content html display
         content = new JEditorPane("text/html", "Content");
         content.setBorder(new EtchedBorder());
         content.setEditable(false);
         content.addHyperlinkListener(this);
 
-        // create and fill the toggle button/border between nav and content
         JPanel borderPanel = new JPanel(new GridLayout(1, 2));
         borderPanel.add(toggleNavigationButton);
         borderPanel.add(makeBorderPanel(new Dimension(borderSize, 0)));
 
-        // Put the Section Navigation display into a Scroll pane
         JScrollPane sectionNavigationScrollPane = new JScrollPane(sectionNavigation);
 
-        // create and fill the Section Navigation panel
         navContainerPanel = new JPanel(new BorderLayout());
         navContainerPanel.setPreferredSize(new Dimension(navDefaultSize, 0));
         navContainerPanel.add(sectionNavigationScrollPane, BorderLayout.CENTER);
         navContainerPanel.add(borderPanel, BorderLayout.EAST);
 
-        // Put the Content display into a Scroll pane
         contentScrollPane = new JScrollPane(content);
 
-        // create and fill the center part of the main panel
         JPanel centerMainPanel = new JPanel(new BorderLayout());
         centerMainPanel.add(navContainerPanel, BorderLayout.WEST);
         centerMainPanel.add(contentScrollPane, BorderLayout.CENTER);
 
-        // add the center part of the main panel to the main panel
         mainPanel.add(centerMainPanel, BorderLayout.CENTER);
 
-        // finally, put the main panel in the center of the frame
         userManualFrame.add(mainPanel, BorderLayout.CENTER);
     }
 
@@ -287,11 +276,18 @@ public class UserManualWindow implements HyperlinkListener {
     }
 
     private void initNavigation() {
+        navigationActions = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
         navigationList = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
         navigationListText = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
 
         for (int i = 0; i < NAVIGATION_LIST_INDEX_MAX; i++) {
-            navigationList.add(new JCheckBoxMenuItem("", false));
+            final int link = i;
+            navigationList.add(new JCheckBoxMenuItem(new AbstractAction("") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    navigateToLink(link);
+                }
+            }));
         }
 
         navigationList.get(0).setText("<Empty>");
@@ -329,6 +325,14 @@ public class UserManualWindow implements HyperlinkListener {
             addLink(link);
             updateNavigationMenu();
         }
+    }
+
+    private void navigateToLink(int linkNumber) {
+        navigationListIndex = linkNumber;
+        String link = navigationListText.get(navigationListIndex);
+        content.scrollToReference(link);
+        addLink(link);
+        updateNavigationMenu();
     }
 
     private void addLink(String link) {
