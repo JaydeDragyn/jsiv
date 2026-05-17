@@ -195,7 +195,17 @@ public class UserManualWindow implements HyperlinkListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Back");
+                navigationListIndex = Math.max(-1, navigationListIndex -1);
+
+                if (navigationListIndex >= 0) {
+                    // We can still go "Back"
+                    String link = navigationListText.get(navigationListIndex);
+                    content.scrollToReference(link);
+                } else {
+                    // End of the list, go to the top.
+                    content.setCaretPosition(0);
+                }
+                updateNavigationMenu();
             }
         };
 
@@ -362,7 +372,7 @@ public class UserManualWindow implements HyperlinkListener {
             navigationList.get(i).setState(i == navigationListIndex);
         }
 
-        // Check to see if all 10 navigation menu items are there
+        // Then check to see if all 10 navigation menu items are there
         if (navigationMenu.getMenuComponentCount() < NAVIGATION_LIST_INDEX_MAX + 2) {
             // User has not clicked 10 links yet so clear and reset the menu
             // with the active navigation list menu items.
@@ -469,6 +479,7 @@ public class UserManualWindow implements HyperlinkListener {
 
             navDocument += "<a href=\"#" + link + "\">" + label + "<br>\n";
             navigationMap.put(link, label);
+            navigationMap.put(label, link);
         }
 
         // Now close the body and the document
