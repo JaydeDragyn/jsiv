@@ -50,8 +50,12 @@ public class UserManualWindow implements HyperlinkListener {
     private JScrollPane contentScrollPane;
     private static String document = "";
     private static String userManual = "";
-    private ArrayList<JMenuItem> navigationMenuItems;
-    private int navigationIndex = 0;
+    private JMenu navigationMenu;
+    private ArrayList<JMenuItem> navigationList;
+    private ArrayList<String> navigationListText;
+    private int navigationListIndex = 0;
+    private HashMap<String, String> navigationMap;
+    private static final int NAVIGATION_LIST_INDEX_MAX = 10;
 
     // Link navigation
 
@@ -83,6 +87,7 @@ public class UserManualWindow implements HyperlinkListener {
         initMainPanel();
         initMenu();
         initInputActionMaps();
+        initNavigation();
 
         userManualFrame.pack();
 
@@ -208,6 +213,7 @@ public class UserManualWindow implements HyperlinkListener {
             }
         };
 
+        // Hidden option for use in editing a User Manual
         reloadUserManualAction = new AbstractAction("Reload User Manual") {
             {
                 putValue(ACCELERATOR_KEY,
@@ -256,19 +262,9 @@ public class UserManualWindow implements HyperlinkListener {
         viewMenu.add(new JMenuItem(closeUserManualAction));
         menuBar.add(viewMenu);
 
-        JMenu navigationMenu = new JMenu("Navigation");
+        navigationMenu = new JMenu("Navigation");
         navigationMenu.add(navigateBackAction);
         navigationMenu.addSeparator();
-        navigationMenu.add(new JMenuItem("3.2.2.5 Section about something"));
-        navigationMenu.add(new JMenuItem("1 Quick Reference"));
-        navigationMenu.add(new JMenuItem("3.5 Section about something else"));
-        navigationMenu.add(new JMenuItem("3.2 Section about widgets"));
-        navigationMenu.add(new JMenuItem("5 Section about Menus"));
-        navigationMenu.add(new JMenuItem("3.1 Section about using things"));
-        navigationMenu.add(new JMenuItem("3.2.2.2 Section about zooming"));
-        navigationMenu.add(new JMenuItem("3.2.4.1 Section about panning"));
-        navigationMenu.add(new JMenuItem("6 Section about StatusBar"));
-        navigationMenu.add(new JMenuItem("4 Section about abstraction"));
         menuBar.add(navigationMenu);
 
         JMenu helpMenu = new JMenu("Help");
@@ -278,6 +274,18 @@ public class UserManualWindow implements HyperlinkListener {
         menuBar.add(helpMenu);
 
         userManualFrame.setJMenuBar(menuBar);
+    }
+
+    private void initNavigation() {
+        navigationList = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
+        navigationListText = new ArrayList<>(NAVIGATION_LIST_INDEX_MAX);
+
+        for (int i = 0; i < NAVIGATION_LIST_INDEX_MAX; i++) {
+            navigationList.add(new JMenuItem(""));
+        }
+
+        navigationList.get(0).setText("<Empty>");
+        navigationMenu.add(navigationList.get(0));
     }
 
     private void toggleSectionNavigation() {
@@ -303,18 +311,81 @@ public class UserManualWindow implements HyperlinkListener {
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            String bookmark = e.getDescription();
-            if (bookmark != null && bookmark.startsWith("#")) {
-                bookmark = bookmark.substring(1);
+            String link = e.getDescription();
+            if (link != null && link.startsWith("#")) {
+                link = link.substring(1);
             }
-            content.scrollToReference(bookmark);
+            content.scrollToReference(link);
+            addLink(link);
+            updateNavigationMenu();
+        }
+    }
+
+    private void addLink(String link) {
+        // Check to see if the link is already in the list
+        int index = navigationListText.indexOf(link);
+
+        if (index>= 0) {
+            // If link is in the list already, move it to the top
+            shiftNavigationListTextLinksDown(index);
+            navigationListText.set(navigationListText.size() - 1, link);
+        } else {
+            // Otherwise put this new link on top.
+            if (navigationListText.size() == NAVIGATION_LIST_INDEX_MAX) {
+                // If the list already has NAVIGATION_LIST_INDEX_MAX entries
+                // then shift everything down so the oldest falls off
+                shiftNavigationListTextLinksDown(0);
+                navigationListText.set(navigationListText.size() - 1, link);
+            } else {
+                // Otherwise just add this new link to the end
+                navigationListText.add(link);
+            }
+        }
+
+        // Now mark this link as the current
+        navigationListIndex = navigationListText.size() - 1;
+    }
+
+    private void shiftNavigationListTextLinksDown(int startIndex) {
+        // Starting at index given, shift all links after it down one.
+        // The last two links will be the same - assumption is caller
+        // will change that last link themselves
+        for (int i = startIndex + 1; i < navigationListText.size(); i++) {
+            navigationListText.set(i - 1, navigationListText.get(i));
+        }
+    }
+
+    private void updateNavigationMenu() {
+        // First, update the navigationList with the navigationListStrings
+        for (int i = 0; i < navigationListText.size(); i++) {
+            navigationList.get(i).setText(navigationMap.get(navigationListText.get(i)));
+        }
+
+        // Check to see if all 10 navigation menu items are there
+        if (navigationMenu.getMenuComponentCount() < NAVIGATION_LIST_INDEX_MAX + 2) {
+            // User has not clicked 10 links yet so clear and reset the menu
+            // with the active navigation list menu items.
+            navigationMenu.removeAll();
+
+            // Start with the Back and separator that should always be present
+            navigationMenu.add(navigateBackAction);
+            navigationMenu.addSeparator();
+
+            // Now loop through the JMenuItems backwards (so the lowest index
+            // is the lowest in the list) and add each that is not ""
+            for (int i = NAVIGATION_LIST_INDEX_MAX - 1; i >= 0; i--) {
+                if (navigationList.get(i).getText() != "") {
+                    navigationMenu.add(navigationList.get(i));
+                }
+            }
         }
     }
 
     private void loadDocument(String documentPath) {
         // If no filename has been specified
         if (documentPath.isEmpty()) {
-            setContentErrorMessage("<h1>No User Manual specified, nothing to display.</h1>");
+            setContentErrorMessage(
+                    "<h1>No User Manual specified, nothing to display.</h1>");
             return;
         }
 
@@ -381,14 +452,22 @@ public class UserManualWindow implements HyperlinkListener {
         // Now parse the document for those links
         // looking for <a name="XXX">YYY</a> labels
         // Display YYY as the body of an anchor that points to #XXX
-        Pattern p = Pattern.compile("<a name=\"(.*?)\">(.*?)</a>", Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile("<a name=\"(.*?)\">(.*?)</a>",
+                                        Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(document);
+
+        // Also set up the navigationMap so that when the user
+        // clicks on a link, we can match it to the Section title
+        // to display in the Navigation menu
+        navigationMap = new HashMap<>();
+
 
         while (m.find()) {
             String link = m.group(1);
             String label = m.group(2);
 
             navDocument += "<a href=\"#" + link + "\">" + label + "<br>\n";
+            navigationMap.put(link, label);
         }
 
         // Now close the body and the document

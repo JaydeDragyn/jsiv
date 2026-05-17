@@ -364,3 +364,39 @@ Navigation stack with up to 10 of the most recently clicked links:
     the stack, return the position pointer to that top-of-stack link,
     and then navigate the content pane to the clicked link.
 
+---
+
+User clicks on a link:
+  if link is already in the navigationList
+    move link to the top of the list
+  else
+    push link to top of the list, discarding oldest link if necessary
+
+  set navigationListIndex to top of list
+  update menu to show new list with navigationListIndex marked with icon
+
+
+User uses Back option:
+  // empty index
+  if navigationList is empty,
+    setCaratPosition to 0
+    return
+
+  // user already went back as far as we keep track of
+  if navigationListIndex points to bottom of list,
+    setCaratPosition to 0
+    return
+
+  // separate checks for above two conditions even though they do the same
+  // thing, so logical || or && does not short circuit.  This ensures we can
+  // perform the Back operation if we get here.
+
+  updateNavigationMenuItems();
+
+  navigationList.at(navigationListIndex).removeMarkerIcon();
+  navigationListIndex--;
+  navigationList.at(navigationListIndex).addMarkerIcon();
+
+  scrollContentTo(navigationListLinks.at(navigationListIndex));
+
+
