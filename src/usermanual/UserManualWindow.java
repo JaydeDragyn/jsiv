@@ -448,7 +448,7 @@ public class UserManualWindow implements HyperlinkListener {
         showSectionNavigation(false);
     }
 
-    private void populateNavigationSection(String document) {
+    private void populateNavigationSection(String htmlContent) {
         // This will build an .html document for the navigation pane
         // consisting of links and labels taken in order from the
         // <a name=""> tags of the given document (which we assume
@@ -476,7 +476,7 @@ public class UserManualWindow implements HyperlinkListener {
         // Display YYY as the body of an anchor that points to #XXX
         Pattern p = Pattern.compile("<a name=\"(.*?)\">(.*?)</a>",
                                         Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(document);
+        Matcher m = p.matcher(htmlContent);
 
         // Also set up the navigationMap so that when the user
         // clicks on a link, we can match it to the Section title
