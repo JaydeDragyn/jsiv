@@ -322,9 +322,8 @@ public class UserManualWindow implements HyperlinkListener {
             } else {
                 JOptionPane.showMessageDialog(userManualFrame,
                     "You clicked on a link that tried to navigate\n" +
-                    "to " + link + ", however this is a malformed\n" +
-                    "link.  Please report this to the author of the\n" +
-                    "user manual.",
+                    "to a malformed or missing link.\n\n" +
+                    "Please report this to the author of the user manual.",
                     "Bad link!",
                     JOptionPane.ERROR_MESSAGE,
                     null
