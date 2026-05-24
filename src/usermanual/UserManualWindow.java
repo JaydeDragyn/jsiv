@@ -260,6 +260,7 @@ public class UserManualWindow implements HyperlinkListener {
         menuBar.add(viewMenu);
 
         navigationMenu = new JMenu("Navigation");
+        navigationMenu.setMnemonic(KeyEvent.VK_N);
         navigationMenu.add(navigateBackAction);
         navigationMenu.addSeparator();
         menuBar.add(navigationMenu);
