@@ -232,7 +232,7 @@ public class UserManualWindow implements HyperlinkListener {
         KeyStroke backspace = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0);
 
         // First, unbind Backspace so we can use it for navigate Back
-        // (we will not add it here, it will be added in initMenu()
+        // (we will not add it here, it will be added in initActionItems()
         //  but we unbind it here since this method handles keybinds)
         sectionNavigation.getInputMap().put(backspace, "none");
         content.getInputMap().put(backspace, "none");
