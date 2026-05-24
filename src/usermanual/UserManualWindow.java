@@ -318,18 +318,27 @@ public class UserManualWindow implements HyperlinkListener {
             String link = e.getDescription();
             if (link != null && link.startsWith("#")) {
                 link = link.substring(1);
+                content.scrollToReference(link);
+                addLink(link);
+                updateNavigationMenu();
+            } else {
+                JOptionPane.showMessageDialog(userManualFrame,
+                    "You clicked on a link that tried to navigate\n" +
+                    "to " + link + ", however this is a malformed\n" +
+                    "link.  Please report this to the author of the\n" +
+                    "user manual.",
+                    "Bad link!",
+                    JOptionPane.ERROR_MESSAGE,
+                    null
+                );
             }
-            content.scrollToReference(link);
-            addLink(link);
-            updateNavigationMenu();
         }
     }
 
     private void navigateToLink(int linkNumber) {
-        navigationListIndex = linkNumber;
-        String link = navigationListText.get(navigationListIndex);
-        content.scrollToReference(link);
+        String link = navigationListText.get(linkNumber);
         addLink(link);
+        content.scrollToReference(link);
         updateNavigationMenu();
     }
 
