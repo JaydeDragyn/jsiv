@@ -199,14 +199,14 @@ public class UserManualWindow implements HyperlinkListener {
         helpInstructionsAction = new AbstractAction("User Manual Instructions") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                showUserManualInstructionsDialog();
             }
         };
 
         helpAboutAction = new AbstractAction("About") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                showAboutHelpDialog();
             }
         };
 
@@ -489,5 +489,46 @@ public class UserManualWindow implements HyperlinkListener {
         // Finally, set this to be the sectionNavigation's content
         sectionNavigation.setText(navDocument);
         showSectionNavigation(true);
+    }
+
+    private void showUserManualInstructionsDialog() {
+        JOptionPane.showMessageDialog(userManualFrame,
+            "User Manual Instructions:\n\n" +
+            "Scroll the panel on the right to read the document.\n\n" +
+            "Click on a link to jump to the relevant section.\n\n" +
+            "Backspace or Menu->Navigation->Back to return to the last\n" +
+            "     link you clicked on, or back to the top if there are\n" +
+            "     no more links to return to.\n\n" +
+            "Navigation menu shows the last 10 links you clicked.\n" +
+            "     You can select any of those links to navigate to.\n" +
+            "     The checkmark shows the last link visited so you can\n" +
+            "     see where Backspace will take you.\n" +
+            "     If there are no checkmarks, Backspace will return to\n" +
+            "     beginning of the user manual.\n\n" +
+            "Click on the button between panels with < to collapse the\n" +
+            "     Jump to list.\n" +
+            "     If already collapsed, click on the button to the left\n" +
+            "     with > to expand the Jump to list.\n",
+            "User Manual Instructions",
+            JOptionPane.INFORMATION_MESSAGE,
+            null
+        );
+    }
+
+    private void showAboutHelpDialog() {
+        JOptionPane.showMessageDialog(userManualFrame,
+            "User Manual Viewer\n" +
+            "Version 1.0.0\n\n" +
+            "Developed by: Jayde Dragyn\n" +
+            "Contact: JaydeDragyn@outlook.com\n" +
+            "Source code:\n" +
+            "     Part of https://github.com/JaydeDragyn/jsiv\n\n" +
+            "Built with Java 17.0.4.1 2022-08-18 LTS\n\n" +
+            "Technical guidance assisted by:\n" +
+            "     Claude Sonnet 4.6 (Anthropic)",
+            "User Manual Viewer - About",
+            JOptionPane.INFORMATION_MESSAGE,
+            null
+        );
     }
 }
