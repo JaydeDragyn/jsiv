@@ -245,8 +245,6 @@ public class UserManualWindow implements HyperlinkListener {
         inputMap.put(ctrlR, "reload");
 
         actionMap.put("reload", reloadUserManualAction);
-
-
     }
 
     private void initMenu() {
@@ -314,7 +312,7 @@ public class UserManualWindow implements HyperlinkListener {
 
     @Override
     public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        if (e.getEventType() == EventType.ACTIVATED) {
             String link = e.getDescription();
             if (link != null && link.startsWith("#")) {
                 link = link.substring(1);
