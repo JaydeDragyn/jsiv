@@ -1,2 +1,2 @@
 #!/bin/bash
-java jsiv
+java -jar jsiv.jar
