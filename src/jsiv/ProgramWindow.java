@@ -64,7 +64,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         frame.setVisible(true);
 
         UserManualWindow.setTitle("JSIV User Manual");
-        UserManualWindow.setDocument("../assets/JSIVUserManual.html");
+        UserManualWindow.setDocument("/assets/JSIVUserManual.html");
     }
 
     @Override

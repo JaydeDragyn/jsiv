@@ -1,5 +1,6 @@
 package usermanual;
 
+import java.beans.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.*;
@@ -110,7 +111,7 @@ public class UserManualWindow implements HyperlinkListener {
         mainPanel.add(makeBorderPanel(new Dimension(borderSize, 0)), BorderLayout.WEST);
         mainPanel.add(makeBorderPanel(new Dimension(borderSize, 0)), BorderLayout.EAST);
 
-        sectionNavigation = new JEditorPane("text/html", "Section Navigation");
+        sectionNavigation = new JEditorPane("text/html", "Loading...");
         sectionNavigation.setBorder(new EtchedBorder());
         sectionNavigation.setEditable(false);
         sectionNavigation.addHyperlinkListener(this);
@@ -408,28 +409,35 @@ public class UserManualWindow implements HyperlinkListener {
             return;
         }
 
-        // A path was provided for the document, convert to URL if we can
+        // A filename was provided for the document, convert to URL if we can
         URL url = getClass().getResource(documentPath);
         if (url == null) {
             setContentErrorMessage("<h1>Unable to find " + documentPath + "</h1>");
             return;
         }
 
+        // Successfully converted to URL, now add a listener for when the
+        // document is actually loaded so we can get the navigation links
+        // and then remove the listener since we won't need it again
+        // Reason for this:
+        //      content.getPage() below will operate asynchronously, so
+        //      if we do not have this, the populateNavigationSection()
+        //      method will be called before the document is loaded, and
+        //      there will be no links to harvest.
+        content.addPropertyChangeListener("page", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                populateNavigationSection(content.getText());
+                content.setCaretPosition(0);
+                content.removePropertyChangeListener("page", this);
+            }
+        });
+
         try {
-            // Now try to read the document
-            String htmlContent = Files.readString(Path.of(url.toURI()));
-
-            // We have the document, set the base URL so any image links work
-            // properly, and then put the htmlContent into the content Pane
-            content.setContentType("text/html");
-            HTMLDocument doc = (HTMLDocument) content.getDocument();
-            doc.setBase(url);
-            content.setText(htmlContent);
-            content.setCaretPosition(0);
-
-            // Finally, populate the navigationSection
-            // with links from the htmlContent
-            populateNavigationSection(htmlContent);
+            // Try to set the content to the url - setPage() handles
+            // ensuring the content panel knows where to find urls and
+            // images automatically.  This runs asynchronously: see above
+            content.setPage(url);
         }
         // Could not set the content page to the filename
         catch (Exception e) {
@@ -441,7 +449,7 @@ public class UserManualWindow implements HyperlinkListener {
     private void setContentErrorMessage(String errorMessage) {
         content.setText(errorMessage);
         content.setCaretPosition(0);
-        sectionNavigation.setText("");
+        sectionNavigation.setText("No navigation available");
         showSectionNavigation(false);
     }
 
