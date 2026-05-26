@@ -166,15 +166,21 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     }
 
     private void showHelpAboutDialog() {
-        JOptionPane.showMessageDialog(frame,
-            "JSIV - Jayde's Simple Image Viewer\n" +
-            "Version 1.0.0\n\n" +
-            "Developed by: Jayde Dragyn\n" +
-            "Contact: JaydeDragyn@outlook.com\n" +
-            "Source code: https://github.com/JaydeDragyn/jsiv\n\n" +
-            "Built with Java 17.0.4.1 2022-08-18 LTS\n\n" +
-            "Technical guidance assisted by:\n" +
-            "        ChatGPT (OpenAI) and Claude (Anthropic)",
+        JOptionPane.showMessageDialog(frame, """
+            JSIV - Jayde's Simple Image Viewer
+            Version 1.0.0
+
+            Developed by: Jayde Dragyn
+            Contact: JaydeDragyn@outlook.com
+
+            Source code: https://github.com/JaydeDragyn/jsiv
+            Built with Java 17.0.4.1 2022-08-18 LTS
+
+            Technical guidance assisted by:
+                    ChatGPT 5.5 (OpenAI),
+                    Claude Sonnet 4.6 (Anthropic) and
+                    Gemini Flash 3.5 (Google)
+            """,
             "JSIV - About",
             JOptionPane.INFORMATION_MESSAGE,
             new ImageIcon(JSIVSplash.getSplashImage())

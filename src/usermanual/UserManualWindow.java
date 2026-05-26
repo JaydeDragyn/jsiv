@@ -507,23 +507,29 @@ public class UserManualWindow implements HyperlinkListener {
     }
 
     private void showUserManualInstructionsDialog() {
-        JOptionPane.showMessageDialog(userManualFrame,
-            "User Manual Instructions:\n\n" +
-            "Scroll the panel on the right to read the document.\n\n" +
-            "Click on a link to jump to the relevant section.\n\n" +
-            "Backspace or Menu->Navigation->Back to return to the last\n" +
-            "     link you clicked on, or back to the top if there are\n" +
-            "     no more links to return to.\n\n" +
-            "Navigation menu shows the last 10 links you clicked.\n" +
-            "     You can select any of those links to navigate to.\n" +
-            "     The checkmark shows the last link visited so you can\n" +
-            "     see where Backspace will take you.\n" +
-            "     If there are no checkmarks, Backspace will return to\n" +
-            "     beginning of the user manual.\n\n" +
-            "Click on the button between panels with < to collapse the\n" +
-            "     Jump to list.\n" +
-            "     If already collapsed, click on the button to the left\n" +
-            "     with > to expand the Jump to list.\n",
+        JOptionPane.showMessageDialog(userManualFrame, """
+            User Manual Instructions:
+
+            Scroll the panel on the right to read the document.
+
+            Click on a link to jump to the relevant section.
+
+            Backspace or Menu->Navigation->Back to return to the last
+                 link you clicked on, or back to the top if there are
+                 no more links to return to.
+
+            Navigation menu shows the last 10 links you clicked.
+                 You can select any of those links to navigate to.
+                 The checkmark shows the last link visited so you can
+                 see where Backspace will take you.
+                 If there are no checkmarks, Backspace will return to
+                 beginning of the user manual.
+
+            Click on the button between panels with < to collapse the
+                 Jump to list.
+                 If already collapsed, click on the button to the left
+                 with > to expand the Jump to list.
+            """,
             "User Manual Instructions",
             JOptionPane.INFORMATION_MESSAGE,
             null
@@ -531,16 +537,21 @@ public class UserManualWindow implements HyperlinkListener {
     }
 
     private void showAboutHelpDialog() {
-        JOptionPane.showMessageDialog(userManualFrame,
-            "User Manual Viewer\n" +
-            "Version 1.0.0\n\n" +
-            "Developed by: Jayde Dragyn\n" +
-            "Contact: JaydeDragyn@outlook.com\n" +
-            "Source code:\n" +
-            "     Part of https://github.com/JaydeDragyn/jsiv\n\n" +
-            "Built with Java 17.0.4.1 2022-08-18 LTS\n\n" +
-            "Technical guidance assisted by:\n" +
-            "     Claude Sonnet 4.6 (Anthropic)",
+        JOptionPane.showMessageDialog(userManualFrame, """
+            User Manual Viewer
+            Version 1.0.0
+
+            Developed by: Jayde Dragyn
+            Contact: JaydeDragyn@outlook.com
+            Source code:
+                 Part of https://github.com/JaydeDragyn/jsiv
+
+            Built with Java 17.0.4.1 2022-08-18 LTS
+
+            Technical guidance assisted by:
+                 Claude Sonnet 4.6 (Anthropic) and
+                 Gemini (Google)
+            """,
             "User Manual Viewer - About",
             JOptionPane.INFORMATION_MESSAGE,
             null
