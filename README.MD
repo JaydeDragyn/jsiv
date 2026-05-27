@@ -1,3 +1,9 @@
+Copyright (c) 2026 Jayde Dragyn\
+Licensed under the MIT License. \
+See LICENSE.MD file in the project root for full license information.
+
+
+
 ###                    JSIV - Jayde's Simple Image Viewer
 ###                             by Jayde Dragyn
 (jaydedragyn@outlook.com)
@@ -73,7 +79,7 @@ feel free to let me know at:
 
     JaydeDragyn@hotmail.com
     
-with JSIV on the subject line.  
+with JSIV on the subject line.
 
 ---
 
@@ -81,7 +87,7 @@ with JSIV on the subject line.
 
 This program was created for two reasons:
 
-1 - 
+1. 
 I am writing another program and got hung up on the program structure.
 This program's structure is what I will use in the other program, along
 with a lot of newly learned knowledge on many Java Swing idoms.  
@@ -90,7 +96,7 @@ Note that I specifically chose to use Java Swing for this program because
 it comes with OpenJDK's Java 17 JDK.  JavaFX is not included, and I did
 not want to learn a whole new system for this.
 
-2 - 
+2. 
 I actually wanted to write this utility to help me with my other program.
 Specifically, looking through icons and tile images en masse.  
 
@@ -98,12 +104,12 @@ Specifically, looking through icons and tile images en masse.
 
 I will revisit this for two updates:
 
-1 - 
+1. 
 I want to enable this to open .webp files, which Java does not natively 
 support.  I wanted to get this working before I explored .webp handling
 modules.
 
-2 - 
+2. 
 I would like to make this accept command line arguments to open files so
 a user can associate it with images and just double-click the image to
 open it in this like any other image viewer.  I have looked into this 

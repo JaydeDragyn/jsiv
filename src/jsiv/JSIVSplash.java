@@ -1,8 +1,7 @@
 /*
-    JSIVSplash
-
-    This is a static class that owns the splash image that this program
-    will display at startup, and that will be used for the program icon.
+ * Copyright (c) 2026 Jayde Dragyn
+ * Licensed under the MIT License. 
+ * See LICENSE.MD file in the project root for full license information.
  */
 
  package jsiv;
