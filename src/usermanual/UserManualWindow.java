@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Jayde Dragyn
+ * Licensed under the MIT License.
+ * See LICENSE.MD file in the project root for full license information.
+ */
+
 package usermanual;
 
 import java.beans.*;
@@ -540,6 +546,11 @@ public class UserManualWindow implements HyperlinkListener {
         JOptionPane.showMessageDialog(userManualFrame, """
             User Manual Viewer
             Version 1.0.0
+
+            Copyright (c) 2026 Jayde Dragyn
+            Licensed under the MIT license.
+            See https://choosealicense.com/licenses/mit/
+                for full license information.
 
             Developed by: Jayde Dragyn
             Contact: JaydeDragyn@outlook.com

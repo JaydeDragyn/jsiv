@@ -176,6 +176,11 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             JSIV - Jayde's Simple Image Viewer
             Version 1.0.0
 
+            Copyright (c) 2026 Jayde Dragyn
+            Licensed under the MIT license.
+            See https://choosealicense.com/licenses/mit/
+                for full license information.
+
             Developed by: Jayde Dragyn
             Contact: JaydeDragyn@outlook.com
 
