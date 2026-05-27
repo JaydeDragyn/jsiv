@@ -1,1 +1,1 @@
-Main-Class: jsiv
+Main-Class: jsiv.Main
