@@ -38,6 +38,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private ImageNavigator imageNavigator;
     private Viewport viewport;
     private StatusBar statusBar;
+    private ImageIcon aboutIcon;
 
     // Color reporting
     private enum ColorMode { RGB, HEX };
@@ -71,6 +72,8 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
 
         UserManualWindow.setTitle("JSIV User Manual");
         UserManualWindow.setDocument("/assets/JSIVUserManual.html");
+
+        aboutIcon = new ImageIcon(JSIVSplash.getSplashImage());
     }
 
     @Override
@@ -194,7 +197,7 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             """,
             "JSIV - About",
             JOptionPane.INFORMATION_MESSAGE,
-            new ImageIcon(JSIVSplash.getSplashImage())
+            aboutIcon
         );
     }
 
