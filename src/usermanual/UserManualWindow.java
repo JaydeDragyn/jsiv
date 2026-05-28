@@ -100,11 +100,11 @@ public class UserManualWindow implements HyperlinkListener {
         loadDocument(document);
     }
 
-    public void setWindowTitle(String title) {
+    private void setWindowTitle(String title) {
         userManualFrame.setTitle(title);
     }
 
-    public void showUserManual() {
+    private void showUserManual() {
         userManualFrame.setVisible(true);
     }
 
