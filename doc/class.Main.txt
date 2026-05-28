@@ -1,0 +1,6 @@
+jsiv.Main
+
+This is the entry point of the program.
+
+Simply creates a ProgramWindow on the Event Dispatch Thread and the
+ProgramWindow takes it from there.

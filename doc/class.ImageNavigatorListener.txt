@@ -1,0 +1,19 @@
+jsiv.ImageNavigatorListener
+
+This is the interface that the ImageNavigatorListener uses to emit messages.
+This way it does not need to be coupled to another class and "anyone" can
+listen for and respond to the messages.
+
+Messages the ImageNavigator will emit:
+
+    navigationAvailabilityChanged()
+    newImageLoaded()
+
+For navigationAvailabilityChanged(), it will provide a boolean.  True means
+it is ok to call the ImageNavigator's openNext() and openPrevious() methods,
+false means there is only one image so do not call those methods.
+
+For newImageLoaded(), it will provide the filename of the image, the image
+data, and the index and total, so someone else can display the information
+and show the image.
+

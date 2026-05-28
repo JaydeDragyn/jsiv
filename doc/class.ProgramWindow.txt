@@ -1,0 +1,42 @@
+jsiv.ProgramWindow
+
+This class acts as the Controller of the program in an MVC setup:
+
+ProgramWindow
++---MenuBar
+|
++---Viewport
+|   +---ViewportListener
+|
++---StatusBar
+|
++---ImageNavigator
+|   +---ImageNavigatorListener
+|
++---ImageDropHandler
+|
++---UserManualWindow
+
+ProgramWindow handles messages from the Actions, the Menu, the Viewport,
+the ImageNavigator, and the ImageDropHandler, passing the appropriate
+messages back and forth between them and the StatusBar as needed.
+
+When the user selects the Instruction Manual (Help->InstructionManual or
+F1), the ProgramWindow tells the UserManualWindow to show with the
+appropriate settings (title of "JSIV User Manual" and document set
+to JSIVUserManual.html).
+
+When the user closes the JFrame with the [X], chooses Menu->File->Quit
+or presses Ctrl-Q, it exits the program.
+
+The logic of converting a Color to something to display and copy to the
+system clipboard is handled in ProgramWindow as well.  This should probably
+be handled by a separate class, and if we were going to do more with
+color conversion I would, but since this is a one-off it's simpler to just
+leave it here and keep the number of classes down.
+
+In a larger program, the Actions and the MenuBar would most likely be
+moved to their own classes.  This was a learning experience for me though,
+so I am fine to keep this class large and include them in it for this
+small project.
+

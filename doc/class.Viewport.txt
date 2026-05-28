@@ -1,0 +1,46 @@
+jsiv.Viewport
+
+This is the main part of the JSIV window and displays the current image.
+
+The Viewport will accept mouse gestures from the user to pan, zoom and
+navigate to other images.  It will also accept commands from the
+ProgramWindow via the following methods:
+
+    setImage() - Display the given image at max magnified size for the window
+    zoomIn() - Magnify the view so the image appears larger
+    zoomOut() - Unmagnify the view so the image appears smaller
+    resetZoom() - Set the image magnification to max for the size of the window
+    centerImage() - Pan the image to the center of the viewport area
+    moveImage() - Pan the image in the given direction by x,y image pixels
+    panImage() - Pan the image in the given direction by x,y screen pixels
+    setNavigationAvailability() - Enable or disable navigation buttons
+
+For moveImage() vs. panImage()
+Image pixels means that if the image is magnified, the movement will be
+magnified by the same amount (so if we are at 800% magnification, moving
+one image pixel to the right will move the image 8 screen pixels to the
+right, making it appear that the entire pixel shifted over.
+
+Screen pixels means the actual pixels of the screen, ignoring magnification.
+
+moveImage() is meant for movement via arrow keys while panImage() is meant
+for mouse dragging.
+
+If the user performs certain gestures, the Viewport will emit messages through
+the ViewportListener:
+
+    requestOpenNext() - User clicked on the Open Next button
+    requestOpenPrevious() - User clicked on the Open Previous button
+    imageSizeChanged() - provide information about the image given in setImage()
+    viewportSizeChanged() - provide new size of the Viewport when the window
+                            is resized
+    zoomChanged() - provide the new magnification when the user zooms in or out
+    newColorUnderPointer() - provide the Color of the pixel under the mouse
+    requestCopyColorToClipboard() - User right-clicked and wants to copy the
+                            color of the pixel under the mouse to the system
+                            clipboard.
+
+While displaying the image, if setNavigationAvailability() was last set to
+true, when the mouse moves over the location of the Open Next or Open Previous
+buttons, they will appear and can be clicked on.  If this is false, those
+buttons will not appear.

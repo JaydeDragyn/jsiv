@@ -1,0 +1,38 @@
+jsiv.ImageNavigator
+
+This class handles file navigation and file loading to provide the images
+that the Viewport will display.
+
+The public interface is:
+
+    openFile() - Provide the user with the file dialog to open a file
+    openFile(path, name) - Directly try to open the given file
+    refresh() - Reopen the current file and update the navigation list
+    openNext() - Open the next image file in the navigation list
+    openPrevious() - Open the previous image file in the navigation list
+    showError() - Show an error message to the user
+
+When a file is successfully loaded, this class will emit a message to the
+ImageNavigatorListener that .newImageLoaded() and provide the relevant
+information so the image and information about it can be displayed.
+
+When openFile() is successful, in addition to emitting the .newImageLoaded()
+message, it will generate a list of image files (naievely based on file
+extensions).
+
+When openNext() or openPrevious() are called, they will attempt to open the
+next or previous file in the list.  If the file won't open, they will show
+an error message to the user and prune that file from the list and then try
+the next (or previous) image file.
+
+If the navigation list does not contain at least two images, then navigation
+will not be possible, so this will emit .navigationAvailabilityChanged(false)
+through the ImageNavigatorListener so other components do not call the
+openNext() or openPrevious() methods.  (If either of these methods are
+called anyway, the ImageNavigator will disregard the request and emit
+.navigationAvailabilityChanged(false) again).
+
+If the navigation list is created with two or more images, then navigation
+is possible, so this will emit .navigationAvailabilityChanged(true) through
+the ImageNavigatorListener.
+

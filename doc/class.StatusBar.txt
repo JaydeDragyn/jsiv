@@ -1,0 +1,9 @@
+jsiv.StatusBar
+
+This class is the bottom part of the program window, displaying information
+about the navigation list, the image, the viewport, the zoom level and
+the color under the mouse cursor.
+
+This class does not process any data, except to report if no information
+is available for each of the fields.  If it receives information, it displays
+that information as-is.

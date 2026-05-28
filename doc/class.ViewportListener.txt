@@ -1,0 +1,15 @@
+jsiv.ViewportListener
+
+This is the interface that the Viewport uses to emit messages.
+
+Messages the Viewport will emit:
+
+    requestOpenNext() - User clicked the Open Next button
+    requestOpenPrevious() - User clicked the Open Previous button
+    imageSizeChanged() - A new image is being displayed, "here's the new size"
+    viewportSizeChanged() - User resized the window, "Here's the new size"
+    zoomChanged() - User zoomed in or out, "Here's the new magnification"
+    newColorUnderPointer() - User moved mouse over a new pixel, "Here's the color"
+    requestCopyColorToClipboard() - User right-clicked on a pixel, "Here's
+                        the color they want to copy to the system clipboard"
+

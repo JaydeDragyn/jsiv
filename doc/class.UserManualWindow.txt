@@ -1,0 +1,75 @@
+usermanual.UserManualWindow
+
+This is a window component that any program can call on to display a user
+manual or other document with hyperlinks.
+
+This is a static class, so it cannot be instantiated directly.  Instead:
+
+    UserManualWindow.setDocument(String filename);
+    UserManualWindow.setTitle(String title);
+    UserManualWindow.show();
+
+The class will be instantiated as needed when the .show() method is called.
+
+Use .setDocument() to provide the path to the .html document you want to display
+Use .setTitle() to set the User Manual's window title.
+Use .show() to show the window - the window will be hidden when the user
+    clicks on the close button for the window, selects
+    Menu->View->Close User Manual, or exits the program that called the window.
+
+
+The UserManualWindow consists of two panels, a tall, thin button in between
+them and a menu.
+
+The tall, thin button has three < characters to indicate the direction it will
+move if it is clicked.  If the user clicks it, the left panel will hide and
+this button will move to the left and the characters will change to three >
+symbols to show it will move back to the right when clicked.  This action
+expands the panel on the right.
+
+The left panel is a section navigation panel, or a Jump to... list.  When the
+UserManualWindow opens the document, it will scan the document for bookmarks
+(html elements <a name="Bookmark">Bookmark</a>).  For each bookmark it finds,
+it will add that link to a list, and when done it will display this list in
+the section navigation panel.  This gives the user the ability to jump to
+any bookmark without having to scroll around.
+
+The right panel is the content panel, displaying the actual document as
+Html 3.2 - some limited CSS and more older style html.  This is a limitation
+of Java's implementation of the JEditorPane, I did not code this.
+
+The intent of this window is to provide a user manual for the program.  You
+can be as detailed or as brief as you want.  The ideal format for this
+UserManualWindow would be something like the following:
+
+<html>
+  <head>
+    <style>
+      <!-- Any CSS you want to use -->
+    </style>
+  </head>
+  <body>
+    <h1>JSIV User Manual</h1>
+
+    <h2><a name="S1">1. First section</a></h2>
+    This is the first section of the user manual.  It will explain how
+    to use this program.
+
+    <br><hr><br>
+
+    <h2><a name="S2">2. Second section</a></h2>
+    This is the second section of the user manual.  It will provide an
+    overview of the program.
+
+    ...etc.
+  </body>
+</html>
+
+The important part are the <a name="S1"> tags.  I use S1, S2, S3, S3.1, etc.
+to denote Section 1, Section 2, Section 3, Section 3.1, etc. even though
+the actual titles of the sections are different.  This gives the navigation
+section links to show and targets for the content window to scroll to when
+the user clicks on those links.  When they do, the content pane will scroll
+so that section header is at the top.  The rest is up to you and how you
+want to format your page, but it has to conform to Html 3.2.
+

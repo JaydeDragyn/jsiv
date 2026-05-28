@@ -1,0 +1,11 @@
+jsiv.JSIVSplash
+
+This class provides the JSIV splash image, rendering it on the first request
+and then providing the cached image on all subsequent requests.
+
+This is a static class with a private constructor so it cannot be instantiated
+by anyone else.
+
+The JSIV splash image is rendered using Graphics2D methods on a BufferedImage,
+and that BufferedImage is what is provided upon request.
+

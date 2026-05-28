@@ -1,0 +1,14 @@
+jsiv.ImageDropHandler
+
+This class handles drag-n-drop.  It is a sub-class of TransferHandler and
+will be registered to the ProgramWindow as the TransferHandler so that
+it receives the drag-n-drop events instead of ProgramWindow.
+
+This class requires a reference to the ImageNavigator so that it can call
+the openFile() method on that ImageNavigator when it receives a file, and
+to use the showError() method so it can display the error if a non-file
+is dropped.
+
+This class will not validate the file in any way, except to ensure it is
+a file being dropped and not copied text.
+
