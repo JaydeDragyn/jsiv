@@ -8,7 +8,6 @@
 
 import usermanual.*;
 import java.util.HexFormat;
-import java.util.Optional;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
@@ -131,11 +130,11 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
             statusBar.updateColor(colorString + " Copied!");
         } catch (java.awt.HeadlessException e) {
             System.err.println("Cannot perform CopyToClipboard function: "
-                            + "Clipboard operations require a graphical environment.");
+                    + "Clipboard operations require a graphical environment.");
         } catch (IllegalStateException e) {
             JOptionPane.showMessageDialog(frame,
-                                      "Could not copy color to system clipboard",
-                                      "Clipboard is unavailable or busy",
+                                    "Could not copy color to system clipboard",
+                                    "Clipboard is unavailable or busy",
                                       JOptionPane.WARNING_MESSAGE);
         }
     }
