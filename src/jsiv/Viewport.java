@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2026 Jayde Dragyn
- * Licensed under the MIT License. 
+ * Licensed under the MIT License.
  * See LICENSE.MD file in the project root for full license information.
  */
 
@@ -74,7 +74,7 @@ public class Viewport extends JPanel {
 
     public void setImage(BufferedImage newImage) {
 
-    if (newImage == null) {
+        if (newImage == null) {
             image = JSIVSplash.getSplashImage();
         } else {
             image = newImage;
@@ -99,7 +99,7 @@ public class Viewport extends JPanel {
 
         setZoom(zoomLevelQuery, focusMode);
     }
-    
+
     public void zoomOut(FocusMode focusMode) {
         // Check if we can zoom out any further.  Limit is the largest
         // of 1x or whatever is needed to bring the scaled image size to fit
@@ -119,7 +119,7 @@ public class Viewport extends JPanel {
 
         setZoom(zoomLevelQuery, focusMode);
     }
-    
+
     public void resetZoom() {
         // If viewport has not been sized yet, abort
         if (viewportSize.width == 0 || viewportSize.height == 0) { return; }
@@ -145,7 +145,7 @@ public class Viewport extends JPanel {
         repaint();
         viewportListener.zoomChanged(zoomLevel);
     }
-    
+
     private void setZoom(double newZoomLevel, FocusMode focusMode) {
         Point focusPoint = switch (focusMode) {
             case WINDOW_CENTER -> new Point(viewportCenter);
@@ -365,22 +365,22 @@ public class Viewport extends JPanel {
                 // abort if a button is already pressed
                 // only one button should be pressed at a time,
                 if (leftButtonPressed || rightButtonPressed) { return; }
-                
+
                 // record the position the user pressed the button
                 pressPoint.setLocation(mouseLocation);
-                
+
                 // Left button?
                 if (e.getButton() == LMB) {
                     leftButtonPressed = true;
                     leftButtonDragged = false;
                 }
-                
+
                 // Right button?
                 if (e.getButton() == RMB) {
                     rightButtonPressed = true;
                 }
             }
-            
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 // If LMB then this is either navigation, a recenter or a drag
@@ -419,12 +419,12 @@ public class Viewport extends JPanel {
                     leftButtonPressed = false;
                     return;
                 }
-                
+
                 // If RMB then it is a copy-color request
                 if (e.getButton() == RMB) {
                     // Verify if RMB is the button we are even processing
                     if (!rightButtonPressed) { return; }
-                    
+
                     viewportListener.requestCopyColorToClipboard(
                         getColorUnderPointer(
                             (int)((pressPoint.x - imageOffsetX) / zoomLevel),
@@ -471,7 +471,7 @@ public class Viewport extends JPanel {
 
                 // This application only drags with LMB
                 if (!leftButtonPressed) { return; }
-                
+
                 // Check if we are already dragging
                 if (!leftButtonDragged) {
                     int dx = mouseLocation.x - pressPoint.x;
@@ -492,7 +492,7 @@ public class Viewport extends JPanel {
                 }
             }
         });
-        
+
         addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -502,6 +502,6 @@ public class Viewport extends JPanel {
                     zoomOut(FocusMode.POINTER);
                 }
             }
-        });    
+        });
     }
 }
