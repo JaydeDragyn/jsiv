@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2026 Jayde Dragyn
- * Licensed under the MIT License. 
+ * Licensed under the MIT License.
  * See LICENSE.MD file in the project root for full license information.
  */
 
@@ -126,9 +126,10 @@ public class ImageNavigator {
             // and report 1 of 1 with no navigation available.
             // This will keep something in the display and allow the
             // user to open a new file in another directory if they want.
+            imageFileIndex = 0;
             changeNavigationAvailability(false);
             imageNavigatorListener.newImageLoaded(currentImageFile.getName(),
-                                                    currentImage, 1, 1);
+                                                    currentImage, 0, 0);
             return;
         }
 
