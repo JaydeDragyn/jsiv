@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2026 Jayde Dragyn
- * Licensed under the MIT License. 
+ * Licensed under the MIT License.
  * See LICENSE.MD file in the project root for full license information.
  */
 
 package jsiv;
 
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import java.awt.datatransfer.DataFlavor;
 import java.util.List;
@@ -45,8 +46,10 @@ public class ImageDropHandler extends TransferHandler {
                 return true;
             }
         } catch (Exception e) {
-            imageNavigator.showError("Dropped file error",
-                                    "Could not open the dropped file.");
+            SwingUtilities.invokeLater(() ->
+                imageNavigator.showError("Dropped file error",
+                                    "Could not open the dropped file.")
+            );
         }
 
         return false;
