@@ -561,7 +561,7 @@ public class UserManualWindow implements HyperlinkListener {
 
             Technical guidance assisted by:
                  Claude Sonnet 4.6 (Anthropic) and
-                 Gemini (Google)
+                 Gemini Flash 3.5 (Google)
             """,
             "User Manual Viewer - About",
             JOptionPane.INFORMATION_MESSAGE,
