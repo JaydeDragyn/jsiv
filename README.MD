@@ -45,7 +45,7 @@ The images used in the program are generated, no external assets.
 The user manual is a manually formatted .html file I created in Kate.
 
 I asked ChatGPT 5.5 (OpenAI), Claude Sonnet 4.6 (Anthropic) and
-Gemini Flawsh 3.5 (Google) for code reviews and guidance on some 
+Gemini Flash 3.5 (Google) for code reviews and guidance on some 
 parts, but all code was written by me, no vibe coding.
 
 ---
@@ -77,7 +77,7 @@ in program that will explain how to use the program and what does what.
 If you find any issues or have suggestions to improve the program, please
 feel free to let me know at:
 
-    JaydeDragyn@hotmail.com
+    JaydeDragyn@outlook.com
     
 with JSIV on the subject line.
 
