@@ -1,1 +1,2 @@
 Main-Class: jsiv.Main
+Class-Path: libs/imageio-webp-3.13.1.jar libs/imageio-core-3.13.1.jar libs/imageio-metadata-3.13.1.jar libs/common-image-3.13.1.jar libs/common-io-3.13.1.jar libs/common-lang-3.13.1.jar

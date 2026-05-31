@@ -1,6 +1,7 @@
-Copyright (c) 2026 Jayde Dragyn\
+Copyright (c) 2026 Jayde Dragyn \
 Licensed under the MIT License. \
-See LICENSE.MD file in the project root for full license information.
+See LICENSE.MD file in the project root for full license information. \
+See LICENSE-3RD-PARTY.txt in the project root for 3rd party license information.
 
 
 
@@ -34,8 +35,10 @@ Additional features include:
 ---
 
 I used Java's built-in ImageIO library for loading and displaying images,
-so while I know image formats and file IO, I let the existing facilities
-handle that heavy lifting.
+except for WebP images, which uses the TwelveMonkeys ImageIO library
+(which is available at https://github.com/haraldk/TwelveMonkeys).
+So while I know image formats and file IO, I let the existing facilities
+and 3rd party library handle that heavy lifting.
 
 ---
 
@@ -47,6 +50,14 @@ The user manual is a manually formatted .html file I created in Kate.
 I asked ChatGPT 5.5 (OpenAI), Claude Sonnet 4.6 (Anthropic) and
 Gemini Flash 3.5 (Google) for code reviews and guidance on some 
 parts, but all code was written by me, no vibe coding.
+
+TwelveMonkeys modules used (and included in the libs folder in the JAR):
+    common-image-3.13.1
+    common-io-3.13.1
+    common-lang-3.13.1
+    imageio-core-3.13.1
+    imageio-metadata-3.13.1
+    imageio-webp-3.13.1
 
 ---
 

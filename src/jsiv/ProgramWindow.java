@@ -196,6 +196,10 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
                     ChatGPT 5.5 (OpenAI),
                     Claude Sonnet 4.6 (Anthropic) and
                     Gemini Flash 3.5 (Google)
+
+            WebP image support provided by:
+                    TwelveMonkeys ImageIO library
+                    available at github.com
             """,
             "JSIV - About",
             JOptionPane.INFORMATION_MESSAGE,

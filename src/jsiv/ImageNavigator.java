@@ -200,7 +200,8 @@ public class ImageNavigator {
             || name.endsWith(".bmp")
             || name.endsWith(".tif")
             || name.endsWith(".tiff")
-            || name.endsWith(".wbmp");
+            || name.endsWith(".wbmp")
+            || name.endsWith(".webp");
     }
 
     private void navigate(int direction) {
