@@ -32,7 +32,15 @@ jpackage --type deb \
          --main-jar jsiv.jar \
          --add-modules java.desktop,java.base \
          --linux-shortcut \
-         --linux-mime-type "image/png;image/jpeg;image/jpg;image/gif;image/tif;image/tiff;image/webp;image/wbmp;image/bmp" \
+         --file-associations mime-types/png.properties \
+         --file-associations mime-types/jpg.properties \
+         --file-associations mime-types/jpeg.properties \
+         --file-associations mime-types/gif.properties \
+         --file-associations mime-types/bmp.properties \
+         --file-associations mime-types/tif.properties \
+         --file-associations mime-types/tiff.properties \
+         --file-associations mime-types/wbmp.properties \
+         --file-associations mime-types/webp.properties \
          --dest dist/ \
          --app-version 1.2.0 \
          --vendor JaydeDragyn \
