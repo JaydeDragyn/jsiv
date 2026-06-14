@@ -26,7 +26,7 @@ if %ERRORLEVEL% neq 0 (
 echo Packaging...
 if not exist jsiv_app\ mkdir jsiv_app
 copy jsiv.jar jsiv_app\
-jpackage.exe --type app-image --name jsiv --input jsiv_app --main-jar jsiv.jar --add-modules java.desktop,java.base
+jpackage.exe --type app-image --name jsiv --input jsiv_app --main-jar jsiv.jar --add-modules java.desktop,java.base --icon assets\jsiv.ico
 if %ERRORLEVEL% neq 0 (
     echo Error: Could not package executable!
     exit /b 1

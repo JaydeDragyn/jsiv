@@ -44,7 +44,8 @@ jpackage --type deb \
          --dest dist/ \
          --app-version 1.2.0 \
          --vendor JaydeDragyn \
-         --description "Simple Image Viewer"
+         --description "Simple Image Viewer" \
+         --icon assets/jsiv.png
 if [[ $? != 0 ]]; then
     printf "Could not package executable!\n"
     exit 1

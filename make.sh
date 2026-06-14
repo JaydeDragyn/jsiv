@@ -25,7 +25,7 @@ fi
 printf "Packaging...\n"
 mkdir jsiv_app
 cp jsiv.jar jsiv_app/
-jpackage.exe --type app-image --name jsiv --input jsiv_app --main-jar jsiv.jar --add-modules java.desktop,java.base
+jpackage.exe --type app-image --name jsiv --input jsiv_app --main-jar jsiv.jar --add-modules java.desktop,java.base --icon assets/jsiv.png
 if [[ $? != 0 ]]; then
     printf "Could not package executable!\n"
     exit 1
