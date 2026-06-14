@@ -1,2 +1,6 @@
 #!/bin/bash
-java -jar jsiv.jar
+if [[ $# -eq 0 ]]; then
+    jsiv/jsiv
+else
+    jsiv/jsiv "$1"
+fi
