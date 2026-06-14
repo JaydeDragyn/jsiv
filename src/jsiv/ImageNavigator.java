@@ -45,13 +45,13 @@ public class ImageNavigator {
             return;
         }
 
-        openFile(fileDialog.getDirectory(), fileDialog.getFile());
+        openFile(fileDialog.getDirectory() + fileDialog.getFile());
     }
 
 
-    public void openFile(String path, String name) {
+    public void openFile(String filename) {
         // user selected a file, try to open the file
-        File file = new File(path, name);
+        File file = new File(filename);
         String fullPathName = getFullPathName(file);
 
         Optional<BufferedImage> tempImage = loadFile(file);
@@ -72,7 +72,7 @@ public class ImageNavigator {
         }
 
         // make a list of the filenames in the directory
-        createImageFileList(path);
+        createImageFileList(file.getParent());
 
         if (imageFileList.isEmpty()) {
             // How did we get here?  User picked a file in this

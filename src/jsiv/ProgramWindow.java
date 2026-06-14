@@ -46,6 +46,10 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
     private Color backgroundColor = Color.BLACK;
 
     public ProgramWindow() {
+        this(null);
+    }
+
+    public ProgramWindow(String filename) {
         frame = new JFrame("JSIV");
         frame.setIconImage(JSIVSplash.getSplashImage());
         imageNavigator = new ImageNavigator(this, frame);
@@ -73,6 +77,11 @@ public class ProgramWindow implements ViewportListener, ImageNavigatorListener {
         UserManualWindow.setDocument("/assets/JSIVUserManual.html");
 
         aboutIcon = new ImageIcon(JSIVSplash.getSplashImage());
+
+        if (filename != null) {
+            viewport.updateSize();
+            imageNavigator.openFile(filename);
+        }
     }
 
     @Override

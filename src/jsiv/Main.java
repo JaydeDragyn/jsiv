@@ -11,7 +11,11 @@ import javax.swing.SwingUtilities;
 public class Main {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(ProgramWindow::new);
+        if (args.length > 0) {
+            SwingUtilities.invokeLater(() -> new ProgramWindow(args[0]));
+        } else {
+            SwingUtilities.invokeLater(ProgramWindow::new);
+        }
     }
 
 }

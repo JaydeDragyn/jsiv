@@ -40,9 +40,7 @@ public class ImageDropHandler extends TransferHandler {
                 // the rest.  The order the system reports the files
                 // to us determines what we consider the "first file"
                 File droppedFile = files.get(0);
-                String path = droppedFile.getParent();
-                String name = droppedFile.getName();
-                imageNavigator.openFile(path, name);
+                imageNavigator.openFile(droppedFile.getPath());
                 return true;
             }
         } catch (Exception e) {

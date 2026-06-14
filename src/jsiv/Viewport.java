@@ -62,7 +62,7 @@ public class Viewport extends JPanel {
         setBackground(Color.BLACK);
         setPreferredSize(new Dimension(800, 600));
         createNavigationButtons();
-        setImage(JSIVSplash.getSplashImage());
+        setImage(null);
 
         // setImage() will call resetZoom() to ensure the splash image we just
         // gave it is centered and zoomed appropriately, but right now the
@@ -70,6 +70,13 @@ public class Viewport extends JPanel {
         // we will manually set the image position.
         imageOffsetX = 250;
         imageOffsetY = 172;
+    }
+
+    public void updateSize() {
+        updateViewportSize();
+        updateClampLimits();
+        clampImageToViewport();
+        repaint();
     }
 
     public void setImage(BufferedImage newImage) {
@@ -350,10 +357,7 @@ public class Viewport extends JPanel {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                updateViewportSize();
-                updateClampLimits();
-                clampImageToViewport();
-                repaint();
+                updateSize();
             }
         });
     }
