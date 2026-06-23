@@ -17,6 +17,9 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
+echo Staging files for executable JAR...
+cp -rf assets/ jar/
+
 echo Making executable JAR...
 jar -cfm jsiv.jar manifest.txt -C jar/ .
 if [[ $? != 0 ]]; then
@@ -40,7 +43,7 @@ cp -rf src/ app_staging/dev/
 cp manifest.txt app_staging/dev/
 
 echo Packaging...
-jpackage --type app-image --name jsiv --input app_staging --main-jar jsiv.jar --add-modules java.desktop,java.base --icon assets/jsiv.ico
+jpackage --type app-image --name jsiv --input app_staging --main-jar jsiv.jar --add-modules java.desktop,java.base --icon assets/jsiv.ico --app-version 1.2.0
 if [[ $? != 0 ]]; then
     echo Could not package executable!
     exit 1

@@ -17,6 +17,9 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
+echo Staging files for executable JAR...
+cp -rf assets/ jar/
+
 echo Making executable JAR...
 jar -cfm jsiv.jar manifest.txt -C jar/ .
 if [[ $? != 0 ]]; then

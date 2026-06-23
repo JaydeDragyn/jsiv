@@ -18,6 +18,10 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
+echo Staging files for executable JAR...
+if not exist jar\assets\ mkdir jar\assets\
+copy assets\*.* jar\assets\
+
 echo Making executable JAR...
 :: Create the executable JAR in the app_staging directory
 jar -cfm jsiv.jar manifest.txt -C jar\ .
