@@ -91,6 +91,7 @@ public class Viewport extends JPanel {
         imageScaledSize.setSize(imageSize);
         viewportListener.imageSizeChanged(new Dimension(imageSize));
         resetZoom();
+        reportColorUnderCursor();
     }
 
     public void zoomIn(FocusMode focusMode) {
@@ -353,6 +354,12 @@ public class Viewport extends JPanel {
         return color;
     }
 
+    private void reportColorUnderCursor() {
+        viewportListener.newColorUnderPointer(getColorUnderPointer(
+            (int)((mouseLocation.x - imageOffsetX) / zoomLevel),
+            (int)((mouseLocation.y - imageOffsetY) / zoomLevel)));
+    }
+
     private void initResizeListener() {
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -463,9 +470,10 @@ public class Viewport extends JPanel {
                 }
 
                 // Now report color under pointer
-                viewportListener.newColorUnderPointer(getColorUnderPointer(
-                    (int)((mouseLocation.x - imageOffsetX) / zoomLevel),
-                    (int)((mouseLocation.y - imageOffsetY) / zoomLevel)));
+                reportColorUnderCursor();
+                // viewportListener.newColorUnderPointer(getColorUnderPointer(
+                //     (int)((mouseLocation.x - imageOffsetX) / zoomLevel),
+                //     (int)((mouseLocation.y - imageOffsetY) / zoomLevel)));
             }
 
             @Override
